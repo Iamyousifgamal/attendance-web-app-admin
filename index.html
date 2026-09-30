@@ -23,10 +23,12 @@
     --danger-bg: #fdecea;
     --gray-btn: #95a5a6;
     --gray-btn-dark: #7f8c8d;
+    --excel-btn: #27ae60;
+    --excel-btn-dark: #1e8449;
     --text-main: #2c3e50;
     --text-muted: #7f8c8d;
     --border: #dfe4e6;
-    --row-alt: #f7f9fa;
+    --row-alt: #fafaff;
     --row-hover: #eef3f6;
     --shadow: 0 2px 10px rgba(0,0,0,0.08);
     --radius: 10px;
@@ -84,8 +86,21 @@
     align-items: center;
   }
 
+  .toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .toolbar-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
   .toolbar input[type="date"],
-  .toolbar input[type="text"] {
+  .toolbar input[type="text"],
+  .toolbar select {
     padding: 10px 12px;
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -93,10 +108,11 @@
     font-size: 14px;
     background: #fff;
     color: var(--text-main);
-    min-width: 160px;
+    min-width: 140px;
   }
 
-  .toolbar input:focus {
+  .toolbar input:focus,
+  .toolbar select:focus {
     outline: none;
     border-color: var(--accent);
   }
@@ -114,15 +130,16 @@
   }
 
   .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { filter: brightness(0.92); }
+  .btn-primary:hover:not(:disabled) { filter: brightness(0.92); }
 
   .btn-gray { background: var(--gray-btn); color: #fff; }
-  .btn-gray:hover { background: var(--gray-btn-dark); }
+  .btn-gray:hover:not(:disabled) { background: var(--gray-btn-dark); }
 
-  .btn-success { background: var(--success); color: #fff; }
-  .btn-success:hover { background: var(--success-dark); }
+  .btn-excel { background: var(--excel-btn); color: #fff; }
+  .btn-excel:hover:not(:disabled) { background: var(--excel-btn-dark); }
 
   .counter-badge {
     margin-inline-start: auto;
@@ -137,7 +154,7 @@
 
   main {
     padding: 16px;
-    max-width: 1600px;
+    max-width: 1800px;
     margin: 0 auto;
   }
 
@@ -178,11 +195,12 @@
   }
 
   thead th {
-    background: var(--header-bg);
-    color: #fff;
+    background: #c5c5f0;
+    color: #2c3e50;
     padding: 12px 10px;
     text-align: right;
-    font-weight: 700;
+    font-weight: 800;
+    border: 1px solid #8a8ac7;
     position: sticky;
     top: 0;
     white-space: nowrap;
@@ -190,7 +208,7 @@
 
   tbody td {
     padding: 10px;
-    border-bottom: 1px solid var(--border);
+    border: 1px solid #b8b8dd;
     vertical-align: middle;
   }
 
@@ -200,7 +218,7 @@
   td.name-cell { font-weight: 700; color: var(--primary); }
 
   td.address-cell {
-    max-width: 200px;
+    max-width: 260px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -208,30 +226,23 @@
   }
 
   td.missing-cell {
-    color: var(--danger);
-    font-weight: 600;
-    font-style: italic;
+    background: #e74c3c !important;
+    color: #fff !important;
+    font-weight: 700;
+    text-align: center;
   }
 
-  .check-in-badge {
+  .time-badge {
     display: inline-block;
     padding: 3px 8px;
     border-radius: 6px;
-    background: #e8f8f0;
-    color: var(--success-dark);
     font-weight: 700;
     font-size: 13px;
+    font-family: 'Cairo', monospace;
   }
 
-  .check-out-badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: var(--warning-bg);
-    color: var(--warning);
-    font-weight: 700;
-    font-size: 13px;
-  }
+  .time-in { background: #e8f8f0; color: var(--success-dark); }
+  .time-out { background: var(--warning-bg); color: var(--warning); }
 
   .delay-badge {
     display: inline-block;
@@ -241,6 +252,7 @@
     color: var(--danger);
     font-weight: 700;
     font-size: 13px;
+    font-family: 'Cairo', monospace;
   }
 
   .extra-badge {
@@ -251,14 +263,8 @@
     color: var(--success-dark);
     font-weight: 700;
     font-size: 13px;
+    font-family: 'Cairo', monospace;
   }
-
-  a.map-link {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 700;
-  }
-  a.map-link:hover { text-decoration: underline; }
 
   .empty-state {
     text-align: center;
@@ -270,7 +276,8 @@
 
   @media (max-width: 1100px) {
     .toolbar { flex-direction: column; align-items: stretch; }
-    .toolbar input, .toolbar .btn { width: 100%; }
+    .toolbar-group { flex-direction: column; align-items: stretch; }
+    .toolbar input, .toolbar select, .toolbar .btn { width: 100%; }
     .counter-badge { margin-inline-start: 0; text-align: center; }
 
     table, thead, tbody, th, tr, td {
@@ -325,12 +332,42 @@
 </header>
 
 <div class="toolbar">
-  <input type="date" id="dateFilter" aria-label="تصفية بالتاريخ">
-  <input type="text" id="nameFilter" placeholder="ابحث باسم الموظف" aria-label="بحث بالاسم">
+  <div class="toolbar-group">
+    <label>من تاريخ:</label>
+    <input type="date" id="dateFrom" aria-label="من تاريخ">
+  </div>
+
+  <div class="toolbar-group">
+    <label>إلى تاريخ:</label>
+    <input type="date" id="dateTo" aria-label="إلى تاريخ">
+  </div>
+
+  <div class="toolbar-group">
+    <label>الموظف:</label>
+    <input type="text" id="nameFilter" placeholder="ابحث بالاسم" aria-label="بحث بالاسم">
+  </div>
+
+  <div class="toolbar-group">
+    <label>ترتيب الأيام:</label>
+    <select id="dateSort">
+      <option value="asc">تصاعدي (الأقدم أولاً)</option>
+      <option value="desc">تنازلي (الأحدث أولاً)</option>
+    </select>
+  </div>
+
+  <div class="toolbar-group">
+    <label>ترتيب الأسماء:</label>
+    <select id="nameSort">
+      <option value="asc">تصاعدي (أ - ي)</option>
+      <option value="desc">تنازلي (ي - أ)</option>
+    </select>
+  </div>
+
   <button class="btn btn-primary" id="applyBtn">عرض</button>
   <button class="btn btn-gray" id="resetBtn">عرض الكل</button>
-  <button class="btn btn-success" id="exportBtn">تحميل Excel</button>
-  <span class="counter-badge" id="counterBadge">عدد الموظفين: 0</span>
+  <button class="btn btn-excel" id="exportBtn">تحميل Excel</button>
+
+  <span class="counter-badge" id="counterBadge">عدد الصفوف: 0</span>
 </div>
 
 <main>
@@ -341,21 +378,16 @@
       <table id="attendanceTable">
         <thead>
           <tr>
-            <th>م</th>
             <th>اسم الموظف</th>
-            <th>التاريخ</th>
+            <th>تاريخ العمل</th>
             <th>Check In</th>
-            <th>Check In Location</th>
+            <th>In Location</th>
             <th>Check Out</th>
-            <th>Check Out Location</th>
-            <th>تأخير</th>
-            <th>إضافي</th>
-            <th>الموقع</th>
+            <th>Late Hours</th>
+            <th>Overtime</th>
           </tr>
         </thead>
-        <tbody id="tableBody">
-          <!-- Rows injected by JS -->
-        </tbody>
+        <tbody id="tableBody"></tbody>
       </table>
     </div>
     <div class="empty-state" id="emptyState" style="display:none;">لا توجد تسجيلات مطابقة</div>
@@ -364,17 +396,17 @@
 
 <!-- Supabase JS Client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- SheetJS for Excel export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- ExcelJS for styled Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 
 <script>
 (function () {
   'use strict';
 
   // ============================================================
-  // Supabase configuration
+  // Supabase configuration — الـ URL الصح من Supabase Settings
   // ============================================================
-    const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
+const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0YWhseWRucnplbWJ2YnFicmR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3NTc5NjEsImV4cCI6MjEwNTMzMzk2MX0.0ErheMPDk_6wbhv49hb3pCAHilmnaf_bcWEEPOYGNyc';
 
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -382,27 +414,28 @@
   // ============================================================
   // Constants
   // ============================================================
-  const TABLE_NAME = 'attendance';
+  const VIEW_NAME = 'attendance_daily';
   const AUTO_REFRESH_INTERVAL_MS = 30000;
-  const MISSING_TEXT = 'لم يسجل انصراف';
-  const EMPTY_TEXT = '—';
 
   // ---- Work schedule (بتوقيت مصر) ----
-  const WORK_START_HOUR = 10;      // 10:00 صباحاً
+  const WORK_START_HOUR = 10;
   const WORK_START_MINUTE = 0;
-  const GRACE_MINUTES = 15;        // 15 دقيقة سماح → 10:15
-  const WORK_END_HOUR = 18;        // 6:00 مساءً
+  const GRACE_MINUTES = 15;
+  const WORK_END_HOUR = 18;
   const WORK_END_MINUTE = 0;
 
-  const WORK_START_TOTAL = WORK_START_HOUR * 60 + WORK_START_MINUTE; // 600 دقيقة
-  const GRACE_LIMIT_TOTAL = WORK_START_TOTAL + GRACE_MINUTES;         // 615 دقيقة (10:15)
-  const WORK_END_TOTAL = WORK_END_HOUR * 60 + WORK_END_MINUTE;       // 1080 دقيقة (18:00)
+  const WORK_START_TOTAL = WORK_START_HOUR * 60 + WORK_START_MINUTE;
+  const GRACE_LIMIT_TOTAL = WORK_START_TOTAL + GRACE_MINUTES;
+  const WORK_END_TOTAL = WORK_END_HOUR * 60 + WORK_END_MINUTE;
 
   // ============================================================
   // DOM references
   // ============================================================
-  const dateFilterEl = document.getElementById('dateFilter');
+  const dateFromEl = document.getElementById('dateFrom');
+  const dateToEl = document.getElementById('dateTo');
   const nameFilterEl = document.getElementById('nameFilter');
+  const dateSortEl = document.getElementById('dateSort');
+  const nameSortEl = document.getElementById('nameSort');
   const applyBtn = document.getElementById('applyBtn');
   const resetBtn = document.getElementById('resetBtn');
   const exportBtn = document.getElementById('exportBtn');
@@ -415,42 +448,39 @@
   let autoRefreshTimer = null;
 
   // ============================================================
-  // Supabase query builder
+  // Supabase query
   // ============================================================
-  function buildQuery(date, name) {
-    let query = supabase
-      .from(TABLE_NAME)
-      .select('*')
-      .order('created_at', { ascending: true });
+  function buildQuery() {
+    const fromDate = dateFromEl.value;
+    const toDate = dateToEl.value;
+    const name = nameFilterEl.value.trim();
 
-    if (date) {
-      query = query.eq('check_date', date);
-    }
+    let query = supabase.from(VIEW_NAME).select('*');
 
-    if (name) {
-      query = query.ilike('name', '%' + name + '%');
-    }
+    if (fromDate) query = query.gte('check_date', fromDate);
+    if (toDate) query = query.lte('check_date', toDate);
+    if (name) query = query.ilike('name', '%' + name + '%');
 
     return query;
   }
 
   // ============================================================
-  // Date/time helpers
+  // Sorting
   // ============================================================
-  function formatTime(isoString) {
-    const d = new Date(isoString);
-    return d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+  function sortRecords(records) {
+    const nameDir = nameSortEl.value === 'asc' ? 1 : -1;
+    const dateDir = dateSortEl.value === 'asc' ? 1 : -1;
+
+    return records.slice().sort(function (a, b) {
+      const nameCompare = (a.name || '').localeCompare(b.name || '', 'ar');
+      if (nameCompare !== 0) return nameCompare * nameDir;
+      return (a.check_date || '').localeCompare(b.check_date || '') * dateDir;
+    });
   }
 
-  function formatDate(dateString) {
-    const d = new Date(dateString + 'T00:00:00');
-    return d.toLocaleDateString('ar-EG');
-  }
-
-  /**
-   * Gets Cairo local hours and minutes from an ISO timestamp.
-   * Always uses Africa/Cairo timezone.
-   */
+  // ============================================================
+  // Helpers
+  // ============================================================
   function getCairoTime(isoString) {
     const d = new Date(isoString);
     const formatter = new Intl.DateTimeFormat('en-GB', {
@@ -465,113 +495,51 @@
     return { hours, minutes, totalMinutes: hours * 60 + minutes };
   }
 
-  /**
-   * Formats a duration in minutes into a human-readable Arabic string.
-   * Examples: "15 دقيقة", "ساعة", "ساعتين", "3 ساعات و30 دقيقة"
-   */
-  function formatDuration(totalMinutes) {
-    if (totalMinutes <= 0) return EMPTY_TEXT;
-
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    const parts = [];
-    if (hours > 0) {
-      if (hours === 1) parts.push('ساعة');
-      else if (hours === 2) parts.push('ساعتين');
-      else if (hours <= 10) parts.push(hours + ' ساعات');
-      else parts.push(hours + ' ساعة');
-    }
-    if (minutes > 0) {
-      parts.push(minutes + ' دقيقة');
-    }
-
-    return parts.join(' و ');
+  function formatInOutTime(isoString) {
+    if (!isoString) return '';
+    const d = new Date(isoString);
+    return d.toLocaleTimeString('ar-EG', {
+      timeZone: 'Africa/Cairo',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
   }
 
-  // ============================================================
-  // Business logic — Delay & Extra calculation
-  // ============================================================
+  function formatWorkDate(dateString) {
+    if (!dateString) return '';
+    const parts = dateString.split('-');
+    if (parts.length !== 3) return dateString;
+    return parts[2] + '-' + parts[1] + '-' + parts[0];
+  }
 
-  /**
-   * Calculates delay in minutes if check-in was after 10:15.
-   * Returns 0 if on time or early.
-   */
+  function formatDurationHHMM(totalMinutes) {
+    if (!totalMinutes || totalMinutes <= 0) return '00:00';
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+  }
+
   function calculateDelay(checkInIso) {
     if (!checkInIso) return 0;
-
     const { totalMinutes } = getCairoTime(checkInIso);
-
-    if (totalMinutes > GRACE_LIMIT_TOTAL) {
-      return totalMinutes - GRACE_LIMIT_TOTAL;
-    }
+    if (totalMinutes > GRACE_LIMIT_TOTAL) return totalMinutes - GRACE_LIMIT_TOTAL;
     return 0;
   }
 
-  /**
-   * Calculates the extra (bonus) minutes.
-   *
-   * Rule 1: Early arrival → minutes between check-in and 10:00 (no check-out required)
-   * Rule 2: Late departure → minutes between 18:00 and check-out (check-out required)
-   *
-   * If both apply, they are summed.
-   */
-  function calculateExtra(checkInIso, checkOutIso) {
+  function calculateOvertime(checkInIso, checkOutIso) {
     let extra = 0;
-
-    // Rule 1: Early arrival (before 10:00)
     if (checkInIso) {
-      const { totalMinutes: inMinutes } = getCairoTime(checkInIso);
-      if (inMinutes < WORK_START_TOTAL) {
-        extra += (WORK_START_TOTAL - inMinutes);
-      }
+      const { totalMinutes: inMin } = getCairoTime(checkInIso);
+      if (inMin < WORK_START_TOTAL) extra += (WORK_START_TOTAL - inMin);
     }
-
-    // Rule 2: Late departure (after 18:00) — requires check-out
     if (checkOutIso) {
-      const { totalMinutes: outMinutes } = getCairoTime(checkOutIso);
-      if (outMinutes > WORK_END_TOTAL) {
-        extra += (outMinutes - WORK_END_TOTAL);
-      }
+      const { totalMinutes: outMin } = getCairoTime(checkOutIso);
+      if (outMin > WORK_END_TOTAL) extra += (outMin - WORK_END_TOTAL);
     }
-
     return extra;
   }
 
-  // ============================================================
-  // Grouping
-  // ============================================================
-  function groupRecords(records) {
-    const map = {};
-
-    records.forEach(function (r) {
-      const key = r.name + '|' + r.check_date;
-      if (!map[key]) {
-        map[key] = {
-          name: r.name,
-          check_date: r.check_date,
-          checkIn: null,
-          checkOut: null
-        };
-      }
-
-      const entry = map[key];
-
-      if (r.check_type === 'in') {
-        if (!entry.checkIn) entry.checkIn = r;
-      } else if (r.check_type === 'out') {
-        entry.checkOut = r;
-      }
-    });
-
-    return Object.values(map).sort(function (a, b) {
-      return b.check_date.localeCompare(a.check_date);
-    });
-  }
-
-  // ============================================================
-  // UI helpers
-  // ============================================================
   function setStatus(type, message) {
     statusBanner.className = 'status-banner';
     if (type === 'none') {
@@ -586,23 +554,20 @@
   function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   // ============================================================
   // Rendering
   // ============================================================
-  function renderTable(grouped) {
+  function renderTable(records) {
     tableBody.innerHTML = '';
 
-    if (!grouped || grouped.length === 0) {
+    if (!records || records.length === 0) {
       attendanceTable.style.display = 'none';
       emptyState.style.display = 'block';
-      counterBadge.textContent = 'عدد الموظفين: 0';
+      counterBadge.textContent = 'عدد الصفوف: 0';
       return;
     }
 
@@ -611,92 +576,62 @@
 
     const fragment = document.createDocumentFragment();
 
-    grouped.forEach(function (entry, index) {
+    records.forEach(function (r) {
       const tr = document.createElement('tr');
 
-      const checkInTime = entry.checkIn ? formatTime(entry.checkIn.created_at) : MISSING_TEXT;
-      const checkInLoc  = entry.checkIn
-        ? (entry.checkIn.full_address || entry.checkIn.city || entry.checkIn.governorate || EMPTY_TEXT)
-        : MISSING_TEXT;
+      const inTime = r.check_in_at ? formatInOutTime(r.check_in_at) : '';
+      const outTime = r.check_out_at ? formatInOutTime(r.check_out_at) : '';
+      const inLoc = r.check_in_location || '';
 
-      const checkOutTime = entry.checkOut ? formatTime(entry.checkOut.created_at) : MISSING_TEXT;
-      const checkOutLoc  = entry.checkOut
-        ? (entry.checkOut.full_address || entry.checkOut.city || entry.checkOut.governorate || EMPTY_TEXT)
-        : MISSING_TEXT;
+      const delayMinutes = calculateDelay(r.check_in_at);
+      const overtimeMinutes = calculateOvertime(r.check_in_at, r.check_out_at);
 
-      const mapsUrl = entry.checkIn
-        ? 'https://maps.google.com/?q=' + entry.checkIn.lat + ',' + entry.checkIn.lng
-        : '#';
+      const inCell = inTime
+        ? '<span class="time-badge time-in">' + inTime + '</span>'
+        : '—';
 
-      const checkInBadge = entry.checkIn
-        ? '<span class="check-in-badge">' + checkInTime + '</span>'
-        : '<span class="missing-cell">' + MISSING_TEXT + '</span>';
+      const outCell = outTime
+        ? '<span class="time-badge time-out">' + outTime + '</span>'
+        : '—';
 
-      const checkOutBadge = entry.checkOut
-        ? '<span class="check-out-badge">' + checkOutTime + '</span>'
-        : '<span class="missing-cell">' + MISSING_TEXT + '</span>';
+      const outTdClass = !outTime ? ' class="missing-cell"' : '';
+      const outTdContent = !outTime ? '—' : outCell;
 
-      const checkInLocCell = entry.checkIn
-        ? '<span title="' + escapeHtml(checkInLoc) + '">' + escapeHtml(checkInLoc) + '</span>'
-        : '<span class="missing-cell">' + MISSING_TEXT + '</span>';
+      const delayCell = '<span class="delay-badge">' + formatDurationHHMM(delayMinutes) + '</span>';
+      const overtimeCell = '<span class="extra-badge">' + formatDurationHHMM(overtimeMinutes) + '</span>';
 
-      const checkOutLocCell = entry.checkOut
-        ? '<span title="' + escapeHtml(checkOutLoc) + '">' + escapeHtml(checkOutLoc) + '</span>'
-        : '<span class="missing-cell">' + MISSING_TEXT + '</span>';
-
-      // Calculate delay and extra
-      const delayMinutes = calculateDelay(entry.checkIn ? entry.checkIn.created_at : null);
-      const extraMinutes = calculateExtra(
-        entry.checkIn ? entry.checkIn.created_at : null,
-        entry.checkOut ? entry.checkOut.created_at : null
-      );
-
-      const delayCell = delayMinutes > 0
-        ? '<span class="delay-badge">' + formatDuration(delayMinutes) + '</span>'
-        : EMPTY_TEXT;
-
-      const extraCell = extraMinutes > 0
-        ? '<span class="extra-badge">' + formatDuration(extraMinutes) + '</span>'
-        : EMPTY_TEXT;
+      const inLocCell = inLoc
+        ? '<span title="' + escapeHtml(inLoc) + '">' + escapeHtml(inLoc) + '</span>'
+        : '—';
 
       tr.innerHTML =
-        '<td data-label="م">' + (index + 1) + '</td>' +
-        '<td data-label="اسم الموظف" class="name-cell">' + escapeHtml(entry.name) + '</td>' +
-        '<td data-label="التاريخ">' + formatDate(entry.check_date) + '</td>' +
-        '<td data-label="Check In">' + checkInBadge + '</td>' +
-        '<td data-label="Check In Location" class="address-cell">' + checkInLocCell + '</td>' +
-        '<td data-label="Check Out">' + checkOutBadge + '</td>' +
-        '<td data-label="Check Out Location" class="address-cell">' + checkOutLocCell + '</td>' +
-        '<td data-label="تأخير">' + delayCell + '</td>' +
-        '<td data-label="إضافي">' + extraCell + '</td>' +
-        '<td data-label="الموقع">' +
-          (entry.checkIn
-            ? '<a class="map-link" href="' + mapsUrl + '" target="_blank" rel="noopener noreferrer">فتح الخريطة</a>'
-            : EMPTY_TEXT) +
-        '</td>';
+        '<td data-label="اسم الموظف" class="name-cell">' + escapeHtml(r.name) + '</td>' +
+        '<td data-label="تاريخ العمل">' + formatWorkDate(r.check_date) + '</td>' +
+        '<td data-label="Check In">' + inCell + '</td>' +
+        '<td data-label="In Location" class="address-cell">' + inLocCell + '</td>' +
+        '<td data-label="Check Out"' + outTdClass + '>' + outTdContent + '</td>' +
+        '<td data-label="Late Hours">' + delayCell + '</td>' +
+        '<td data-label="Overtime">' + overtimeCell + '</td>';
 
       fragment.appendChild(tr);
     });
 
     tableBody.appendChild(fragment);
-    counterBadge.textContent = 'عدد الموظفين: ' + grouped.length;
+    counterBadge.textContent = 'عدد الصفوف: ' + records.length;
   }
 
   // ============================================================
-  // Data loading
+  // Load data
   // ============================================================
   async function loadData(showLoadingState) {
-    const date = dateFilterEl.value;
-    const name = nameFilterEl.value.trim();
-
     if (showLoadingState) setStatus('loading', 'جاري التحميل...');
 
     try {
-      const { data, error } = await buildQuery(date, name);
+      const { data, error } = await buildQuery();
       if (error) throw error;
 
-      const grouped = groupRecords(data || []);
-      renderTable(grouped);
+      const sorted = sortRecords(data || []);
+      renderTable(sorted);
       setStatus('none', '');
     } catch (err) {
       console.error('Failed to load attendance data:', err);
@@ -705,92 +640,217 @@
   }
 
   function resetFilters() {
-    dateFilterEl.value = '';
+    dateFromEl.value = '';
+    dateToEl.value = '';
     nameFilterEl.value = '';
+    dateSortEl.value = 'asc';
+    nameSortEl.value = 'asc';
     loadData(true);
   }
 
   // ============================================================
-  // Excel export
+  // Excel Export (ExcelJS — styled like the website)
   // ============================================================
-  function buildExportRows(grouped) {
-    return grouped.map(function (entry, index) {
-      const checkInTime = entry.checkIn ? formatTime(entry.checkIn.created_at) : MISSING_TEXT;
-      const checkInLoc  = entry.checkIn
-        ? (entry.checkIn.full_address || entry.checkIn.city || entry.checkIn.governorate || EMPTY_TEXT)
-        : MISSING_TEXT;
-
-      const checkOutTime = entry.checkOut ? formatTime(entry.checkOut.created_at) : MISSING_TEXT;
-      const checkOutLoc  = entry.checkOut
-        ? (entry.checkOut.full_address || entry.checkOut.city || entry.checkOut.governorate || EMPTY_TEXT)
-        : MISSING_TEXT;
-
-      const delayMinutes = calculateDelay(entry.checkIn ? entry.checkIn.created_at : null);
-      const extraMinutes = calculateExtra(
-        entry.checkIn ? entry.checkIn.created_at : null,
-        entry.checkOut ? entry.checkOut.created_at : null
-      );
-
-      return {
-        'م': index + 1,
-        'اسم الموظف': entry.name,
-        'التاريخ': formatDate(entry.check_date),
-        'Check In': checkInTime,
-        'Check In Location': checkInLoc,
-        'Check Out': checkOutTime,
-        'Check Out Location': checkOutLoc,
-        'تأخير': delayMinutes > 0 ? formatDuration(delayMinutes) : EMPTY_TEXT,
-        'إضافي': extraMinutes > 0 ? formatDuration(extraMinutes) : EMPTY_TEXT
-      };
-    });
-  }
-
   async function exportExcel() {
-    try {
-      const date = dateFilterEl.value;
-      const name = nameFilterEl.value.trim();
+    const originalText = exportBtn.textContent;
+    exportBtn.disabled = true;
+    exportBtn.textContent = '⏳ جاري التحضير...';
 
-      const { data, error } = await buildQuery(date, name);
+    try {
+      const { data, error } = await buildQuery();
       if (error) throw error;
 
-      const grouped = groupRecords(data || []);
-      const exportRows = buildExportRows(grouped);
+      const sorted = sortRecords(data || []);
 
-      const worksheet = XLSX.utils.json_to_sheet(exportRows);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance');
+      if (sorted.length === 0) {
+        alert('لا توجد بيانات لتصديرها');
+        exportBtn.disabled = false;
+        exportBtn.textContent = originalText;
+        return;
+      }
 
-      // ---- Excel polish ----
-      worksheet['!cols'] = [
-        { wch: 5 },   // م
-        { wch: 22 },  // اسم الموظف
-        { wch: 14 },  // التاريخ
-        { wch: 12 },  // Check In
-        { wch: 38 },  // Check In Location
-        { wch: 12 },  // Check Out
-        { wch: 38 },  // Check Out Location
-        { wch: 14 },  // تأخير
-        { wch: 16 }   // إضافي
+      // ---- Create workbook ----
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = 'Attendance System';
+      workbook.created = new Date();
+
+      const worksheet = workbook.addWorksheet('Attendance', {
+        views: [{ rightToLeft: true }]
+      });
+
+      // ---- Define columns ----
+      worksheet.columns = [
+        { header: 'اسم الموظف', key: 'name', width: 24 },
+        { header: 'تاريخ العمل', key: 'date', width: 16 },
+        { header: 'Check In', key: 'checkIn', width: 14 },
+        { header: 'In Location', key: 'inLocation', width: 45 },
+        { header: 'Check Out', key: 'checkOut', width: 14 },
+        { header: 'Late Hours', key: 'late', width: 14 },
+        { header: 'Overtime', key: 'overtime', width: 14 }
       ];
 
-      // RTL layout for the sheet
-      if (!worksheet['!views']) worksheet['!views'] = [];
-      worksheet['!views'].push({ RTL: true });
+      // ---- Style header row ----
+      const headerRow = worksheet.getRow(1);
+      headerRow.height = 28;
+      headerRow.eachCell(function (cell) {
+        cell.font = {
+          name: 'Cairo',
+          size: 12,
+          bold: true,
+          color: { argb: 'FF2C3E50' }
+        };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFC5C5F0' }   // لون بنفسجي فاتح (زي الموقع)
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top:    { style: 'thin', color: { argb: 'FF8A8AC7' } },
+          bottom: { style: 'thin', color: { argb: 'FF8A8AC7' } },
+          left:   { style: 'thin', color: { argb: 'FF8A8AC7' } },
+          right:  { style: 'thin', color: { argb: 'FF8A8AC7' } }
+        };
+      });
 
-      // Freeze header row
-      worksheet['!freeze'] = { xSplit: 0, ySplit: 1 };
+      // ---- Add data rows ----
+      sorted.forEach(function (r, index) {
+        const inTime = r.check_in_at ? formatInOutTime(r.check_in_at) : '';
+        const outTime = r.check_out_at ? formatInOutTime(r.check_out_at) : '';
+        const inLoc = r.check_in_location || '';
+        const delayMin = calculateDelay(r.check_in_at);
+        const overtimeMin = calculateOvertime(r.check_in_at, r.check_out_at);
 
-      // Autofilter over full range
-      const range = XLSX.utils.decode_range(worksheet['!ref']);
-      worksheet['!autofilter'] = { ref: XLSX.utils.encode_range(range) };
+        const row = worksheet.addRow({
+          name: r.name,
+          date: formatWorkDate(r.check_date),
+          checkIn: inTime || '—',
+          inLocation: inLoc || '—',
+          checkOut: outTime || '—',
+          late: formatDurationHHMM(delayMin),
+          overtime: formatDurationHHMM(overtimeMin)
+        });
 
-      const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+        row.height = 24;
 
-      const todayStr = new Date().toISOString().slice(0, 10);
-      const fileName = date
-        ? 'attendance-' + date + '.xlsx'
-        : 'attendance-all-' + todayStr + '.xlsx';
+        // Apply styles to each cell
+        row.eachCell({ includeEmpty: true }, function (cell, colNumber) {
+          cell.font = {
+            name: 'Cairo',
+            size: 11,
+            color: { argb: 'FF2C3E50' }
+          };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = {
+            top:    { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            bottom: { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            left:   { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            right:  { style: 'thin', color: { argb: 'FFB8B8DD' } }
+          };
+
+          // Even rows: alternate background
+          if (index % 2 === 1) {
+            cell.fill = {
+              type: 'pattern',
+              pattern: 'solid',
+              fgColor: { argb: 'FFFAFAFF' }
+            };
+          }
+        });
+
+        // ---- Special styling for columns ----
+
+        // 1) Missing Check Out → red fill
+        if (!outTime) {
+          const outCell = row.getCell('checkOut');
+          outCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE74C3C' }
+          };
+          outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+        } else {
+          // Green/tan badge style
+          const outCell = row.getCell('checkOut');
+          outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFE67E22' } };
+          outCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFEF5E7' }
+          };
+        }
+
+        // 2) Check In → green badge
+        const inCell = row.getCell('checkIn');
+        if (inTime) {
+          inCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
+          inCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE8F8F0' }
+          };
+        }
+
+        // 3) Late Hours → red badge (only if > 0)
+        const lateCell = row.getCell('late');
+        if (delayMin > 0) {
+          lateCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFC0392B' } };
+          lateCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFDECEA' }
+          };
+        }
+
+        // 4) Overtime → green badge (only if > 0)
+        const overtimeCell = row.getCell('overtime');
+        if (overtimeMin > 0) {
+          overtimeCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
+          overtimeCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE8F8F0' }
+          };
+        }
+
+        // 5) Name cell → bold
+        row.getCell('name').font = {
+          name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2C3E50' }
+        };
+
+        // 6) In Location → smaller font, aligned right
+        row.getCell('inLocation').font = {
+          name: 'Cairo', size: 10, color: { argb: 'FF555555' }
+        };
+        row.getCell('inLocation').alignment = {
+          horizontal: 'right', vertical: 'middle', wrapText: true
+        };
+      });
+
+      // ---- Freeze header row ----
+      worksheet.views = [
+        { state: 'frozen', ySplit: 1, rightToLeft: true }
+      ];
+
+      // ---- Auto filter ----
+      worksheet.autoFilter = {
+        from: { row: 1, column: 1 },
+        to:   { row: 1, column: 7 }
+      };
+
+      // ---- Write & download ----
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const fromDate = dateFromEl.value;
+      const toDate = dateToEl.value;
+      let fileName;
+      if (fromDate && toDate) fileName = 'attendance-' + fromDate + '-to-' + toDate + '.xlsx';
+      else if (fromDate) fileName = 'attendance-from-' + fromDate + '.xlsx';
+      else if (toDate) fileName = 'attendance-until-' + toDate + '.xlsx';
+      else fileName = 'attendance-all-' + new Date().toISOString().slice(0, 10) + '.xlsx';
 
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -799,9 +859,14 @@
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(link.href);
+
+      exportBtn.disabled = false;
+      exportBtn.textContent = originalText;
     } catch (err) {
       console.error('Failed to export Excel file:', err);
       alert('تعذر إنشاء ملف Excel');
+      exportBtn.disabled = false;
+      exportBtn.textContent = originalText;
     }
   }
 
@@ -821,6 +886,9 @@
   applyBtn.addEventListener('click', function () { loadData(true); });
   resetBtn.addEventListener('click', resetFilters);
   exportBtn.addEventListener('click', exportExcel);
+
+  dateSortEl.addEventListener('change', function () { loadData(false); });
+  nameSortEl.addEventListener('change', function () { loadData(false); });
 
   loadData(true);
   startAutoRefresh();
