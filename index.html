@@ -87,7 +87,6 @@
   }
   .logout-btn:hover { background: #c0392b; }
 
-  /* Tabs */
   .tabs {
     display: flex;
     gap: 0;
@@ -282,6 +281,16 @@
     cursor: help;
   }
 
+  td.destination-cell {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: help;
+    font-weight: 600;
+    color: #2980b9;
+  }
+
   td.missing-cell {
     background: #e74c3c !important;
     color: #fff !important;
@@ -323,6 +332,26 @@
     font-family: 'Cairo', monospace;
   }
 
+  a.location-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #eaf2fa;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  a.location-link:hover {
+    background: #2980b9;
+    color: #fff;
+  }
+
   .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -331,7 +360,6 @@
     font-weight: 600;
   }
 
-  /* Summary table center align */
   #summaryTable th:nth-child(2),
   #summaryTable th:nth-child(3),
   #summaryTable th:nth-child(4),
@@ -341,7 +369,6 @@
     text-align: center;
   }
 
-  /* Login Screen */
   .login-screen {
     position: fixed;
     inset: 0;
@@ -446,7 +473,7 @@
 
   .login-error.visible { display: block; }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 1400px) {
     .toolbar, .summary-toolbar { flex-direction: column; align-items: stretch; }
     .toolbar-group { flex-direction: column; align-items: stretch; }
     .toolbar input, .toolbar select, .toolbar .btn { width: 100%; }
@@ -488,7 +515,7 @@
       flex-shrink: 0;
     }
 
-    td.address-cell {
+    td.address-cell, td.destination-cell {
       max-width: 100%;
       white-space: normal;
       text-align: right;
@@ -498,9 +525,6 @@
 </head>
 <body>
 
-<!-- ============================================
-     شاشة تسجيل الدخول
-     ============================================ -->
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
     <div class="login-logo">🔒</div>
@@ -525,9 +549,6 @@
   </div>
 </div>
 
-<!-- ============================================
-     محتوى الأدمن
-     ============================================ -->
 <div id="appContent" style="display:none;">
 
   <header class="app-header">
@@ -536,15 +557,12 @@
     <button id="logoutBtn" class="logout-btn">🚪 خروج</button>
   </header>
 
-  <!-- Tabs -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="daily">📋 التسجيلات اليومية</button>
     <button class="tab-btn" data-tab="summary">📊 ملخص الموظفين</button>
   </div>
 
-  <!-- ============================================
-       تبويب التسجيلات اليومية
-       ============================================ -->
+  <!-- تبويب التسجيلات اليومية -->
   <div id="dailyTab">
     <div class="toolbar">
       <div class="toolbar-group">
@@ -598,7 +616,11 @@
                 <th>تاريخ العمل</th>
                 <th>Check In</th>
                 <th>In Location</th>
+                <th>In Location Google Maps</th>
+                <th>الوجهة In</th>
                 <th>Check Out</th>
+                <th>Out Location Google Maps</th>
+                <th>الوجهة Out</th>
                 <th>Late Hours</th>
                 <th>Overtime</th>
               </tr>
@@ -611,12 +633,14 @@
     </main>
   </div>
 
-  <!-- ============================================
-       تبويب الملخص
-       ============================================ -->
+  <!-- تبويب الملخص -->
   <div id="summaryTab" style="display:none;">
     <main>
       <div class="summary-toolbar">
+        <div class="toolbar-group">
+          <label>الشهر:</label>
+          <select id="summaryMonth"></select>
+        </div>
         <button class="btn btn-gray" id="summaryRefreshBtn">🔄 تحديث</button>
         <button class="btn btn-excel" id="summaryExportBtn">📊 تحميل Excel (ملخص)</button>
         <span class="counter-badge" id="summaryCountBadge">عدد الموظفين: 0</span>
@@ -643,9 +667,7 @@
 
 </div>
 
-<!-- Supabase JS Client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- ExcelJS for styled Excel export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 
 <script>
@@ -668,7 +690,7 @@
 
   const WORK_START_HOUR = 10;
   const WORK_START_MINUTE = 0;
-  const GRACE_MINUTES = 15;
+  const GRACE_MINUTES = 10;
   const WORK_END_HOUR = 18;
   const WORK_END_MINUTE = 0;
 
@@ -679,7 +701,6 @@
   // ============================================================
   // DOM references
   // ============================================================
-  // Auth
   const loginScreen = document.getElementById('loginScreen');
   const appContent = document.getElementById('appContent');
   const loginForm = document.getElementById('loginForm');
@@ -690,11 +711,9 @@
   const loginError = document.getElementById('loginError');
   const logoutBtn = document.getElementById('logoutBtn');
 
-  // Tabs
   const dailyTab = document.getElementById('dailyTab');
   const summaryTab = document.getElementById('summaryTab');
 
-  // Daily
   const dateFromEl = document.getElementById('dateFrom');
   const dateToEl = document.getElementById('dateTo');
   const nameFilterEl = document.getElementById('nameFilter');
@@ -710,18 +729,18 @@
   const emptyState = document.getElementById('emptyState');
   const attendanceTable = document.getElementById('attendanceTable');
 
-  // Summary
   const summaryTable = document.getElementById('summaryTable');
   const summaryTableBody = document.getElementById('summaryTableBody');
   const summaryEmptyState = document.getElementById('summaryEmptyState');
   const summaryCountBadge = document.getElementById('summaryCountBadge');
   const summaryRefreshBtn = document.getElementById('summaryRefreshBtn');
   const summaryExportBtn = document.getElementById('summaryExportBtn');
+  const summaryMonthEl = document.getElementById('summaryMonth');
 
   let autoRefreshTimer = null;
 
   // ============================================================
-  // Auth functions
+  // Auth
   // ============================================================
   function showLoginScreen() {
     loginScreen.style.display = 'flex';
@@ -760,6 +779,7 @@
       }
 
       showAppContent();
+      initSummaryMonths();
       loadData(true);
       startAutoRefresh();
     } else {
@@ -783,11 +803,7 @@
     loginBtnText.textContent = 'جاري التحقق...';
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
-
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
 
       const { data: adminRecord, error: adminError } = await supabase
@@ -806,6 +822,7 @@
         showAppContent();
         loginEmail.value = '';
         loginPassword.value = '';
+        initSummaryMonths();
         loadData(true);
         startAutoRefresh();
         loginBtn.disabled = false;
@@ -836,7 +853,7 @@
   }
 
   // ============================================================
-  // Supabase query
+  // Query & Sorting
   // ============================================================
   function buildQuery() {
     const fromDate = dateFromEl.value;
@@ -852,16 +869,13 @@
     return query;
   }
 
-  // ============================================================
-  // Sorting
-  // ============================================================
   function sortRecords(records) {
     const nameDir = nameSortEl.value === 'asc' ? 1 : -1;
     const dateDir = dateSortEl.value === 'asc' ? 1 : -1;
 
     return records.slice().sort(function (a, b) {
-      const nameCompare = (a.name || '').localeCompare(b.name || '', 'ar');
-      if (nameCompare !== 0) return nameCompare * nameDir;
+      const nc = (a.name || '').localeCompare(b.name || '', 'ar');
+      if (nc !== 0) return nc * nameDir;
       return (a.check_date || '').localeCompare(b.check_date || '') * dateDir;
     });
   }
@@ -946,6 +960,11 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  function buildMapsUrl(lat, lng) {
+    if (!lat || !lng) return '';
+    return 'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lng;
+  }
+
   // ============================================================
   // Rendering — Daily Table
   // ============================================================
@@ -970,6 +989,8 @@
       const inTime = r.check_in_at ? formatInOutTime(r.check_in_at) : '';
       const outTime = r.check_out_at ? formatInOutTime(r.check_out_at) : '';
       const inLoc = r.check_in_location || '';
+      const destIn = r.destination_in || '';
+      const destOut = r.destination_out || '';
 
       const delayMinutes = calculateDelay(r.check_in_at);
       const overtimeMinutes = calculateOvertime(r.check_in_at, r.check_out_at);
@@ -985,19 +1006,49 @@
       const outTdClass = !outTime ? ' class="missing-cell"' : '';
       const outTdContent = !outTime ? '—' : outCell;
 
-      const delayCell = '<span class="delay-badge">' + formatDurationHHMM(delayMinutes) + '</span>';
-      const overtimeCell = '<span class="extra-badge">' + formatDurationHHMM(overtimeMinutes) + '</span>';
-
-      const inLocCell = inLoc
+      const inLocTextCell = inLoc
         ? '<span title="' + escapeHtml(inLoc) + '">' + escapeHtml(inLoc) + '</span>'
         : '—';
+
+      let inMapsCell = '—';
+      const inMapsUrl = buildMapsUrl(r.check_in_lat, r.check_in_lng);
+      if (inMapsUrl) {
+        inMapsCell =
+          '<a class="location-link" href="' + inMapsUrl + '" ' +
+          'target="_blank" rel="noopener noreferrer" title="فتح الموقع على Google Maps">' +
+          '🗺️ فتح الخريطة</a>';
+      }
+
+      let outMapsCell = '—';
+      const outMapsUrl = buildMapsUrl(r.check_out_lat, r.check_out_lng);
+      if (outMapsUrl) {
+        outMapsCell =
+          '<a class="location-link" href="' + outMapsUrl + '" ' +
+          'target="_blank" rel="noopener noreferrer" title="فتح الموقع على Google Maps">' +
+          '🗺️ فتح الخريطة</a>';
+      }
+
+      const destInCell = destIn
+        ? '<span title="' + escapeHtml(destIn) + '">' + escapeHtml(destIn) + '</span>'
+        : '—';
+
+      const destOutCell = destOut
+        ? '<span title="' + escapeHtml(destOut) + '">' + escapeHtml(destOut) + '</span>'
+        : '—';
+
+      const delayCell = '<span class="delay-badge">' + formatDurationHHMM(delayMinutes) + '</span>';
+      const overtimeCell = '<span class="extra-badge">' + formatDurationHHMM(overtimeMinutes) + '</span>';
 
       tr.innerHTML =
         '<td data-label="اسم الموظف" class="name-cell">' + escapeHtml(r.name) + '</td>' +
         '<td data-label="تاريخ العمل">' + formatWorkDate(r.check_date) + '</td>' +
         '<td data-label="Check In">' + inCell + '</td>' +
-        '<td data-label="In Location" class="address-cell">' + inLocCell + '</td>' +
+        '<td data-label="In Location" class="address-cell">' + inLocTextCell + '</td>' +
+        '<td data-label="In Location Google Maps">' + inMapsCell + '</td>' +
+        '<td data-label="الوجهة In" class="destination-cell">' + destInCell + '</td>' +
         '<td data-label="Check Out"' + outTdClass + '>' + outTdContent + '</td>' +
+        '<td data-label="Out Location Google Maps">' + outMapsCell + '</td>' +
+        '<td data-label="الوجهة Out" class="destination-cell">' + destOutCell + '</td>' +
         '<td data-label="Late Hours">' + delayCell + '</td>' +
         '<td data-label="Overtime">' + overtimeCell + '</td>';
 
@@ -1009,8 +1060,25 @@
   }
 
   // ============================================================
-  // Rendering — Summary Table
+  // Summary
   // ============================================================
+  function initSummaryMonths() {
+    const now = new Date();
+    const options = [];
+    for (let i = 0; i < 12; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const value = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      const label = d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' });
+      options.push({ value, label });
+    }
+
+    summaryMonthEl.innerHTML = options.map(function (o) {
+      return '<option value="' + o.value + '">' + o.label + '</option>';
+    }).join('');
+
+    summaryMonthEl.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  }
+
   function renderSummary(summary) {
     summaryTableBody.innerHTML = '';
 
@@ -1028,13 +1096,11 @@
 
     summary.forEach(function (s) {
       const tr = document.createElement('tr');
-
       tr.innerHTML =
         '<td data-label="اسم الموظف" class="name-cell">' + escapeHtml(s.name) + '</td>' +
         '<td data-label="عدد أيام الحضور">' + s.daysCount + '</td>' +
         '<td data-label="إجمالي التأخير"><span class="delay-badge">' + formatDurationHHMM(s.totalDelay) + '</span></td>' +
         '<td data-label="إجمالي الإضافي"><span class="extra-badge">' + formatDurationHHMM(s.totalOvertime) + '</span></td>';
-
       fragment.appendChild(tr);
     });
 
@@ -1042,9 +1108,6 @@
     summaryCountBadge.textContent = 'عدد الموظفين: ' + summary.length;
   }
 
-  // ============================================================
-  // Summary builder
-  // ============================================================
   function buildSummary(records) {
     const map = {};
 
@@ -1084,7 +1147,18 @@
 
   async function loadSummary() {
     try {
-      const { data, error } = await supabase.from(VIEW_NAME).select('*');
+      const monthValue = summaryMonthEl.value;
+      const [year, month] = monthValue.split('-').map(Number);
+      const firstDay = year + '-' + String(month).padStart(2, '0') + '-01';
+      const lastDayDate = new Date(year, month, 0);
+      const lastDay = year + '-' + String(month).padStart(2, '0') + '-' + String(lastDayDate.getDate()).padStart(2, '0');
+
+      const { data, error } = await supabase
+        .from(VIEW_NAME)
+        .select('*')
+        .gte('check_date', firstDay)
+        .lte('check_date', lastDay);
+
       if (error) throw error;
 
       const summary = buildSummary(data || []);
@@ -1178,7 +1252,7 @@
   }
 
   // ============================================================
-  // Excel Export — Daily
+  // Excel Export — Sheetين في نفس الملف (قيم مباشرة)
   // ============================================================
   async function exportExcel() {
     const originalText = exportBtn.textContent;
@@ -1202,26 +1276,33 @@
       workbook.creator = 'Attendance System';
       workbook.created = new Date();
 
-      const worksheet = workbook.addWorksheet('Attendance', {
+      // ============================================
+      // Sheet 1: Attendance (قيم مباشرة - زي الأول)
+      // ============================================
+      const ws1 = workbook.addWorksheet('Attendance', {
         views: [{ rightToLeft: true }]
       });
 
-      worksheet.columns = [
+      ws1.columns = [
         { header: 'اسم الموظف', key: 'name', width: 24 },
         { header: 'تاريخ العمل', key: 'date', width: 16 },
         { header: 'Check In', key: 'checkIn', width: 14 },
-        { header: 'In Location', key: 'inLocation', width: 45 },
+        { header: 'In Location', key: 'inLocation', width: 38 },
+        { header: 'In Location Google Maps', key: 'inMaps', width: 28 },
+        { header: 'الوجهة In', key: 'destIn', width: 20 },
         { header: 'Check Out', key: 'checkOut', width: 14 },
+        { header: 'Out Location Google Maps', key: 'outMaps', width: 28 },
+        { header: 'الوجهة Out', key: 'destOut', width: 20 },
         { header: 'Late Hours', key: 'late', width: 14 },
         { header: 'Overtime', key: 'overtime', width: 14 }
       ];
 
-      const headerRow = worksheet.getRow(1);
-      headerRow.height = 28;
-      headerRow.eachCell(function (cell) {
+      const h1 = ws1.getRow(1);
+      h1.height = 30;
+      h1.eachCell(function (cell) {
         cell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2C3E50' } };
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC5C5F0' } };
-        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
         cell.border = {
           top:    { style: 'thin', color: { argb: 'FF8A8AC7' } },
           bottom: { style: 'thin', color: { argb: 'FF8A8AC7' } },
@@ -1234,15 +1315,24 @@
         const inTime = r.check_in_at ? formatInOutTime(r.check_in_at) : '';
         const outTime = r.check_out_at ? formatInOutTime(r.check_out_at) : '';
         const inLoc = r.check_in_location || '';
+        const destIn = r.destination_in || '';
+        const destOut = r.destination_out || '';
         const delayMin = calculateDelay(r.check_in_at);
         const overtimeMin = calculateOvertime(r.check_in_at, r.check_out_at);
 
-        const row = worksheet.addRow({
+        const inMapsUrl = buildMapsUrl(r.check_in_lat, r.check_in_lng);
+        const outMapsUrl = buildMapsUrl(r.check_out_lat, r.check_out_lng);
+
+        const row = ws1.addRow({
           name: r.name,
           date: formatWorkDate(r.check_date),
           checkIn: inTime || '—',
           inLocation: inLoc || '—',
+          inMaps: inMapsUrl ? 'فتح الخريطة' : '—',
+          destIn: destIn || '—',
           checkOut: outTime || '—',
+          outMaps: outMapsUrl ? 'فتح الخريطة' : '—',
+          destOut: destOut || '—',
           late: formatDurationHHMM(delayMin),
           overtime: formatDurationHHMM(overtimeMin)
         });
@@ -1258,48 +1348,151 @@
             left:   { style: 'thin', color: { argb: 'FFB8B8DD' } },
             right:  { style: 'thin', color: { argb: 'FFB8B8DD' } }
           };
-
           if (index % 2 === 1) {
             cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFF' } };
           }
         });
 
-        if (!outTime) {
-          const outCell = row.getCell('checkOut');
-          outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE74C3C' } };
-          outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
-        } else {
-          const outCell = row.getCell('checkOut');
-          outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFE67E22' } };
-          outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF5E7' } };
-        }
-
+        // Check In — green
         const inCell = row.getCell('checkIn');
         if (inTime) {
           inCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
           inCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
         }
 
+        // Check Out — orange/red
+        const outCell = row.getCell('checkOut');
+        if (!outTime) {
+          outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE74C3C' } };
+          outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+        } else {
+          outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFE67E22' } };
+          outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF5E7' } };
+        }
+
+        // In Maps — hyperlink
+        if (inMapsUrl) {
+          const c = row.getCell('inMaps');
+          c.value = { text: 'فتح الخريطة', hyperlink: inMapsUrl };
+          c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
+        }
+
+        // Out Maps — hyperlink
+        if (outMapsUrl) {
+          const c = row.getCell('outMaps');
+          c.value = { text: 'فتح الخريطة', hyperlink: outMapsUrl };
+          c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
+        }
+
+        // Late Hours — red if > 0
         const lateCell = row.getCell('late');
         if (delayMin > 0) {
           lateCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFC0392B' } };
           lateCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
         }
 
+        // Overtime — green if > 0
         const overtimeCell = row.getCell('overtime');
         if (overtimeMin > 0) {
           overtimeCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
           overtimeCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
         }
 
+        // Name
         row.getCell('name').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2C3E50' } };
+
+        // In Location
         row.getCell('inLocation').font = { name: 'Cairo', size: 10, color: { argb: 'FF555555' } };
         row.getCell('inLocation').alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
+
+        // Destinations
+        row.getCell('destIn').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2980B9' } };
+        row.getCell('destOut').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2980B9' } };
       });
 
-      worksheet.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
-      worksheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 7 } };
+      ws1.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
+      ws1.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 11 } };
 
+      // ============================================
+      // Sheet 2: Summary (قيم مباشرة)
+      // ============================================
+      const summary = buildSummary(sorted);
+
+      const ws2 = workbook.addWorksheet('Summary', {
+        views: [{ rightToLeft: true }]
+      });
+
+      ws2.columns = [
+        { header: 'اسم الموظف', key: 'name', width: 26 },
+        { header: 'عدد أيام الحضور', key: 'days', width: 18 },
+        { header: 'إجمالي التأخير', key: 'delay', width: 18 },
+        { header: 'إجمالي الإضافي', key: 'overtime', width: 18 }
+      ];
+
+      const h2 = ws2.getRow(1);
+      h2.height = 30;
+      h2.eachCell(function (cell) {
+        cell.font = { name: 'Cairo', size: 13, bold: true, color: { argb: 'FF2C3E50' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC5C5F0' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top:    { style: 'medium', color: { argb: 'FF8A8AC7' } },
+          bottom: { style: 'medium', color: { argb: 'FF8A8AC7' } },
+          left:   { style: 'medium', color: { argb: 'FF8A8AC7' } },
+          right:  { style: 'medium', color: { argb: 'FF8A8AC7' } }
+        };
+      });
+
+      summary.forEach(function (s, index) {
+        const row = ws2.addRow({
+          name: s.name,
+          days: s.daysCount,
+          delay: formatDurationHHMM(s.totalDelay),
+          overtime: formatDurationHHMM(s.totalOvertime)
+        });
+
+        row.height = 26;
+
+        row.eachCell({ includeEmpty: true }, function (cell) {
+          cell.font = { name: 'Cairo', size: 12, color: { argb: 'FF2C3E50' } };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = {
+            top:    { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            bottom: { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            left:   { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            right:  { style: 'thin', color: { argb: 'FFB8B8DD' } }
+          };
+          if (index % 2 === 1) {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFF' } };
+          }
+        });
+
+        const nameCell = row.getCell('name');
+        nameCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2C3E50' } };
+        nameCell.alignment = { horizontal: 'right', vertical: 'middle' };
+
+        const daysCell = row.getCell('days');
+        daysCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2980B9' } };
+
+        const delayCell = row.getCell('delay');
+        if (s.totalDelay > 0) {
+          delayCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FFC0392B' } };
+          delayCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
+        }
+
+        const overtimeCell = row.getCell('overtime');
+        if (s.totalOvertime > 0) {
+          overtimeCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF1E8449' } };
+          overtimeCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
+        }
+      });
+
+      ws2.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
+      ws2.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 4 } };
+
+      // ============================================
+      // Download
+      // ============================================
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -1332,125 +1525,10 @@
   }
 
   // ============================================================
-  // Excel Export — Summary
+  // Excel Export — Summary فقط
   // ============================================================
   async function exportSummaryExcel() {
-    const originalText = summaryExportBtn.textContent;
-    summaryExportBtn.disabled = true;
-    summaryExportBtn.textContent = '⏳ جاري التحضير...';
-
-    try {
-      const { data, error } = await supabase.from(VIEW_NAME).select('*');
-      if (error) throw error;
-
-      const summary = buildSummary(data || []);
-
-      if (summary.length === 0) {
-        alert('لا توجد بيانات لتصديرها');
-        summaryExportBtn.disabled = false;
-        summaryExportBtn.textContent = originalText;
-        return;
-      }
-
-      const workbook = new ExcelJS.Workbook();
-      workbook.creator = 'Attendance System';
-      workbook.created = new Date();
-
-      const worksheet = workbook.addWorksheet('Summary', {
-        views: [{ rightToLeft: true }]
-      });
-
-      worksheet.columns = [
-        { header: 'اسم الموظف', key: 'name', width: 26 },
-        { header: 'عدد أيام الحضور', key: 'days', width: 18 },
-        { header: 'إجمالي التأخير', key: 'delay', width: 18 },
-        { header: 'إجمالي الإضافي', key: 'overtime', width: 18 }
-      ];
-
-      const headerRow = worksheet.getRow(1);
-      headerRow.height = 30;
-      headerRow.eachCell(function (cell) {
-        cell.font = { name: 'Cairo', size: 13, bold: true, color: { argb: 'FF2C3E50' } };
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC5C5F0' } };
-        cell.alignment = { horizontal: 'center', vertical: 'middle' };
-        cell.border = {
-          top:    { style: 'medium', color: { argb: 'FF8A8AC7' } },
-          bottom: { style: 'medium', color: { argb: 'FF8A8AC7' } },
-          left:   { style: 'medium', color: { argb: 'FF8A8AC7' } },
-          right:  { style: 'medium', color: { argb: 'FF8A8AC7' } }
-        };
-      });
-
-      summary.forEach(function (s, index) {
-        const row = worksheet.addRow({
-          name: s.name,
-          days: s.daysCount,
-          delay: formatDurationHHMM(s.totalDelay),
-          overtime: formatDurationHHMM(s.totalOvertime)
-        });
-
-        row.height = 26;
-
-        row.eachCell({ includeEmpty: true }, function (cell) {
-          cell.font = { name: 'Cairo', size: 12, color: { argb: 'FF2C3E50' } };
-          cell.alignment = { horizontal: 'center', vertical: 'middle' };
-          cell.border = {
-            top:    { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            bottom: { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            left:   { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            right:  { style: 'thin', color: { argb: 'FFB8B8DD' } }
-          };
-
-          if (index % 2 === 1) {
-            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFF' } };
-          }
-        });
-
-        const nameCell = row.getCell('name');
-        nameCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2C3E50' } };
-        nameCell.alignment = { horizontal: 'right', vertical: 'middle' };
-
-        const daysCell = row.getCell('days');
-        daysCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2980B9' } };
-
-        const delayCell = row.getCell('delay');
-        if (s.totalDelay > 0) {
-          delayCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FFC0392B' } };
-          delayCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
-        }
-
-        const overtimeCell = row.getCell('overtime');
-        if (s.totalOvertime > 0) {
-          overtimeCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF1E8449' } };
-          overtimeCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
-        }
-      });
-
-      worksheet.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
-      worksheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 4 } };
-
-      const buffer = await workbook.xlsx.writeBuffer();
-      const blob = new Blob([buffer], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      });
-
-      const fileName = 'attendance-summary-' + new Date().toISOString().slice(0, 10) + '.xlsx';
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(link.href);
-
-      summaryExportBtn.disabled = false;
-      summaryExportBtn.textContent = originalText;
-    } catch (err) {
-      console.error('Failed to export summary:', err);
-      alert('تعذر إنشاء ملف Excel');
-      summaryExportBtn.disabled = false;
-      summaryExportBtn.textContent = originalText;
-    }
+    return exportExcel();
   }
 
   // ============================================================
@@ -1459,7 +1537,6 @@
   function startAutoRefresh() {
     if (autoRefreshTimer) clearInterval(autoRefreshTimer);
     autoRefreshTimer = setInterval(function () {
-      // Only refresh daily tab if visible
       if (dailyTab.style.display !== 'none') {
         loadData(false);
       }
@@ -1510,6 +1587,7 @@
 
   summaryRefreshBtn.addEventListener('click', loadSummary);
   summaryExportBtn.addEventListener('click', exportSummaryExcel);
+  summaryMonthEl.addEventListener('change', loadSummary);
 
   // ============================================================
   // Init
