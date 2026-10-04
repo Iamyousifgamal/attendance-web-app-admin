@@ -73,7 +73,55 @@
     font-weight: 700;
   }
 
-  .toolbar {
+  .logout-btn {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    margin-inline-start: auto;
+  }
+  .logout-btn:hover { background: #c0392b; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    background: #fff;
+    border-bottom: 2px solid var(--border);
+    padding: 0 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  .tab-btn {
+    background: transparent;
+    border: none;
+    padding: 14px 20px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s ease;
+  }
+
+  .tab-btn:hover {
+    color: var(--accent);
+    background: #f8fafc;
+  }
+
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .toolbar, .summary-toolbar {
     position: sticky;
     top: 0;
     z-index: 50;
@@ -84,6 +132,12 @@
     flex-wrap: wrap;
     gap: 10px;
     align-items: center;
+  }
+
+  .summary-toolbar {
+    position: static;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
   }
 
   .toolbar-group {
@@ -140,6 +194,9 @@
 
   .btn-excel { background: var(--excel-btn); color: #fff; }
   .btn-excel:hover:not(:disabled) { background: var(--excel-btn-dark); }
+
+  .btn-danger { background: #e74c3c; color: #fff; }
+  .btn-danger:hover:not(:disabled) { background: #c0392b; }
 
   .counter-badge {
     margin-inline-start: auto;
@@ -274,8 +331,123 @@
     font-weight: 600;
   }
 
+  /* Summary table center align */
+  #summaryTable th:nth-child(2),
+  #summaryTable th:nth-child(3),
+  #summaryTable th:nth-child(4),
+  #summaryTableBody td:nth-child(2),
+  #summaryTableBody td:nth-child(3),
+  #summaryTableBody td:nth-child(4) {
+    text-align: center;
+  }
+
+  /* Login Screen */
+  .login-screen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+  }
+
+  .login-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+  }
+
+  .login-logo {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #2980b9, #34495e);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+
+  .login-card h1 {
+    margin: 0 0 6px;
+    font-size: 24px;
+    color: #2c3e50;
+    font-weight: 800;
+  }
+
+  .login-subtitle {
+    margin: 0 0 30px;
+    color: #7f8c8d;
+    font-size: 14px;
+  }
+
+  .login-label {
+    display: block;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+
+  .login-input {
+    width: 100%;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 15px;
+    border: 2px solid #dfe4e6;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+
+  .login-input:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 0 4px rgba(41,128,185,0.12);
+  }
+
+  .login-btn {
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    background: #2980b9;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .login-btn:hover:not(:disabled) { background: #1f6391; }
+  .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .login-error {
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: #fdecea;
+    color: #c0392b;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+  }
+
+  .login-error.visible { display: block; }
+
   @media (max-width: 1100px) {
-    .toolbar { flex-direction: column; align-items: stretch; }
+    .toolbar, .summary-toolbar { flex-direction: column; align-items: stretch; }
     .toolbar-group { flex-direction: column; align-items: stretch; }
     .toolbar input, .toolbar select, .toolbar .btn { width: 100%; }
     .counter-badge { margin-inline-start: 0; text-align: center; }
@@ -326,73 +498,150 @@
 </head>
 <body>
 
-<header class="app-header">
-  <div class="logo-mark">AT</div>
-  <h1>لوحة الأدمن - تسجيلات الحضور</h1>
-</header>
+<!-- ============================================
+     شاشة تسجيل الدخول
+     ============================================ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🔒</div>
+    <h1>لوحة الأدمن</h1>
+    <p class="login-subtitle">سجل دخولك للمتابعة</p>
 
-<div class="toolbar">
-  <div class="toolbar-group">
-    <label>من تاريخ:</label>
-    <input type="date" id="dateFrom" aria-label="من تاريخ">
+    <form id="loginForm">
+      <label for="loginEmail" class="login-label">البريد الإلكتروني</label>
+      <input type="email" id="loginEmail" class="login-input"
+             placeholder="admin@company.com" autocomplete="email" required>
+
+      <label for="loginPassword" class="login-label">كلمة السر</label>
+      <input type="password" id="loginPassword" class="login-input"
+             placeholder="••••••••" autocomplete="current-password" required>
+
+      <button type="submit" id="loginBtn" class="login-btn">
+        <span id="loginBtnText">تسجيل الدخول</span>
+      </button>
+
+      <div id="loginError" class="login-error"></div>
+    </form>
   </div>
-
-  <div class="toolbar-group">
-    <label>إلى تاريخ:</label>
-    <input type="date" id="dateTo" aria-label="إلى تاريخ">
-  </div>
-
-  <div class="toolbar-group">
-    <label>الموظف:</label>
-    <input type="text" id="nameFilter" placeholder="ابحث بالاسم" aria-label="بحث بالاسم">
-  </div>
-
-  <div class="toolbar-group">
-    <label>ترتيب الأيام:</label>
-    <select id="dateSort">
-      <option value="asc">تصاعدي (الأقدم أولاً)</option>
-      <option value="desc">تنازلي (الأحدث أولاً)</option>
-    </select>
-  </div>
-
-  <div class="toolbar-group">
-    <label>ترتيب الأسماء:</label>
-    <select id="nameSort">
-      <option value="asc">تصاعدي (أ - ي)</option>
-      <option value="desc">تنازلي (ي - أ)</option>
-    </select>
-  </div>
-
-  <button class="btn btn-primary" id="applyBtn">عرض</button>
-  <button class="btn btn-gray" id="resetBtn">عرض الكل</button>
-  <button class="btn btn-excel" id="exportBtn">تحميل Excel</button>
-
-  <span class="counter-badge" id="counterBadge">عدد الصفوف: 0</span>
 </div>
 
-<main>
-  <div class="status-banner" id="statusBanner"></div>
+<!-- ============================================
+     محتوى الأدمن
+     ============================================ -->
+<div id="appContent" style="display:none;">
 
-  <div class="card">
-    <div style="overflow-x:auto;">
-      <table id="attendanceTable">
-        <thead>
-          <tr>
-            <th>اسم الموظف</th>
-            <th>تاريخ العمل</th>
-            <th>Check In</th>
-            <th>In Location</th>
-            <th>Check Out</th>
-            <th>Late Hours</th>
-            <th>Overtime</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-    </div>
-    <div class="empty-state" id="emptyState" style="display:none;">لا توجد تسجيلات مطابقة</div>
+  <header class="app-header">
+    <div class="logo-mark">AT</div>
+    <h1>لوحة الأدمن - تسجيلات الحضور</h1>
+    <button id="logoutBtn" class="logout-btn">🚪 خروج</button>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="daily">📋 التسجيلات اليومية</button>
+    <button class="tab-btn" data-tab="summary">📊 ملخص الموظفين</button>
   </div>
-</main>
+
+  <!-- ============================================
+       تبويب التسجيلات اليومية
+       ============================================ -->
+  <div id="dailyTab">
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <label>من تاريخ:</label>
+        <input type="date" id="dateFrom" aria-label="من تاريخ">
+      </div>
+
+      <div class="toolbar-group">
+        <label>إلى تاريخ:</label>
+        <input type="date" id="dateTo" aria-label="إلى تاريخ">
+      </div>
+
+      <div class="toolbar-group">
+        <label>الموظف:</label>
+        <input type="text" id="nameFilter" placeholder="ابحث بالاسم" aria-label="بحث بالاسم">
+      </div>
+
+      <div class="toolbar-group">
+        <label>ترتيب الأيام:</label>
+        <select id="dateSort">
+          <option value="asc">تصاعدي (الأقدم أولاً)</option>
+          <option value="desc">تنازلي (الأحدث أولاً)</option>
+        </select>
+      </div>
+
+      <div class="toolbar-group">
+        <label>ترتيب الأسماء:</label>
+        <select id="nameSort">
+          <option value="asc">تصاعدي (أ - ي)</option>
+          <option value="desc">تنازلي (ي - أ)</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" id="applyBtn">عرض</button>
+      <button class="btn btn-gray" id="resetBtn">عرض الكل</button>
+      <button class="btn btn-excel" id="exportBtn">📊 تحميل Excel</button>
+      <button class="btn btn-danger" id="deleteOldBtn">🗑️ حذف بيانات قديمة</button>
+
+      <span class="counter-badge" id="counterBadge">عدد الصفوف: 0</span>
+    </div>
+
+    <main>
+      <div class="status-banner" id="statusBanner"></div>
+
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table id="attendanceTable">
+            <thead>
+              <tr>
+                <th>اسم الموظف</th>
+                <th>تاريخ العمل</th>
+                <th>Check In</th>
+                <th>In Location</th>
+                <th>Check Out</th>
+                <th>Late Hours</th>
+                <th>Overtime</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="emptyState" style="display:none;">لا توجد تسجيلات مطابقة</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================
+       تبويب الملخص
+       ============================================ -->
+  <div id="summaryTab" style="display:none;">
+    <main>
+      <div class="summary-toolbar">
+        <button class="btn btn-gray" id="summaryRefreshBtn">🔄 تحديث</button>
+        <button class="btn btn-excel" id="summaryExportBtn">📊 تحميل Excel (ملخص)</button>
+        <span class="counter-badge" id="summaryCountBadge">عدد الموظفين: 0</span>
+      </div>
+
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table id="summaryTable">
+            <thead>
+              <tr>
+                <th>اسم الموظف</th>
+                <th>عدد أيام الحضور</th>
+                <th>إجمالي التأخير</th>
+                <th>إجمالي الإضافي</th>
+              </tr>
+            </thead>
+            <tbody id="summaryTableBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="summaryEmptyState" style="display:none;">لا توجد بيانات</div>
+      </div>
+    </main>
+  </div>
+
+</div>
 
 <!-- Supabase JS Client -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -404,10 +653,10 @@
   'use strict';
 
   // ============================================================
-  // Supabase configuration — الـ URL الصح من Supabase Settings
+  // Supabase configuration
   // ============================================================
-const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0YWhseWRucnplbWJ2YnFicmR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3NTc5NjEsImV4cCI6MjEwNTMzMzk2MX0.0ErheMPDk_6wbhv49hb3pCAHilmnaf_bcWEEPOYGNyc';
+  const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0YWhseWRucnplbWJ2YnFicmR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3NTc5NjEsImV4cCI6MjEwNTMzMzk2MX0.0ErheMPDk_6wbhv49hb3pCAHilmnaf_bcWEEPOYGNyc';
 
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -417,7 +666,6 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
   const VIEW_NAME = 'attendance_daily';
   const AUTO_REFRESH_INTERVAL_MS = 30000;
 
-  // ---- Work schedule (بتوقيت مصر) ----
   const WORK_START_HOUR = 10;
   const WORK_START_MINUTE = 0;
   const GRACE_MINUTES = 15;
@@ -431,6 +679,22 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
   // ============================================================
   // DOM references
   // ============================================================
+  // Auth
+  const loginScreen = document.getElementById('loginScreen');
+  const appContent = document.getElementById('appContent');
+  const loginForm = document.getElementById('loginForm');
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPassword = document.getElementById('loginPassword');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginBtnText = document.getElementById('loginBtnText');
+  const loginError = document.getElementById('loginError');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  // Tabs
+  const dailyTab = document.getElementById('dailyTab');
+  const summaryTab = document.getElementById('summaryTab');
+
+  // Daily
   const dateFromEl = document.getElementById('dateFrom');
   const dateToEl = document.getElementById('dateTo');
   const nameFilterEl = document.getElementById('nameFilter');
@@ -439,13 +703,137 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
   const applyBtn = document.getElementById('applyBtn');
   const resetBtn = document.getElementById('resetBtn');
   const exportBtn = document.getElementById('exportBtn');
+  const deleteOldBtn = document.getElementById('deleteOldBtn');
   const counterBadge = document.getElementById('counterBadge');
   const statusBanner = document.getElementById('statusBanner');
   const tableBody = document.getElementById('tableBody');
   const emptyState = document.getElementById('emptyState');
   const attendanceTable = document.getElementById('attendanceTable');
 
+  // Summary
+  const summaryTable = document.getElementById('summaryTable');
+  const summaryTableBody = document.getElementById('summaryTableBody');
+  const summaryEmptyState = document.getElementById('summaryEmptyState');
+  const summaryCountBadge = document.getElementById('summaryCountBadge');
+  const summaryRefreshBtn = document.getElementById('summaryRefreshBtn');
+  const summaryExportBtn = document.getElementById('summaryExportBtn');
+
   let autoRefreshTimer = null;
+
+  // ============================================================
+  // Auth functions
+  // ============================================================
+  function showLoginScreen() {
+    loginScreen.style.display = 'flex';
+    appContent.style.display = 'none';
+    loginPassword.value = '';
+  }
+
+  function showAppContent() {
+    loginScreen.style.display = 'none';
+    appContent.style.display = 'block';
+  }
+
+  function showLoginError(message) {
+    loginError.textContent = message;
+    loginError.classList.add('visible');
+  }
+
+  function hideLoginError() {
+    loginError.classList.remove('visible');
+  }
+
+  async function checkSession() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      const { data: adminRecord, error } = await supabase
+        .from('admins')
+        .select('id')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error || !adminRecord) {
+        await supabase.auth.signOut();
+        showLoginScreen();
+        showLoginError('❌ الحساب ده مش أدمن');
+        return;
+      }
+
+      showAppContent();
+      loadData(true);
+      startAutoRefresh();
+    } else {
+      showLoginScreen();
+    }
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    hideLoginError();
+
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value;
+
+    if (!email || !password) {
+      showLoginError('❌ من فضلك ادخل الإيميل وكلمة السر');
+      return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtnText.textContent = 'جاري التحقق...';
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) throw error;
+
+      const { data: adminRecord, error: adminError } = await supabase
+        .from('admins')
+        .select('id')
+        .eq('id', data.user.id)
+        .single();
+
+      if (adminError || !adminRecord) {
+        await supabase.auth.signOut();
+        throw new Error('NOT_ADMIN');
+      }
+
+      loginBtnText.textContent = '✅ تم الدخول';
+      setTimeout(() => {
+        showAppContent();
+        loginEmail.value = '';
+        loginPassword.value = '';
+        loadData(true);
+        startAutoRefresh();
+        loginBtn.disabled = false;
+        loginBtnText.textContent = 'تسجيل الدخول';
+      }, 500);
+
+    } catch (err) {
+      console.error('Login failed:', err);
+      let msg = '❌ الإيميل أو كلمة السر غلط';
+      if (err.message === 'NOT_ADMIN') msg = '❌ الحساب ده مش أدمن';
+      showLoginError(msg);
+      loginBtn.disabled = false;
+      loginBtnText.textContent = 'تسجيل الدخول';
+    }
+  }
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    showLoginScreen();
+    tableBody.innerHTML = '';
+    summaryTableBody.innerHTML = '';
+    counterBadge.textContent = 'عدد الصفوف: 0';
+    summaryCountBadge.textContent = 'عدد الموظفين: 0';
+    if (autoRefreshTimer) {
+      clearInterval(autoRefreshTimer);
+      autoRefreshTimer = null;
+    }
+  }
 
   // ============================================================
   // Supabase query
@@ -559,7 +947,7 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
   }
 
   // ============================================================
-  // Rendering
+  // Rendering — Daily Table
   // ============================================================
   function renderTable(records) {
     tableBody.innerHTML = '';
@@ -621,6 +1009,61 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
   }
 
   // ============================================================
+  // Rendering — Summary Table
+  // ============================================================
+  function renderSummary(summary) {
+    summaryTableBody.innerHTML = '';
+
+    if (!summary || summary.length === 0) {
+      summaryTable.style.display = 'none';
+      summaryEmptyState.style.display = 'block';
+      summaryCountBadge.textContent = 'عدد الموظفين: 0';
+      return;
+    }
+
+    summaryTable.style.display = '';
+    summaryEmptyState.style.display = 'none';
+
+    const fragment = document.createDocumentFragment();
+
+    summary.forEach(function (s) {
+      const tr = document.createElement('tr');
+
+      tr.innerHTML =
+        '<td data-label="اسم الموظف" class="name-cell">' + escapeHtml(s.name) + '</td>' +
+        '<td data-label="عدد أيام الحضور">' + s.daysCount + '</td>' +
+        '<td data-label="إجمالي التأخير"><span class="delay-badge">' + formatDurationHHMM(s.totalDelay) + '</span></td>' +
+        '<td data-label="إجمالي الإضافي"><span class="extra-badge">' + formatDurationHHMM(s.totalOvertime) + '</span></td>';
+
+      fragment.appendChild(tr);
+    });
+
+    summaryTableBody.appendChild(fragment);
+    summaryCountBadge.textContent = 'عدد الموظفين: ' + summary.length;
+  }
+
+  // ============================================================
+  // Summary builder
+  // ============================================================
+  function buildSummary(records) {
+    const map = {};
+
+    records.forEach(function (r) {
+      const name = r.name;
+      if (!map[name]) {
+        map[name] = { name: name, daysCount: 0, totalDelay: 0, totalOvertime: 0 };
+      }
+      map[name].daysCount += 1;
+      map[name].totalDelay += calculateDelay(r.check_in_at);
+      map[name].totalOvertime += calculateOvertime(r.check_in_at, r.check_out_at);
+    });
+
+    return Object.values(map).sort(function (a, b) {
+      return a.name.localeCompare(b.name, 'ar');
+    });
+  }
+
+  // ============================================================
   // Load data
   // ============================================================
   async function loadData(showLoadingState) {
@@ -639,6 +1082,19 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
     }
   }
 
+  async function loadSummary() {
+    try {
+      const { data, error } = await supabase.from(VIEW_NAME).select('*');
+      if (error) throw error;
+
+      const summary = buildSummary(data || []);
+      renderSummary(summary);
+    } catch (err) {
+      console.error('Failed to load summary:', err);
+      alert('تعذر تحميل الملخص');
+    }
+  }
+
   function resetFilters() {
     dateFromEl.value = '';
     dateToEl.value = '';
@@ -649,7 +1105,80 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
   }
 
   // ============================================================
-  // Excel Export (ExcelJS — styled like the website)
+  // Delete old records
+  // ============================================================
+  async function deleteOldRecords() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      alert('❌ لازم تسجل دخول الأول');
+      return;
+    }
+
+    const now = new Date();
+    const firstDayOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const cutoffDate = firstDayOfThisMonth.toISOString().slice(0, 10);
+
+    const monthName = firstDayOfThisMonth.toLocaleDateString('ar-EG', {
+      year: 'numeric', month: 'long'
+    });
+
+    const confirmed = confirm(
+      '⚠️ تحذير!\n\n' +
+      'هيتم حذف كل التسجيلات اللي قبل ' + monthName + '\n\n' +
+      'ده نهائي ومش هينفع نرجعها!\n\n' +
+      'متأكد؟'
+    );
+    if (!confirmed) return;
+
+    const doubleConfirm = confirm('🛑 تأكيد أخير! متأكد 100%؟');
+    if (!doubleConfirm) return;
+
+    const userInput = prompt('اكتب OK (بالحروف الكبيرة) لتأكيد الحذف:');
+    if (userInput !== 'OK') {
+      alert('❌ الحذف اتلغى');
+      return;
+    }
+
+    const originalText = deleteOldBtn.textContent;
+    deleteOldBtn.disabled = true;
+    deleteOldBtn.textContent = '⏳ جاري الحذف...';
+
+    try {
+      const { count, error: countError } = await supabase
+        .from('attendance')
+        .select('*', { count: 'exact', head: true })
+        .lt('check_date', cutoffDate);
+
+      if (countError) throw countError;
+
+      if (!count || count === 0) {
+        alert('✅ مفيش بيانات قديمة للحذف');
+        deleteOldBtn.disabled = false;
+        deleteOldBtn.textContent = originalText;
+        return;
+      }
+
+      const { error: deleteError } = await supabase
+        .from('attendance')
+        .delete()
+        .lt('check_date', cutoffDate);
+
+      if (deleteError) throw deleteError;
+
+      alert('✅ تم حذف ' + count + ' صف بنجاح');
+      loadData(true);
+
+    } catch (err) {
+      console.error('Failed to delete old records:', err);
+      alert('❌ تعذر الحذف: ' + (err.message || ''));
+    } finally {
+      deleteOldBtn.disabled = false;
+      deleteOldBtn.textContent = originalText;
+    }
+  }
+
+  // ============================================================
+  // Excel Export — Daily
   // ============================================================
   async function exportExcel() {
     const originalText = exportBtn.textContent;
@@ -669,7 +1198,6 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
         return;
       }
 
-      // ---- Create workbook ----
       const workbook = new ExcelJS.Workbook();
       workbook.creator = 'Attendance System';
       workbook.created = new Date();
@@ -678,7 +1206,6 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
         views: [{ rightToLeft: true }]
       });
 
-      // ---- Define columns ----
       worksheet.columns = [
         { header: 'اسم الموظف', key: 'name', width: 24 },
         { header: 'تاريخ العمل', key: 'date', width: 16 },
@@ -689,21 +1216,11 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
         { header: 'Overtime', key: 'overtime', width: 14 }
       ];
 
-      // ---- Style header row ----
       const headerRow = worksheet.getRow(1);
       headerRow.height = 28;
       headerRow.eachCell(function (cell) {
-        cell.font = {
-          name: 'Cairo',
-          size: 12,
-          bold: true,
-          color: { argb: 'FF2C3E50' }
-        };
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'FFC5C5F0' }   // لون بنفسجي فاتح (زي الموقع)
-        };
+        cell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2C3E50' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC5C5F0' } };
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
         cell.border = {
           top:    { style: 'thin', color: { argb: 'FF8A8AC7' } },
@@ -713,7 +1230,6 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
         };
       });
 
-      // ---- Add data rows ----
       sorted.forEach(function (r, index) {
         const inTime = r.check_in_at ? formatInOutTime(r.check_in_at) : '';
         const outTime = r.check_out_at ? formatInOutTime(r.check_out_at) : '';
@@ -733,13 +1249,8 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
 
         row.height = 24;
 
-        // Apply styles to each cell
-        row.eachCell({ includeEmpty: true }, function (cell, colNumber) {
-          cell.font = {
-            name: 'Cairo',
-            size: 11,
-            color: { argb: 'FF2C3E50' }
-          };
+        row.eachCell({ includeEmpty: true }, function (cell) {
+          cell.font = { name: 'Cairo', size: 11, color: { argb: 'FF2C3E50' } };
           cell.alignment = { horizontal: 'center', vertical: 'middle' };
           cell.border = {
             top:    { style: 'thin', color: { argb: 'FFB8B8DD' } },
@@ -748,97 +1259,47 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
             right:  { style: 'thin', color: { argb: 'FFB8B8DD' } }
           };
 
-          // Even rows: alternate background
           if (index % 2 === 1) {
-            cell.fill = {
-              type: 'pattern',
-              pattern: 'solid',
-              fgColor: { argb: 'FFFAFAFF' }
-            };
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFF' } };
           }
         });
 
-        // ---- Special styling for columns ----
-
-        // 1) Missing Check Out → red fill
         if (!outTime) {
           const outCell = row.getCell('checkOut');
-          outCell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFE74C3C' }
-          };
+          outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE74C3C' } };
           outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
         } else {
-          // Green/tan badge style
           const outCell = row.getCell('checkOut');
           outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFE67E22' } };
-          outCell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFFEF5E7' }
-          };
+          outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF5E7' } };
         }
 
-        // 2) Check In → green badge
         const inCell = row.getCell('checkIn');
         if (inTime) {
           inCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
-          inCell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFE8F8F0' }
-          };
+          inCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
         }
 
-        // 3) Late Hours → red badge (only if > 0)
         const lateCell = row.getCell('late');
         if (delayMin > 0) {
           lateCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFC0392B' } };
-          lateCell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFFDECEA' }
-          };
+          lateCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
         }
 
-        // 4) Overtime → green badge (only if > 0)
         const overtimeCell = row.getCell('overtime');
         if (overtimeMin > 0) {
           overtimeCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
-          overtimeCell.fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: 'FFE8F8F0' }
-          };
+          overtimeCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
         }
 
-        // 5) Name cell → bold
-        row.getCell('name').font = {
-          name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2C3E50' }
-        };
-
-        // 6) In Location → smaller font, aligned right
-        row.getCell('inLocation').font = {
-          name: 'Cairo', size: 10, color: { argb: 'FF555555' }
-        };
-        row.getCell('inLocation').alignment = {
-          horizontal: 'right', vertical: 'middle', wrapText: true
-        };
+        row.getCell('name').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2C3E50' } };
+        row.getCell('inLocation').font = { name: 'Cairo', size: 10, color: { argb: 'FF555555' } };
+        row.getCell('inLocation').alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
       });
 
-      // ---- Freeze header row ----
-      worksheet.views = [
-        { state: 'frozen', ySplit: 1, rightToLeft: true }
-      ];
+      worksheet.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
+      worksheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 7 } };
 
-      // ---- Auto filter ----
-      worksheet.autoFilter = {
-        from: { row: 1, column: 1 },
-        to:   { row: 1, column: 7 }
-      };
-
-      // ---- Write & download ----
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -871,27 +1332,189 @@ const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
   }
 
   // ============================================================
+  // Excel Export — Summary
+  // ============================================================
+  async function exportSummaryExcel() {
+    const originalText = summaryExportBtn.textContent;
+    summaryExportBtn.disabled = true;
+    summaryExportBtn.textContent = '⏳ جاري التحضير...';
+
+    try {
+      const { data, error } = await supabase.from(VIEW_NAME).select('*');
+      if (error) throw error;
+
+      const summary = buildSummary(data || []);
+
+      if (summary.length === 0) {
+        alert('لا توجد بيانات لتصديرها');
+        summaryExportBtn.disabled = false;
+        summaryExportBtn.textContent = originalText;
+        return;
+      }
+
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = 'Attendance System';
+      workbook.created = new Date();
+
+      const worksheet = workbook.addWorksheet('Summary', {
+        views: [{ rightToLeft: true }]
+      });
+
+      worksheet.columns = [
+        { header: 'اسم الموظف', key: 'name', width: 26 },
+        { header: 'عدد أيام الحضور', key: 'days', width: 18 },
+        { header: 'إجمالي التأخير', key: 'delay', width: 18 },
+        { header: 'إجمالي الإضافي', key: 'overtime', width: 18 }
+      ];
+
+      const headerRow = worksheet.getRow(1);
+      headerRow.height = 30;
+      headerRow.eachCell(function (cell) {
+        cell.font = { name: 'Cairo', size: 13, bold: true, color: { argb: 'FF2C3E50' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC5C5F0' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top:    { style: 'medium', color: { argb: 'FF8A8AC7' } },
+          bottom: { style: 'medium', color: { argb: 'FF8A8AC7' } },
+          left:   { style: 'medium', color: { argb: 'FF8A8AC7' } },
+          right:  { style: 'medium', color: { argb: 'FF8A8AC7' } }
+        };
+      });
+
+      summary.forEach(function (s, index) {
+        const row = worksheet.addRow({
+          name: s.name,
+          days: s.daysCount,
+          delay: formatDurationHHMM(s.totalDelay),
+          overtime: formatDurationHHMM(s.totalOvertime)
+        });
+
+        row.height = 26;
+
+        row.eachCell({ includeEmpty: true }, function (cell) {
+          cell.font = { name: 'Cairo', size: 12, color: { argb: 'FF2C3E50' } };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = {
+            top:    { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            bottom: { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            left:   { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            right:  { style: 'thin', color: { argb: 'FFB8B8DD' } }
+          };
+
+          if (index % 2 === 1) {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFF' } };
+          }
+        });
+
+        const nameCell = row.getCell('name');
+        nameCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2C3E50' } };
+        nameCell.alignment = { horizontal: 'right', vertical: 'middle' };
+
+        const daysCell = row.getCell('days');
+        daysCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2980B9' } };
+
+        const delayCell = row.getCell('delay');
+        if (s.totalDelay > 0) {
+          delayCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FFC0392B' } };
+          delayCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
+        }
+
+        const overtimeCell = row.getCell('overtime');
+        if (s.totalOvertime > 0) {
+          overtimeCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF1E8449' } };
+          overtimeCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
+        }
+      });
+
+      worksheet.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
+      worksheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 4 } };
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      const fileName = 'attendance-summary-' + new Date().toISOString().slice(0, 10) + '.xlsx';
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+
+      summaryExportBtn.disabled = false;
+      summaryExportBtn.textContent = originalText;
+    } catch (err) {
+      console.error('Failed to export summary:', err);
+      alert('تعذر إنشاء ملف Excel');
+      summaryExportBtn.disabled = false;
+      summaryExportBtn.textContent = originalText;
+    }
+  }
+
+  // ============================================================
   // Auto refresh
   // ============================================================
   function startAutoRefresh() {
     if (autoRefreshTimer) clearInterval(autoRefreshTimer);
     autoRefreshTimer = setInterval(function () {
-      loadData(false);
+      // Only refresh daily tab if visible
+      if (dailyTab.style.display !== 'none') {
+        loadData(false);
+      }
     }, AUTO_REFRESH_INTERVAL_MS);
   }
 
   // ============================================================
-  // Events & Init
+  // Tabs
   // ============================================================
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const tab = btn.getAttribute('data-tab');
+
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (tab === 'daily') {
+        dailyTab.style.display = 'block';
+        summaryTab.style.display = 'none';
+        loadData(true);
+      } else {
+        dailyTab.style.display = 'none';
+        summaryTab.style.display = 'block';
+        loadSummary();
+      }
+    });
+  });
+
+  // ============================================================
+  // Events
+  // ============================================================
+  loginForm.addEventListener('submit', handleLogin);
+  logoutBtn.addEventListener('click', handleLogout);
+
+  supabase.auth.onAuthStateChange(function (event, session) {
+    if (event === 'SIGNED_OUT' || !session) {
+      showLoginScreen();
+    }
+  });
+
   applyBtn.addEventListener('click', function () { loadData(true); });
   resetBtn.addEventListener('click', resetFilters);
   exportBtn.addEventListener('click', exportExcel);
+  deleteOldBtn.addEventListener('click', deleteOldRecords);
 
   dateSortEl.addEventListener('change', function () { loadData(false); });
   nameSortEl.addEventListener('change', function () { loadData(false); });
 
-  loadData(true);
-  startAutoRefresh();
+  summaryRefreshBtn.addEventListener('click', loadSummary);
+  summaryExportBtn.addEventListener('click', exportSummaryExcel);
+
+  // ============================================================
+  // Init
+  // ============================================================
+  checkSession();
 })();
 </script>
 
