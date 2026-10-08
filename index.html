@@ -197,6 +197,24 @@
   .btn-danger { background: #e74c3c; color: #fff; }
   .btn-danger:hover:not(:disabled) { background: #c0392b; }
 
+  .btn-warning { background: #e67e22; color: #fff; }
+  .btn-warning:hover:not(:disabled) { background: #d35400; }
+
+  .btn-edit {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-edit:hover { background: #2980b9; }
+
   .counter-badge {
     margin-inline-start: auto;
     background: var(--primary);
@@ -369,6 +387,7 @@
     text-align: center;
   }
 
+  /* Login */
   .login-screen {
     position: fixed;
     inset: 0;
@@ -402,18 +421,8 @@
     font-size: 32px;
   }
 
-  .login-card h1 {
-    margin: 0 0 6px;
-    font-size: 24px;
-    color: #2c3e50;
-    font-weight: 800;
-  }
-
-  .login-subtitle {
-    margin: 0 0 30px;
-    color: #7f8c8d;
-    font-size: 14px;
-  }
+  .login-card h1 { margin: 0 0 6px; font-size: 24px; color: #2c3e50; font-weight: 800; }
+  .login-subtitle { margin: 0 0 30px; color: #7f8c8d; font-size: 14px; }
 
   .login-label {
     display: block;
@@ -437,10 +446,7 @@
     box-sizing: border-box;
   }
 
-  .login-input:focus {
-    border-color: #2980b9;
-    box-shadow: 0 0 0 4px rgba(41,128,185,0.12);
-  }
+  .login-input:focus { border-color: #2980b9; box-shadow: 0 0 0 4px rgba(41,128,185,0.12); }
 
   .login-btn {
     width: 100%;
@@ -454,7 +460,6 @@
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.2s;
   }
 
   .login-btn:hover:not(:disabled) { background: #1f6391; }
@@ -473,17 +478,154 @@
 
   .login-error.visible { display: block; }
 
+  /* Modal */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+  }
+
+  .modal-content {
+    position: relative;
+    background: #fff;
+    border-radius: 16px;
+    max-width: 580px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .modal-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-header h2 { margin: 0; font-size: 20px; color: var(--primary); }
+
+  .modal-close {
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .modal-close:hover { background: #f0f0f0; }
+
+  .modal-body { padding: 20px; }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: #fff;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--accent); }
+
+  .form-section-title {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--accent);
+    margin: 20px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #eaf2fa;
+  }
+
+  .form-section-title.work-time {
+    color: var(--warning);
+    border-bottom-color: #fef5e7;
+  }
+
+  .modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .rename-info {
+    background: #eaf2fa;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .rename-info span { font-weight: 800; color: var(--accent); font-size: 18px; }
+
+  .rename-warning {
+    background: #fef5e7;
+    color: #e67e22;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 12px;
+  }
+
+  .work-time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .work-time-hint {
+    background: #fef5e7;
+    color: #e67e22;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
   @media (max-width: 1400px) {
     .toolbar, .summary-toolbar { flex-direction: column; align-items: stretch; }
     .toolbar-group { flex-direction: column; align-items: stretch; }
     .toolbar input, .toolbar select, .toolbar .btn { width: 100%; }
     .counter-badge { margin-inline-start: 0; text-align: center; }
 
-    table, thead, tbody, th, tr, td {
-      display: block;
-      width: 100%;
-    }
-
+    table, thead, tbody, th, tr, td { display: block; width: 100%; }
     thead { display: none; }
 
     tbody tr {
@@ -525,6 +667,7 @@
 </head>
 <body>
 
+<!-- Login Screen -->
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
     <div class="login-logo">🔒</div>
@@ -549,6 +692,7 @@
   </div>
 </div>
 
+<!-- App Content -->
 <div id="appContent" style="display:none;">
 
   <header class="app-header">
@@ -562,32 +706,28 @@
     <button class="tab-btn" data-tab="summary">📊 ملخص الموظفين</button>
   </div>
 
-  <!-- تبويب التسجيلات اليومية -->
+  <!-- Daily Tab -->
   <div id="dailyTab">
     <div class="toolbar">
       <div class="toolbar-group">
         <label>من تاريخ:</label>
-        <input type="date" id="dateFrom" aria-label="من تاريخ">
+        <input type="date" id="dateFrom">
       </div>
-
       <div class="toolbar-group">
         <label>إلى تاريخ:</label>
-        <input type="date" id="dateTo" aria-label="إلى تاريخ">
+        <input type="date" id="dateTo">
       </div>
-
       <div class="toolbar-group">
         <label>الموظف:</label>
-        <input type="text" id="nameFilter" placeholder="ابحث بالاسم" aria-label="بحث بالاسم">
+        <input type="text" id="nameFilter" placeholder="ابحث بالاسم">
       </div>
-
       <div class="toolbar-group">
         <label>ترتيب الأيام:</label>
         <select id="dateSort">
-          <option value="asc">تصاعدي (الأقدم أولاً)</option>
-          <option value="desc">تنازلي (الأحدث أولاً)</option>
+          <option value="asc">تصاعدي</option>
+          <option value="desc">تنازلي</option>
         </select>
       </div>
-
       <div class="toolbar-group">
         <label>ترتيب الأسماء:</label>
         <select id="nameSort">
@@ -595,12 +735,11 @@
           <option value="desc">تنازلي (ي - أ)</option>
         </select>
       </div>
-
       <button class="btn btn-primary" id="applyBtn">عرض</button>
       <button class="btn btn-gray" id="resetBtn">عرض الكل</button>
       <button class="btn btn-excel" id="exportBtn">📊 تحميل Excel</button>
+      <button class="btn btn-warning" id="renameBtn">🔄 توحيد الأسماء</button>
       <button class="btn btn-danger" id="deleteOldBtn">🗑️ حذف بيانات قديمة</button>
-
       <span class="counter-badge" id="counterBadge">عدد الصفوف: 0</span>
     </div>
 
@@ -623,6 +762,7 @@
                 <th>الوجهة Out</th>
                 <th>Late Hours</th>
                 <th>Overtime</th>
+                <th>تعديل</th>
               </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -633,7 +773,7 @@
     </main>
   </div>
 
-  <!-- تبويب الملخص -->
+  <!-- Summary Tab -->
   <div id="summaryTab" style="display:none;">
     <main>
       <div class="summary-toolbar">
@@ -667,6 +807,105 @@
 
 </div>
 
+<!-- Edit Modal -->
+<div id="editModal" class="modal" style="display:none;">
+  <div class="modal-overlay" onclick="closeEditModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>✏️ تعديل التسجيل</h2>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>اسم الموظف:</label>
+        <input type="text" id="editName">
+      </div>
+      <div class="form-group">
+        <label>التاريخ:</label>
+        <input type="date" id="editDate">
+      </div>
+
+      <div class="form-section-title">Check In</div>
+      <div class="form-group">
+        <label>وقت الحضور:</label>
+        <input type="time" id="editCheckInTime">
+      </div>
+      <div class="form-group">
+        <label>الوجهة In:</label>
+        <input type="text" id="editDestIn">
+      </div>
+
+      <div class="form-section-title">Check Out</div>
+      <div class="form-group">
+        <label>وقت الانصراف:</label>
+        <input type="time" id="editCheckOutTime">
+      </div>
+      <div class="form-group">
+        <label>الوجهة Out:</label>
+        <input type="text" id="editDestOut">
+      </div>
+
+      <div class="form-section-title work-time">⏰ مواعيد العمل الخاصة بالموظف</div>
+      <div class="work-time-hint">
+        ℹ️ القيم الافتراضية: بداية 10:00، سماح 10 دقائق، نهاية 18:00.
+        عدّل هنا لتخصيص المواعيد لهذا الموظف.
+      </div>
+      <div class="work-time-grid">
+        <div class="form-group">
+          <label>وقت الحضور المتوقع:</label>
+          <input type="time" id="editWorkStart">
+        </div>
+        <div class="form-group">
+          <label>فترة السماح (دقائق):</label>
+          <input type="number" id="editGraceMinutes" min="0" max="60">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>وقت الانصراف المتوقع:</label>
+        <input type="time" id="editWorkEnd">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="saveEditBtn">💾 حفظ</button>
+      <button class="btn btn-gray" onclick="closeEditModal()">❌ إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rename Modal -->
+<div id="renameModal" class="modal" style="display:none;">
+  <div class="modal-overlay" onclick="closeRenameModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🔄 توحيد الأسماء</h2>
+      <button class="modal-close" onclick="closeRenameModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>اختر الاسم القديم:</label>
+        <select id="renameOldName" onchange="updateRenameCount()">
+          <option value="">-- اختر اسم --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>الاسم الجديد:</label>
+        <input type="text" id="renameNewName" placeholder="اكتب الاسم الصحيح">
+      </div>
+      <div class="rename-info">
+        <strong>عدد التسجيلات اللي هتتعدل:</strong>
+        <span id="renameCount">0</span>
+      </div>
+      <div class="rename-warning">
+        ⚠️ ملاحظة: هيتم تعديل كل التسجيلات اللي فيها الاسم القديم للاسم الجديد (في كل الأيام).
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="renameConfirmBtn" onclick="confirmRename()">🔄 توحيد</button>
+      <button class="btn btn-gray" onclick="closeRenameModal()">❌ إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 
@@ -675,7 +914,7 @@
   'use strict';
 
   // ============================================================
-  // Supabase configuration
+  // Supabase config
   // ============================================================
   const SUPABASE_URL = 'https://itahlydnrzembvbqbrdu.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0YWhseWRucnplbWJ2YnFicmR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3NTc5NjEsImV4cCI6MjEwNTMzMzk2MX0.0ErheMPDk_6wbhv49hb3pCAHilmnaf_bcWEEPOYGNyc';
@@ -686,20 +925,18 @@
   // Constants
   // ============================================================
   const VIEW_NAME = 'attendance_daily';
+  const TABLE_NAME = 'attendance';
+  const SETTINGS_TABLE = 'employee_settings';
   const AUTO_REFRESH_INTERVAL_MS = 30000;
 
-  const WORK_START_HOUR = 10;
-  const WORK_START_MINUTE = 0;
-  const GRACE_MINUTES = 10;
-  const WORK_END_HOUR = 18;
-  const WORK_END_MINUTE = 0;
-
-  const WORK_START_TOTAL = WORK_START_HOUR * 60 + WORK_START_MINUTE;
-  const GRACE_LIMIT_TOTAL = WORK_START_TOTAL + GRACE_MINUTES;
-  const WORK_END_TOTAL = WORK_END_HOUR * 60 + WORK_END_MINUTE;
+  const DEFAULT_WORK_START_HOUR = 10;
+  const DEFAULT_WORK_START_MINUTE = 0;
+  const DEFAULT_GRACE_MINUTES = 10;
+  const DEFAULT_WORK_END_HOUR = 18;
+  const DEFAULT_WORK_END_MINUTE = 0;
 
   // ============================================================
-  // DOM references
+  // DOM
   // ============================================================
   const loginScreen = document.getElementById('loginScreen');
   const appContent = document.getElementById('appContent');
@@ -722,6 +959,7 @@
   const applyBtn = document.getElementById('applyBtn');
   const resetBtn = document.getElementById('resetBtn');
   const exportBtn = document.getElementById('exportBtn');
+  const renameBtn = document.getElementById('renameBtn');
   const deleteOldBtn = document.getElementById('deleteOldBtn');
   const counterBadge = document.getElementById('counterBadge');
   const statusBanner = document.getElementById('statusBanner');
@@ -738,6 +976,9 @@
   const summaryMonthEl = document.getElementById('summaryMonth');
 
   let autoRefreshTimer = null;
+  let currentRecords = [];
+  let currentEditIndex = null;
+  let employeeSettingsCache = {};
 
   // ============================================================
   // Auth
@@ -780,6 +1021,7 @@
 
       showAppContent();
       initSummaryMonths();
+      await loadEmployeeSettingsCache();
       loadData(true);
       startAutoRefresh();
     } else {
@@ -818,11 +1060,12 @@
       }
 
       loginBtnText.textContent = '✅ تم الدخول';
-      setTimeout(() => {
+      setTimeout(async () => {
         showAppContent();
         loginEmail.value = '';
         loginPassword.value = '';
         initSummaryMonths();
+        await loadEmployeeSettingsCache();
         loadData(true);
         startAutoRefresh();
         loginBtn.disabled = false;
@@ -850,6 +1093,38 @@
       clearInterval(autoRefreshTimer);
       autoRefreshTimer = null;
     }
+  }
+
+  // ============================================================
+  // Employee Settings Cache
+  // ============================================================
+  async function loadEmployeeSettingsCache() {
+    try {
+      const { data, error } = await supabase
+        .from(SETTINGS_TABLE)
+        .select('*');
+
+      if (error) throw error;
+
+      employeeSettingsCache = {};
+      (data || []).forEach(s => {
+        employeeSettingsCache[s.name] = s;
+      });
+
+    } catch (err) {
+      console.warn('Failed to load settings:', err.message);
+      employeeSettingsCache = {};
+    }
+  }
+
+  function getEmployeeSettings(name) {
+    return employeeSettingsCache[name] || {
+      work_start_hour: DEFAULT_WORK_START_HOUR,
+      work_start_minute: DEFAULT_WORK_START_MINUTE,
+      grace_minutes: DEFAULT_GRACE_MINUTES,
+      work_end_hour: DEFAULT_WORK_END_HOUR,
+      work_end_minute: DEFAULT_WORK_END_MINUTE
+    };
   }
 
   // ============================================================
@@ -922,22 +1197,30 @@
     return String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
   }
 
-  function calculateDelay(checkInIso) {
+  function calculateDelay(name, checkInIso) {
     if (!checkInIso) return 0;
+    const settings = getEmployeeSettings(name);
+    const startTotal = settings.work_start_hour * 60 + settings.work_start_minute;
+    const graceLimit = startTotal + settings.grace_minutes;
+
     const { totalMinutes } = getCairoTime(checkInIso);
-    if (totalMinutes > GRACE_LIMIT_TOTAL) return totalMinutes - GRACE_LIMIT_TOTAL;
+    if (totalMinutes > graceLimit) return totalMinutes - graceLimit;
     return 0;
   }
 
-  function calculateOvertime(checkInIso, checkOutIso) {
+  function calculateOvertime(name, checkInIso, checkOutIso) {
+    const settings = getEmployeeSettings(name);
+    const startTotal = settings.work_start_hour * 60 + settings.work_start_minute;
+    const endTotal = settings.work_end_hour * 60 + settings.work_end_minute;
+
     let extra = 0;
     if (checkInIso) {
       const { totalMinutes: inMin } = getCairoTime(checkInIso);
-      if (inMin < WORK_START_TOTAL) extra += (WORK_START_TOTAL - inMin);
+      if (inMin < startTotal) extra += (startTotal - inMin);
     }
     if (checkOutIso) {
       const { totalMinutes: outMin } = getCairoTime(checkOutIso);
-      if (outMin > WORK_END_TOTAL) extra += (outMin - WORK_END_TOTAL);
+      if (outMin > endTotal) extra += (outMin - endTotal);
     }
     return extra;
   }
@@ -966,10 +1249,11 @@
   }
 
   // ============================================================
-  // Rendering — Daily Table
+  // Render Daily Table
   // ============================================================
   function renderTable(records) {
     tableBody.innerHTML = '';
+    currentRecords = records;
 
     if (!records || records.length === 0) {
       attendanceTable.style.display = 'none';
@@ -983,7 +1267,7 @@
 
     const fragment = document.createDocumentFragment();
 
-    records.forEach(function (r) {
+    records.forEach(function (r, index) {
       const tr = document.createElement('tr');
 
       const inTime = r.check_in_at ? formatInOutTime(r.check_in_at) : '';
@@ -992,8 +1276,8 @@
       const destIn = r.destination_in || '';
       const destOut = r.destination_out || '';
 
-      const delayMinutes = calculateDelay(r.check_in_at);
-      const overtimeMinutes = calculateOvertime(r.check_in_at, r.check_out_at);
+      const delayMinutes = calculateDelay(r.name, r.check_in_at);
+      const overtimeMinutes = calculateOvertime(r.name, r.check_in_at, r.check_out_at);
 
       const inCell = inTime
         ? '<span class="time-badge time-in">' + inTime + '</span>'
@@ -1014,18 +1298,14 @@
       const inMapsUrl = buildMapsUrl(r.check_in_lat, r.check_in_lng);
       if (inMapsUrl) {
         inMapsCell =
-          '<a class="location-link" href="' + inMapsUrl + '" ' +
-          'target="_blank" rel="noopener noreferrer" title="فتح الموقع على Google Maps">' +
-          '🗺️ فتح الخريطة</a>';
+          '<a class="location-link" href="' + inMapsUrl + '" target="_blank" rel="noopener noreferrer">🗺️ فتح الخريطة</a>';
       }
 
       let outMapsCell = '—';
       const outMapsUrl = buildMapsUrl(r.check_out_lat, r.check_out_lng);
       if (outMapsUrl) {
         outMapsCell =
-          '<a class="location-link" href="' + outMapsUrl + '" ' +
-          'target="_blank" rel="noopener noreferrer" title="فتح الموقع على Google Maps">' +
-          '🗺️ فتح الخريطة</a>';
+          '<a class="location-link" href="' + outMapsUrl + '" target="_blank" rel="noopener noreferrer">🗺️ فتح الخريطة</a>';
       }
 
       const destInCell = destIn
@@ -1039,6 +1319,8 @@
       const delayCell = '<span class="delay-badge">' + formatDurationHHMM(delayMinutes) + '</span>';
       const overtimeCell = '<span class="extra-badge">' + formatDurationHHMM(overtimeMinutes) + '</span>';
 
+      const editCell = '<button class="btn-edit" onclick="window.__openEdit(' + index + ')">✏️ تعديل</button>';
+
       tr.innerHTML =
         '<td data-label="اسم الموظف" class="name-cell">' + escapeHtml(r.name) + '</td>' +
         '<td data-label="تاريخ العمل">' + formatWorkDate(r.check_date) + '</td>' +
@@ -1050,7 +1332,8 @@
         '<td data-label="Out Location Google Maps">' + outMapsCell + '</td>' +
         '<td data-label="الوجهة Out" class="destination-cell">' + destOutCell + '</td>' +
         '<td data-label="Late Hours">' + delayCell + '</td>' +
-        '<td data-label="Overtime">' + overtimeCell + '</td>';
+        '<td data-label="Overtime">' + overtimeCell + '</td>' +
+        '<td data-label="تعديل">' + editCell + '</td>';
 
       fragment.appendChild(tr);
     });
@@ -1058,6 +1341,300 @@
     tableBody.appendChild(fragment);
     counterBadge.textContent = 'عدد الصفوف: ' + records.length;
   }
+
+  // ============================================================
+  // Edit Modal
+  // ============================================================
+  window.__openEdit = function (index) {
+    const record = currentRecords[index];
+    if (!record) {
+      console.error('Record not found at index', index);
+      return;
+    }
+
+    currentEditIndex = index;
+
+    document.getElementById('editName').value = record.name || '';
+    document.getElementById('editDate').value = record.check_date || '';
+
+    if (record.check_in_at) {
+      const d = new Date(record.check_in_at);
+      const cairoTime = new Date(d.toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
+      const hh = String(cairoTime.getHours()).padStart(2, '0');
+      const mm = String(cairoTime.getMinutes()).padStart(2, '0');
+      document.getElementById('editCheckInTime').value = hh + ':' + mm;
+    } else {
+      document.getElementById('editCheckInTime').value = '';
+    }
+    document.getElementById('editDestIn').value = record.destination_in || '';
+
+    if (record.check_out_at) {
+      const d = new Date(record.check_out_at);
+      const cairoTime = new Date(d.toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
+      const hh = String(cairoTime.getHours()).padStart(2, '0');
+      const mm = String(cairoTime.getMinutes()).padStart(2, '0');
+      document.getElementById('editCheckOutTime').value = hh + ':' + mm;
+    } else {
+      document.getElementById('editCheckOutTime').value = '';
+    }
+    document.getElementById('editDestOut').value = record.destination_out || '';
+
+    const settings = getEmployeeSettings(record.name);
+    const startHH = String(settings.work_start_hour).padStart(2, '0');
+    const startMM = String(settings.work_start_minute).padStart(2, '0');
+    const endHH = String(settings.work_end_hour).padStart(2, '0');
+    const endMM = String(settings.work_end_minute).padStart(2, '0');
+
+    document.getElementById('editWorkStart').value = startHH + ':' + startMM;
+    document.getElementById('editGraceMinutes').value = settings.grace_minutes;
+    document.getElementById('editWorkEnd').value = endHH + ':' + endMM;
+
+    document.getElementById('editModal').style.display = 'flex';
+  };
+
+  window.closeEditModal = function () {
+    document.getElementById('editModal').style.display = 'none';
+    currentEditIndex = null;
+  };
+
+  window.saveEdit = async function () {
+    if (currentEditIndex === null) {
+      alert('❌ مفيش تسجيل محدد');
+      return;
+    }
+
+    const record = currentRecords[currentEditIndex];
+    if (!record) {
+      alert('❌ التسجيل مش موجود');
+      return;
+    }
+
+    const saveBtn = document.getElementById('saveEditBtn');
+    const originalText = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = '⏳ جاري الحفظ...';
+
+    try {
+      const newName = document.getElementById('editName').value.trim();
+      const newDate = document.getElementById('editDate').value;
+      const newCheckInTime = document.getElementById('editCheckInTime').value;
+      const newCheckOutTime = document.getElementById('editCheckOutTime').value;
+      const newDestIn = document.getElementById('editDestIn').value.trim();
+      const newDestOut = document.getElementById('editDestOut').value.trim();
+
+      const newWorkStart = document.getElementById('editWorkStart').value;
+      const newGrace = parseInt(document.getElementById('editGraceMinutes').value, 10) || 0;
+      const newWorkEnd = document.getElementById('editWorkEnd').value;
+
+      if (!newName) { 
+        alert('❌ الاسم مطلوب'); 
+        saveBtn.disabled = false;
+        saveBtn.textContent = originalText;
+        return; 
+      }
+      if (!newDate) { 
+        alert('❌ التاريخ مطلوب'); 
+        saveBtn.disabled = false;
+        saveBtn.textContent = originalText;
+        return; 
+      }
+
+      // ===== 1. تحديث التسجيل في جدول attendance =====
+      if (record.check_in_id) {
+        const updateIn = {
+          name: newName,
+          check_date: newDate,
+          destination: newDestIn || null
+        };
+        if (newCheckInTime) {
+          updateIn.created_at = newDate + 'T' + newCheckInTime + ':00+03:00';
+        }
+        const { error: err1 } = await supabase
+          .from(TABLE_NAME)
+          .update(updateIn)
+          .eq('id', record.check_in_id);
+        if (err1) throw err1;
+      }
+
+      if (record.check_out_id) {
+        const updateOut = {
+          name: newName,
+          check_date: newDate,
+          destination: newDestOut || null
+        };
+        if (newCheckOutTime) {
+          updateOut.created_at = newDate + 'T' + newCheckOutTime + ':00+03:00';
+        }
+        const { error: err2 } = await supabase
+          .from(TABLE_NAME)
+          .update(updateOut)
+          .eq('id', record.check_out_id);
+        if (err2) throw err2;
+      }
+
+      // ===== 2. تحديث مواعيد العمل =====
+      const originalName = record.name;
+
+      if (newWorkStart && newWorkEnd) {
+        const [startH, startM] = newWorkStart.split(':').map(Number);
+        const [endH, endM] = newWorkEnd.split(':').map(Number);
+
+        const { data: existing } = await supabase
+          .from(SETTINGS_TABLE)
+          .select('id')
+          .eq('name', originalName)
+          .single();
+
+        if (existing) {
+          const { error: err3 } = await supabase
+            .from(SETTINGS_TABLE)
+            .update({
+              work_start_hour: startH,
+              work_start_minute: startM,
+              grace_minutes: newGrace,
+              work_end_hour: endH,
+              work_end_minute: endM,
+              updated_at: new Date().toISOString()
+            })
+            .eq('name', originalName);
+          if (err3) throw err3;
+        } else {
+          const { error: err4 } = await supabase
+            .from(SETTINGS_TABLE)
+            .insert({
+              name: originalName,
+              work_start_hour: startH,
+              work_start_minute: startM,
+              grace_minutes: newGrace,
+              work_end_hour: endH,
+              work_end_minute: endM
+            });
+          if (err4) throw err4;
+        }
+
+        if (newName !== originalName) {
+          const { error: err5 } = await supabase
+            .from(SETTINGS_TABLE)
+            .update({ name: newName })
+            .eq('name', originalName);
+          if (err5) console.warn('Could not rename settings:', err5.message);
+        }
+      }
+
+      alert('✅ تم حفظ التعديلات');
+      
+      // إعادة تحميل البيانات
+      await loadEmployeeSettingsCache();
+      window.closeEditModal();
+      await loadData(true);
+
+    } catch (err) {
+      console.error('Save failed:', err);
+      alert('❌ تعذر الحفظ: ' + (err.message || ''));
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = originalText;
+    }
+  };
+
+  // ============================================================
+  // Rename Modal
+  // ============================================================
+  window.openRenameModal = async function () {
+    try {
+      const { data, error } = await supabase.from(VIEW_NAME).select('name');
+      if (error) throw error;
+
+      const uniqueNames = Array.from(new Set(data.map(r => r.name)))
+        .sort((a, b) => a.localeCompare(b, 'ar'));
+
+      const select = document.getElementById('renameOldName');
+      select.innerHTML = '<option value="">-- اختر اسم --</option>' +
+        uniqueNames.map(n => '<option value="' + escapeHtml(n) + '">' + escapeHtml(n) + '</option>').join('');
+
+      document.getElementById('renameCount').textContent = '0';
+      document.getElementById('renameNewName').value = '';
+      document.getElementById('renameModal').style.display = 'flex';
+
+    } catch (err) {
+      console.error('Failed to load names:', err);
+      alert('تعذر تحميل الأسماء');
+    }
+  };
+
+  window.closeRenameModal = function () {
+    document.getElementById('renameModal').style.display = 'none';
+  };
+
+  window.updateRenameCount = async function () {
+    const oldName = document.getElementById('renameOldName').value;
+    if (!oldName) {
+      document.getElementById('renameCount').textContent = '0';
+      return;
+    }
+
+    const { count, error } = await supabase
+      .from(TABLE_NAME)
+      .select('*', { count: 'exact', head: true })
+      .eq('name', oldName);
+
+    if (error) {
+      document.getElementById('renameCount').textContent = 'خطأ';
+      return;
+    }
+
+    document.getElementById('renameCount').textContent = count || 0;
+  };
+
+  window.confirmRename = async function () {
+    const oldName = document.getElementById('renameOldName').value;
+    const newName = document.getElementById('renameNewName').value.trim();
+
+    if (!oldName) { alert('❌ اختر الاسم القديم'); return; }
+    if (!newName) { alert('❌ اكتب الاسم الجديد'); return; }
+    if (oldName === newName) { alert('❌ الاسم القديم والجديد نفس الحاجة'); return; }
+
+    const confirmed = confirm(
+      '⚠️ تحذير!\n\n' +
+      'هيتم تعديل كل التسجيلات اللي فيها:\n' +
+      '"' + oldName + '"\n\n' +
+      'إلى:\n' +
+      '"' + newName + '"\n\n' +
+      'متأكد؟'
+    );
+    if (!confirmed) return;
+
+    const btn = document.getElementById('renameConfirmBtn');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري التوحيد...';
+
+    try {
+      const { error } = await supabase
+        .from(TABLE_NAME)
+        .update({ name: newName })
+        .eq('name', oldName);
+
+      if (error) throw error;
+
+      await supabase
+        .from(SETTINGS_TABLE)
+        .update({ name: newName })
+        .eq('name', oldName);
+
+      alert('✅ تم توحيد الأسماء بنجاح');
+      await loadEmployeeSettingsCache();
+      window.closeRenameModal();
+      await loadData(true);
+
+    } catch (err) {
+      console.error('Rename failed:', err);
+      alert('❌ تعذر التوحيد: ' + (err.message || ''));
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  };
 
   // ============================================================
   // Summary
@@ -1117,8 +1694,8 @@
         map[name] = { name: name, daysCount: 0, totalDelay: 0, totalOvertime: 0 };
       }
       map[name].daysCount += 1;
-      map[name].totalDelay += calculateDelay(r.check_in_at);
-      map[name].totalOvertime += calculateOvertime(r.check_in_at, r.check_out_at);
+      map[name].totalDelay += calculateDelay(name, r.check_in_at);
+      map[name].totalOvertime += calculateOvertime(name, r.check_in_at, r.check_out_at);
     });
 
     return Object.values(map).sort(function (a, b) {
@@ -1127,12 +1704,14 @@
   }
 
   // ============================================================
-  // Load data
+  // Load
   // ============================================================
   async function loadData(showLoadingState) {
     if (showLoadingState) setStatus('loading', 'جاري التحميل...');
 
     try {
+      await loadEmployeeSettingsCache();
+
       const { data, error } = await buildQuery();
       if (error) throw error;
 
@@ -1152,6 +1731,8 @@
       const firstDay = year + '-' + String(month).padStart(2, '0') + '-01';
       const lastDayDate = new Date(year, month, 0);
       const lastDay = year + '-' + String(month).padStart(2, '0') + '-' + String(lastDayDate.getDate()).padStart(2, '0');
+
+      await loadEmployeeSettingsCache();
 
       const { data, error } = await supabase
         .from(VIEW_NAME)
@@ -1219,7 +1800,7 @@
 
     try {
       const { count, error: countError } = await supabase
-        .from('attendance')
+        .from(TABLE_NAME)
         .select('*', { count: 'exact', head: true })
         .lt('check_date', cutoffDate);
 
@@ -1233,7 +1814,7 @@
       }
 
       const { error: deleteError } = await supabase
-        .from('attendance')
+        .from(TABLE_NAME)
         .delete()
         .lt('check_date', cutoffDate);
 
@@ -1252,7 +1833,7 @@
   }
 
   // ============================================================
-  // Excel Export — Sheetين في نفس الملف (قيم مباشرة)
+  // Excel Export
   // ============================================================
   async function exportExcel() {
     const originalText = exportBtn.textContent;
@@ -1276,9 +1857,6 @@
       workbook.creator = 'Attendance System';
       workbook.created = new Date();
 
-      // ============================================
-      // Sheet 1: Attendance (قيم مباشرة - زي الأول)
-      // ============================================
       const ws1 = workbook.addWorksheet('Attendance', {
         views: [{ rightToLeft: true }]
       });
@@ -1304,10 +1882,10 @@
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC5C5F0' } };
         cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
         cell.border = {
-          top:    { style: 'thin', color: { argb: 'FF8A8AC7' } },
+          top: { style: 'thin', color: { argb: 'FF8A8AC7' } },
           bottom: { style: 'thin', color: { argb: 'FF8A8AC7' } },
-          left:   { style: 'thin', color: { argb: 'FF8A8AC7' } },
-          right:  { style: 'thin', color: { argb: 'FF8A8AC7' } }
+          left: { style: 'thin', color: { argb: 'FF8A8AC7' } },
+          right: { style: 'thin', color: { argb: 'FF8A8AC7' } }
         };
       });
 
@@ -1317,8 +1895,8 @@
         const inLoc = r.check_in_location || '';
         const destIn = r.destination_in || '';
         const destOut = r.destination_out || '';
-        const delayMin = calculateDelay(r.check_in_at);
-        const overtimeMin = calculateOvertime(r.check_in_at, r.check_out_at);
+        const delayMin = calculateDelay(r.name, r.check_in_at);
+        const overtimeMin = calculateOvertime(r.name, r.check_in_at, r.check_out_at);
 
         const inMapsUrl = buildMapsUrl(r.check_in_lat, r.check_in_lng);
         const outMapsUrl = buildMapsUrl(r.check_out_lat, r.check_out_lng);
@@ -1343,24 +1921,22 @@
           cell.font = { name: 'Cairo', size: 11, color: { argb: 'FF2C3E50' } };
           cell.alignment = { horizontal: 'center', vertical: 'middle' };
           cell.border = {
-            top:    { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            top: { style: 'thin', color: { argb: 'FFB8B8DD' } },
             bottom: { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            left:   { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            right:  { style: 'thin', color: { argb: 'FFB8B8DD' } }
+            left: { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            right: { style: 'thin', color: { argb: 'FFB8B8DD' } }
           };
           if (index % 2 === 1) {
             cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFF' } };
           }
         });
 
-        // Check In — green
         const inCell = row.getCell('checkIn');
         if (inTime) {
           inCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
           inCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
         }
 
-        // Check Out — orange/red
         const outCell = row.getCell('checkOut');
         if (!outTime) {
           outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE74C3C' } };
@@ -1370,42 +1946,33 @@
           outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF5E7' } };
         }
 
-        // In Maps — hyperlink
         if (inMapsUrl) {
           const c = row.getCell('inMaps');
           c.value = { text: 'فتح الخريطة', hyperlink: inMapsUrl };
           c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
         }
 
-        // Out Maps — hyperlink
         if (outMapsUrl) {
           const c = row.getCell('outMaps');
           c.value = { text: 'فتح الخريطة', hyperlink: outMapsUrl };
           c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
         }
 
-        // Late Hours — red if > 0
         const lateCell = row.getCell('late');
         if (delayMin > 0) {
           lateCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFC0392B' } };
           lateCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
         }
 
-        // Overtime — green if > 0
         const overtimeCell = row.getCell('overtime');
         if (overtimeMin > 0) {
           overtimeCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
           overtimeCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
         }
 
-        // Name
         row.getCell('name').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2C3E50' } };
-
-        // In Location
         row.getCell('inLocation').font = { name: 'Cairo', size: 10, color: { argb: 'FF555555' } };
         row.getCell('inLocation').alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
-
-        // Destinations
         row.getCell('destIn').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2980B9' } };
         row.getCell('destOut').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2980B9' } };
       });
@@ -1413,9 +1980,6 @@
       ws1.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
       ws1.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 11 } };
 
-      // ============================================
-      // Sheet 2: Summary (قيم مباشرة)
-      // ============================================
       const summary = buildSummary(sorted);
 
       const ws2 = workbook.addWorksheet('Summary', {
@@ -1436,10 +2000,10 @@
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC5C5F0' } };
         cell.alignment = { horizontal: 'center', vertical: 'middle' };
         cell.border = {
-          top:    { style: 'medium', color: { argb: 'FF8A8AC7' } },
+          top: { style: 'medium', color: { argb: 'FF8A8AC7' } },
           bottom: { style: 'medium', color: { argb: 'FF8A8AC7' } },
-          left:   { style: 'medium', color: { argb: 'FF8A8AC7' } },
-          right:  { style: 'medium', color: { argb: 'FF8A8AC7' } }
+          left: { style: 'medium', color: { argb: 'FF8A8AC7' } },
+          right: { style: 'medium', color: { argb: 'FF8A8AC7' } }
         };
       });
 
@@ -1457,10 +2021,10 @@
           cell.font = { name: 'Cairo', size: 12, color: { argb: 'FF2C3E50' } };
           cell.alignment = { horizontal: 'center', vertical: 'middle' };
           cell.border = {
-            top:    { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            top: { style: 'thin', color: { argb: 'FFB8B8DD' } },
             bottom: { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            left:   { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            right:  { style: 'thin', color: { argb: 'FFB8B8DD' } }
+            left: { style: 'thin', color: { argb: 'FFB8B8DD' } },
+            right: { style: 'thin', color: { argb: 'FFB8B8DD' } }
           };
           if (index % 2 === 1) {
             cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFF' } };
@@ -1490,9 +2054,6 @@
       ws2.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
       ws2.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 4 } };
 
-      // ============================================
-      // Download
-      // ============================================
       const buffer = await workbook.xlsx.writeBuffer();
       const blob = new Blob([buffer], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -1524,9 +2085,6 @@
     }
   }
 
-  // ============================================================
-  // Excel Export — Summary فقط
-  // ============================================================
   async function exportSummaryExcel() {
     return exportExcel();
   }
@@ -1580,6 +2138,7 @@
   applyBtn.addEventListener('click', function () { loadData(true); });
   resetBtn.addEventListener('click', resetFilters);
   exportBtn.addEventListener('click', exportExcel);
+  renameBtn.addEventListener('click', openRenameModal);
   deleteOldBtn.addEventListener('click', deleteOldRecords);
 
   dateSortEl.addEventListener('change', function () { loadData(false); });
@@ -1588,6 +2147,9 @@
   summaryRefreshBtn.addEventListener('click', loadSummary);
   summaryExportBtn.addEventListener('click', exportSummaryExcel);
   summaryMonthEl.addEventListener('change', loadSummary);
+
+  // ⬇️ ربط زر الحفظ (الإصلاح المهم)
+  document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
 
   // ============================================================
   // Init
