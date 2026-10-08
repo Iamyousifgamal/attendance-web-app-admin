@@ -845,10 +845,10 @@
         <input type="text" id="editDestOut">
       </div>
 
-      <div class="form-section-title work-time">⏰ مواعيد العمل الخاصة بالموظف</div>
+      <div class="form-section-title work-time">⏰ مواعيد العمل لهذا اليوم فقط</div>
       <div class="work-time-hint">
         ℹ️ القيم الافتراضية: بداية 10:00، سماح 10 دقائق، نهاية 18:00.
-        عدّل هنا لتخصيص المواعيد لهذا الموظف.
+        التعديل هنا يطبق على هذا اليوم فقط لهذا الموظف.
       </div>
       <div class="work-time-grid">
         <div class="form-group">
@@ -981,6 +981,24 @@
   let employeeSettingsCache = {};
 
   // ============================================================
+  // Helpers — normalize date to YYYY-MM-DD
+  // ============================================================
+  function normalizeDate(d) {
+    if (!d) return null;
+    // لو Date object
+    if (d instanceof Date) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + day;
+    }
+    // لو String (خد أول 10 حروف YYYY-MM-DD)
+    const s = String(d);
+    if (s.length >= 10) return s.substring(0, 10);
+    return s;
+  }
+
+  // ============================================================
   // Auth
   // ============================================================
   function showLoginScreen() {
@@ -1096,7 +1114,7 @@
   }
 
   // ============================================================
-  // Employee Settings Cache
+  // Employee Settings Cache — keyed by name|date (normalized)
   // ============================================================
   async function loadEmployeeSettingsCache() {
     try {
@@ -1108,8 +1126,12 @@
 
       employeeSettingsCache = {};
       (data || []).forEach(s => {
-        employeeSettingsCache[s.name] = s;
+        const normalizedDate = normalizeDate(s.check_date);
+        const key = s.name + '|' + (normalizedDate || 'DEFAULT');
+        employeeSettingsCache[key] = s;
       });
+
+      console.log('Settings cache keys:', Object.keys(employeeSettingsCache));
 
     } catch (err) {
       console.warn('Failed to load settings:', err.message);
@@ -1117,8 +1139,28 @@
     }
   }
 
-  function getEmployeeSettings(name) {
-    return employeeSettingsCache[name] || {
+  /**
+   * بيرجع إعدادات الموظف في يوم معين
+   */
+  function getEmployeeSettings(name, checkDate) {
+    const normalizedDate = normalizeDate(checkDate);
+
+    // 1) إعدادات اليوم المحدد
+    if (normalizedDate) {
+      const dayKey = name + '|' + normalizedDate;
+      if (employeeSettingsCache[dayKey]) {
+        return employeeSettingsCache[dayKey];
+      }
+    }
+
+    // 2) إعدادات عامة للموظف
+    const defaultKey = name + '|DEFAULT';
+    if (employeeSettingsCache[defaultKey]) {
+      return employeeSettingsCache[defaultKey];
+    }
+
+    // 3) القيم الافتراضية
+    return {
       work_start_hour: DEFAULT_WORK_START_HOUR,
       work_start_minute: DEFAULT_WORK_START_MINUTE,
       grace_minutes: DEFAULT_GRACE_MINUTES,
@@ -1185,7 +1227,7 @@
 
   function formatWorkDate(dateString) {
     if (!dateString) return '';
-    const parts = dateString.split('-');
+    const parts = normalizeDate(dateString).split('-');
     if (parts.length !== 3) return dateString;
     return parts[2] + '-' + parts[1] + '-' + parts[0];
   }
@@ -1197,9 +1239,9 @@
     return String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
   }
 
-  function calculateDelay(name, checkInIso) {
+  function calculateDelay(name, checkInIso, checkDate) {
     if (!checkInIso) return 0;
-    const settings = getEmployeeSettings(name);
+    const settings = getEmployeeSettings(name, checkDate);
     const startTotal = settings.work_start_hour * 60 + settings.work_start_minute;
     const graceLimit = startTotal + settings.grace_minutes;
 
@@ -1208,8 +1250,8 @@
     return 0;
   }
 
-  function calculateOvertime(name, checkInIso, checkOutIso) {
-    const settings = getEmployeeSettings(name);
+  function calculateOvertime(name, checkInIso, checkOutIso, checkDate) {
+    const settings = getEmployeeSettings(name, checkDate);
     const startTotal = settings.work_start_hour * 60 + settings.work_start_minute;
     const endTotal = settings.work_end_hour * 60 + settings.work_end_minute;
 
@@ -1276,8 +1318,8 @@
       const destIn = r.destination_in || '';
       const destOut = r.destination_out || '';
 
-      const delayMinutes = calculateDelay(r.name, r.check_in_at);
-      const overtimeMinutes = calculateOvertime(r.name, r.check_in_at, r.check_out_at);
+      const delayMinutes = calculateDelay(r.name, r.check_in_at, r.check_date);
+      const overtimeMinutes = calculateOvertime(r.name, r.check_in_at, r.check_out_at, r.check_date);
 
       const inCell = inTime
         ? '<span class="time-badge time-in">' + inTime + '</span>'
@@ -1355,7 +1397,7 @@
     currentEditIndex = index;
 
     document.getElementById('editName').value = record.name || '';
-    document.getElementById('editDate').value = record.check_date || '';
+    document.getElementById('editDate').value = normalizeDate(record.check_date) || '';
 
     if (record.check_in_at) {
       const d = new Date(record.check_in_at);
@@ -1379,7 +1421,8 @@
     }
     document.getElementById('editDestOut').value = record.destination_out || '';
 
-    const settings = getEmployeeSettings(record.name);
+    // إعدادات الموظف في اليوم ده
+    const settings = getEmployeeSettings(record.name, record.check_date);
     const startHH = String(settings.work_start_hour).padStart(2, '0');
     const startMM = String(settings.work_start_minute).padStart(2, '0');
     const endHH = String(settings.work_end_hour).padStart(2, '0');
@@ -1416,7 +1459,7 @@
 
     try {
       const newName = document.getElementById('editName').value.trim();
-      const newDate = document.getElementById('editDate').value;
+      const newDate = document.getElementById('editDate').value; // YYYY-MM-DD
       const newCheckInTime = document.getElementById('editCheckInTime').value;
       const newCheckOutTime = document.getElementById('editCheckOutTime').value;
       const newDestIn = document.getElementById('editDestIn').value.trim();
@@ -1438,6 +1481,10 @@
         saveBtn.textContent = originalText;
         return; 
       }
+
+      // ⚠️ مهم: نستخدم التاريخ الأصلي (normalized) للبحث عن الإعدادات
+      const originalName = record.name;
+      const originalDate = normalizeDate(record.check_date);
 
       // ===== 1. تحديث التسجيل في جدول attendance =====
       if (record.check_in_id) {
@@ -1472,20 +1519,25 @@
         if (err2) throw err2;
       }
 
-      // ===== 2. تحديث مواعيد العمل =====
-      const originalName = record.name;
-
-      if (newWorkStart && newWorkEnd) {
+      // ===== 2. تحديث مواعيد العمل (للاسم + اليوم) =====
+      if (newWorkStart && newWorkEnd && originalDate) {
         const [startH, startM] = newWorkStart.split(':').map(Number);
         const [endH, endM] = newWorkEnd.split(':').map(Number);
 
-        const { data: existing } = await supabase
+        // ندور على سجل بنفس الاسم + نفس التاريخ
+        const { data: existing, error: findErr } = await supabase
           .from(SETTINGS_TABLE)
           .select('id')
           .eq('name', originalName)
-          .single();
+          .eq('check_date', originalDate)
+          .maybeSingle();
+
+        if (findErr) {
+          console.warn('Find settings error:', findErr.message);
+        }
 
         if (existing) {
+          // تحديث
           const { error: err3 } = await supabase
             .from(SETTINGS_TABLE)
             .update({
@@ -1496,13 +1548,15 @@
               work_end_minute: endM,
               updated_at: new Date().toISOString()
             })
-            .eq('name', originalName);
+            .eq('id', existing.id);
           if (err3) throw err3;
         } else {
+          // إدراج جديد
           const { error: err4 } = await supabase
             .from(SETTINGS_TABLE)
             .insert({
               name: originalName,
+              check_date: originalDate,
               work_start_hour: startH,
               work_start_minute: startM,
               grace_minutes: newGrace,
@@ -1511,19 +1565,10 @@
             });
           if (err4) throw err4;
         }
-
-        if (newName !== originalName) {
-          const { error: err5 } = await supabase
-            .from(SETTINGS_TABLE)
-            .update({ name: newName })
-            .eq('name', originalName);
-          if (err5) console.warn('Could not rename settings:', err5.message);
-        }
       }
 
       alert('✅ تم حفظ التعديلات');
       
-      // إعادة تحميل البيانات
       await loadEmployeeSettingsCache();
       window.closeEditModal();
       await loadData(true);
@@ -1694,8 +1739,8 @@
         map[name] = { name: name, daysCount: 0, totalDelay: 0, totalOvertime: 0 };
       }
       map[name].daysCount += 1;
-      map[name].totalDelay += calculateDelay(name, r.check_in_at);
-      map[name].totalOvertime += calculateOvertime(name, r.check_in_at, r.check_out_at);
+      map[name].totalDelay += calculateDelay(name, r.check_in_at, r.check_date);
+      map[name].totalOvertime += calculateOvertime(name, r.check_in_at, r.check_out_at, r.check_date);
     });
 
     return Object.values(map).sort(function (a, b) {
@@ -1895,8 +1940,8 @@
         const inLoc = r.check_in_location || '';
         const destIn = r.destination_in || '';
         const destOut = r.destination_out || '';
-        const delayMin = calculateDelay(r.name, r.check_in_at);
-        const overtimeMin = calculateOvertime(r.name, r.check_in_at, r.check_out_at);
+        const delayMin = calculateDelay(r.name, r.check_in_at, r.check_date);
+        const overtimeMin = calculateOvertime(r.name, r.check_in_at, r.check_out_at, r.check_date);
 
         const inMapsUrl = buildMapsUrl(r.check_in_lat, r.check_in_lng);
         const outMapsUrl = buildMapsUrl(r.check_out_lat, r.check_out_lng);
@@ -2148,7 +2193,6 @@
   summaryExportBtn.addEventListener('click', exportSummaryExcel);
   summaryMonthEl.addEventListener('change', loadSummary);
 
-  // ⬇️ ربط زر الحفظ (الإصلاح المهم)
   document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
 
   // ============================================================
