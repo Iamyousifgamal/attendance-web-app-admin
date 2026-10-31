@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة الأدمن - تسجيلات الحضور</title>
+<title>لوحة الأدمن - تسجيلات الحضور والانصراف</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -32,6 +32,12 @@
     --row-hover: #eef3f6;
     --shadow: 0 2px 10px rgba(0,0,0,0.08);
     --radius: 10px;
+
+    /* ألوان الغياب والعطلة */
+    --holiday-bg: #dbeafe;
+    --holiday-border: #bfdbfe;
+    --absence-bg: #fee2e2;
+    --absence-border: #fecaca;
   }
 
   * { box-sizing: border-box; }
@@ -84,6 +90,7 @@
     font-size: 13px;
     cursor: pointer;
     margin-inline-start: auto;
+    transition: background 0.15s;
   }
   .logout-btn:hover { background: #c0392b; }
 
@@ -149,19 +156,20 @@
     font-size: 13px;
     font-weight: 700;
     color: var(--text-muted);
+    white-space: nowrap;
   }
 
   .toolbar input[type="date"],
   .toolbar input[type="text"],
   .toolbar select {
-    padding: 10px 12px;
+    padding: 9px 12px;
     border: 1px solid var(--border);
     border-radius: 8px;
     font-family: inherit;
     font-size: 14px;
     background: #fff;
     color: var(--text-main);
-    min-width: 140px;
+    min-width: 130px;
   }
 
   .toolbar input:focus,
@@ -172,14 +180,17 @@
 
   .btn {
     border: none;
-    padding: 10px 16px;
+    padding: 9px 15px;
     border-radius: 8px;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     transition: filter 0.15s ease, transform 0.05s ease;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .btn:active { transform: scale(0.97); }
@@ -187,6 +198,9 @@
 
   .btn-primary { background: var(--accent); color: #fff; }
   .btn-primary:hover:not(:disabled) { filter: brightness(0.92); }
+
+  .btn-add { background: #16a085; color: #fff; }
+  .btn-add:hover:not(:disabled) { background: #117a65; }
 
   .btn-gray { background: var(--gray-btn); color: #fff; }
   .btn-gray:hover:not(:disabled) { background: var(--gray-btn-dark); }
@@ -204,7 +218,7 @@
     background: #3498db;
     color: #fff;
     border: none;
-    padding: 6px 10px;
+    padding: 5px 9px;
     border-radius: 6px;
     font-family: inherit;
     font-size: 12px;
@@ -212,7 +226,6 @@
     cursor: pointer;
     white-space: nowrap;
   }
-
   .btn-edit:hover { background: #2980b9; }
 
   .counter-badge {
@@ -281,18 +294,45 @@
   }
 
   tbody td {
-    padding: 10px;
+    padding: 9px 10px;
     border: 1px solid #b8b8dd;
     vertical-align: middle;
   }
 
-  tbody tr:nth-child(even) { background: var(--row-alt); }
-  tbody tr:hover { background: var(--row-hover); }
+  /* تصميم صفوف الحضور العادية */
+  tbody tr.row-present { background: var(--card-bg); }
+  tbody tr.row-present:nth-child(even) { background: var(--row-alt); }
+  tbody tr.row-present:hover { background: var(--row-hover); }
+
+  /* تصميم صفوف العطلة (الجمعة والسبت بدون تسجيل) */
+  tbody tr.row-holiday {
+    background-color: var(--holiday-bg) !important;
+  }
+  tbody tr.row-holiday td {
+    background-color: var(--holiday-bg) !important;
+    border-color: var(--holiday-border) !important;
+  }
+  tbody tr.row-holiday:hover td {
+    background-color: #cfe2fe !important;
+  }
+
+  /* تصميم صفوف الغياب (الأحد - الخميس بدون تسجيل) */
+  tbody tr.row-absence {
+    background-color: var(--absence-bg) !important;
+  }
+  tbody tr.row-absence td {
+    background-color: var(--absence-bg) !important;
+    border-color: var(--absence-border) !important;
+  }
+  tbody tr.row-absence:hover td {
+    background-color: #fcd0d0 !important;
+  }
 
   td.name-cell { font-weight: 700; color: var(--primary); }
+  td.day-cell { font-weight: 700; color: #34495e; white-space: nowrap; }
 
   td.address-cell {
-    max-width: 260px;
+    max-width: 240px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -300,7 +340,7 @@
   }
 
   td.destination-cell {
-    max-width: 180px;
+    max-width: 160px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -357,7 +397,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
     background: #eaf2fa;
     transition: background-color 0.15s ease, color 0.15s ease;
@@ -507,14 +547,14 @@
   }
 
   .modal-header {
-    padding: 20px;
+    padding: 18px 20px;
     border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .modal-header h2 { margin: 0; font-size: 20px; color: var(--primary); }
+  .modal-header h2 { margin: 0; font-size: 18px; color: var(--primary); }
 
   .modal-close {
     background: transparent;
@@ -527,7 +567,6 @@
     height: 32px;
     border-radius: 8px;
   }
-
   .modal-close:hover { background: #f0f0f0; }
 
   .modal-body { padding: 20px; }
@@ -557,6 +596,12 @@
 
   .form-group input:focus,
   .form-group select:focus { border-color: var(--accent); }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
 
   .form-section-title {
     font-weight: 800;
@@ -636,7 +681,23 @@
       background: var(--card-bg);
     }
 
-    tbody tr:nth-child(even) { background: var(--card-bg); }
+    tbody tr.row-holiday {
+      background: var(--holiday-bg) !important;
+      border-color: var(--holiday-border) !important;
+    }
+    tbody tr.row-holiday td {
+      background: transparent !important;
+      border-bottom-color: var(--holiday-border) !important;
+    }
+
+    tbody tr.row-absence {
+      background: var(--absence-bg) !important;
+      border-color: var(--absence-border) !important;
+    }
+    tbody tr.row-absence td {
+      background: transparent !important;
+      border-bottom-color: var(--absence-border) !important;
+    }
 
     tbody td {
       display: flex;
@@ -709,14 +770,26 @@
   <!-- Daily Tab -->
   <div id="dailyTab">
     <div class="toolbar">
+      <!-- 2️⃣ قائمة منسدلة لاختيار الفترة -->
       <div class="toolbar-group">
+        <label>الفترة:</label>
+        <select id="periodFilter">
+          <option value="today" selected>النهاردة</option>
+          <option value="month">الشهر كله</option>
+          <option value="custom">فترة مخصصة</option>
+        </select>
+      </div>
+
+      <!-- حقلا الفترة المخصصة (يظهران فقط عند اختيار فترة مخصصة) -->
+      <div class="toolbar-group custom-date-group" id="customFromGroup" style="display:none;">
         <label>من تاريخ:</label>
         <input type="date" id="dateFrom">
       </div>
-      <div class="toolbar-group">
+      <div class="toolbar-group custom-date-group" id="customToGroup" style="display:none;">
         <label>إلى تاريخ:</label>
         <input type="date" id="dateTo">
       </div>
+
       <div class="toolbar-group">
         <label>الموظف:</label>
         <input type="text" id="nameFilter" placeholder="ابحث بالاسم">
@@ -735,11 +808,23 @@
           <option value="desc">تنازلي (ي - أ)</option>
         </select>
       </div>
-      <button class="btn btn-primary" id="applyBtn">عرض</button>
-      <button class="btn btn-gray" id="resetBtn">عرض الكل</button>
-      <button class="btn btn-excel" id="exportBtn">📊 تحميل Excel</button>
+
+      <button class="btn btn-primary" id="applyBtn">🔍 عرض</button>
+      <button class="btn btn-gray" id="resetBtn">🔄 إعادة ضبط</button>
+      <button class="btn btn-excel" id="exportBtn">📊 تحميل Excel عام</button>
+      
+      <!-- 4️⃣ زرار تحميل Excel لموظف -->
+      <button class="btn btn-excel" id="exportEmployeeBtn">📥 تحميل Excel لموظف</button>
+
+      <!-- 5️⃣ زرار إضافة يوم -->
+      <button class="btn btn-add" id="addDayBtn">➕ إضافة يوم</button>
+
+      <!-- 6️⃣ زرار حذف يوم -->
+      <button class="btn btn-danger" id="deleteDayBtn">🗑️ حذف يوم</button>
+
       <button class="btn btn-warning" id="renameBtn">🔄 توحيد الأسماء</button>
       <button class="btn btn-danger" id="deleteOldBtn">🗑️ حذف بيانات قديمة</button>
+      
       <span class="counter-badge" id="counterBadge">عدد الصفوف: 0</span>
     </div>
 
@@ -752,6 +837,8 @@
             <thead>
               <tr>
                 <th>اسم الموظف</th>
+                <!-- 1️⃣ عمود اليوم الجديد -->
+                <th>اليوم</th>
                 <th>تاريخ العمل</th>
                 <th>Check In</th>
                 <th>In Location</th>
@@ -762,7 +849,7 @@
                 <th>الوجهة Out</th>
                 <th>Late Hours</th>
                 <th>Overtime</th>
-                <th>تعديل</th>
+                <th>الإجراء</th>
               </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -807,6 +894,125 @@
 
 </div>
 
+<!-- 4️⃣ Modal تحميل Excel لموظف -->
+<div id="exportEmployeeModal" class="modal" style="display:none;">
+  <div class="modal-overlay" onclick="closeExportEmployeeModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>📥 تحميل ملف Excel لموظف</h2>
+      <button class="modal-close" onclick="closeExportEmployeeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>اختر الموظف:</label>
+        <select id="exportEmpSelect">
+          <option value="">-- اختر موظف --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>اختر الشهر:</label>
+        <select id="exportEmpMonth"></select>
+      </div>
+      <div class="rename-warning">
+        ℹ️ سيتم تحميل ملف Excel بورقة واحدة تحتوي على كل أيام الشهر لهذا الموظف (حضور وغياب) بنفس ألوان الموقع مع عمود اليوم.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-excel" id="confirmExportEmpBtn">📊 تحميل الآن</button>
+      <button class="btn btn-gray" onclick="closeExportEmployeeModal()">❌ إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- 5️⃣ Modal إضافة يوم لموظف -->
+<div id="addDayModal" class="modal" style="display:none;">
+  <div class="modal-overlay" onclick="closeAddDayModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>➕ إضافة يوم لموظف</h2>
+      <button class="modal-close" onclick="closeAddDayModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>اسم الموظف: <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="addDayName" list="allEmployeesDatalist" placeholder="اكتب أو اختر اسم الموظف" required>
+        <datalist id="allEmployeesDatalist"></datalist>
+      </div>
+
+      <div class="form-group">
+        <label>التاريخ: <span style="color:var(--danger)">*</span></label>
+        <input type="date" id="addDayDate" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Check In: <span style="color:var(--danger)">*</span></label>
+          <input type="time" id="addDayCheckIn" value="10:00" required>
+        </div>
+        <div class="form-group">
+          <label>Check Out: <span style="color:var(--danger)">*</span></label>
+          <input type="time" id="addDayCheckOut" value="18:00" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Location In: <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="addDayLocationIn" placeholder="مكان الحضور (نص إجباري)" required>
+      </div>
+
+      <div class="form-group">
+        <label>Location Out: <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="addDayLocationOut" placeholder="مكان الانصراف (نص إجباري)" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>الوجهة In (اختياري):</label>
+          <input type="text" id="addDayDestIn" placeholder="مثلاً: الفرع الرئيسي">
+        </div>
+        <div class="form-group">
+          <label>الوجهة Out (اختياري):</label>
+          <input type="text" id="addDayDestOut" placeholder="مثلاً: الفرع الرئيسي">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-add" id="confirmAddDayBtn">💾 حفظ اليوم</button>
+      <button class="btn btn-gray" onclick="closeAddDayModal()">❌ إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- 6️⃣ Modal حذف يوم لموظف -->
+<div id="deleteDayModal" class="modal" style="display:none;">
+  <div class="modal-overlay" onclick="closeDeleteDayModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🗑️ حذف يوم لموظف</h2>
+      <button class="modal-close" onclick="closeDeleteDayModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>اختر الموظف: <span style="color:var(--danger)">*</span></label>
+        <select id="deleteDayEmpSelect">
+          <option value="">-- اختر موظف --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>التاريخ المراد حذفه: <span style="color:var(--danger)">*</span></label>
+        <input type="date" id="deleteDayDate" required>
+      </div>
+      <div class="rename-warning">
+        ⚠️ تحذير: سيتم حذف جميع تسجيلات هذا الموظف في هذا اليوم المحدد نهائياً من قاعدة البيانات.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="confirmDeleteDayBtn">🗑️ حذف التسجيلات</button>
+      <button class="btn btn-gray" onclick="closeDeleteDayModal()">❌ إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <!-- Edit Modal -->
 <div id="editModal" class="modal" style="display:none;">
   <div class="modal-overlay" onclick="closeEditModal()"></div>
@@ -831,6 +1037,10 @@
         <input type="time" id="editCheckInTime">
       </div>
       <div class="form-group">
+        <label>مكان الحضور (Location In):</label>
+        <input type="text" id="editLocationIn">
+      </div>
+      <div class="form-group">
         <label>الوجهة In:</label>
         <input type="text" id="editDestIn">
       </div>
@@ -839,6 +1049,10 @@
       <div class="form-group">
         <label>وقت الانصراف:</label>
         <input type="time" id="editCheckOutTime">
+      </div>
+      <div class="form-group">
+        <label>مكان الانصراف (Location Out):</label>
+        <input type="text" id="editLocationOut">
       </div>
       <div class="form-group">
         <label>الوجهة Out:</label>
@@ -936,7 +1150,7 @@
   const DEFAULT_WORK_END_MINUTE = 0;
 
   // ============================================================
-  // DOM
+  // DOM Elements
   // ============================================================
   const loginScreen = document.getElementById('loginScreen');
   const appContent = document.getElementById('appContent');
@@ -951,6 +1165,9 @@
   const dailyTab = document.getElementById('dailyTab');
   const summaryTab = document.getElementById('summaryTab');
 
+  const periodFilterEl = document.getElementById('periodFilter');
+  const customFromGroup = document.getElementById('customFromGroup');
+  const customToGroup = document.getElementById('customToGroup');
   const dateFromEl = document.getElementById('dateFrom');
   const dateToEl = document.getElementById('dateTo');
   const nameFilterEl = document.getElementById('nameFilter');
@@ -967,6 +1184,10 @@
   const emptyState = document.getElementById('emptyState');
   const attendanceTable = document.getElementById('attendanceTable');
 
+  const exportEmployeeBtn = document.getElementById('exportEmployeeBtn');
+  const addDayBtn = document.getElementById('addDayBtn');
+  const deleteDayBtn = document.getElementById('deleteDayBtn');
+
   const summaryTable = document.getElementById('summaryTable');
   const summaryTableBody = document.getElementById('summaryTableBody');
   const summaryEmptyState = document.getElementById('summaryEmptyState');
@@ -976,26 +1197,118 @@
   const summaryMonthEl = document.getElementById('summaryMonth');
 
   let autoRefreshTimer = null;
-  let currentRecords = [];
-  let currentEditIndex = null;
+  let currentRenderedRows = [];
+  let currentEditRecord = null;
   let employeeSettingsCache = {};
+  let knownEmployeesSet = new Set();
 
   // ============================================================
-  // Helpers — normalize date to YYYY-MM-DD
+  // Helpers
   // ============================================================
   function normalizeDate(d) {
     if (!d) return null;
-    // لو Date object
     if (d instanceof Date) {
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
       return y + '-' + m + '-' + day;
     }
-    // لو String (خد أول 10 حروف YYYY-MM-DD)
     const s = String(d);
     if (s.length >= 10) return s.substring(0, 10);
     return s;
+  }
+
+  // إرجاع اسم اليوم بالعربية وما إذا كان عطلة (الجمعة أو السبت)
+  function getDayInfo(dateString) {
+    if (!dateString) return { dayName: '', isWeekend: false };
+    const parts = normalizeDate(dateString).split('-');
+    if (parts.length !== 3) return { dayName: '', isWeekend: false };
+    const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    const dayIndex = d.getDay(); // 0: Sunday, 1: Monday, ... 5: Friday, 6: Saturday
+    const dayNames = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    const isWeekend = (dayIndex === 5 || dayIndex === 6); // الجمعة والسبت
+    return {
+      dayName: dayNames[dayIndex] || '',
+      isWeekend: isWeekend
+    };
+  }
+
+  function getCairoTime(isoString) {
+    const d = new Date(isoString);
+    const formatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Africa/Cairo',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    const parts = formatter.formatToParts(d);
+    const hours = parseInt(parts.find(p => p.type === 'hour').value, 10);
+    const minutes = parseInt(parts.find(p => p.type === 'minute').value, 10);
+    return { hours, minutes, totalMinutes: hours * 60 + minutes };
+  }
+
+  function formatInOutTime(isoString) {
+    if (!isoString) return '';
+    const d = new Date(isoString);
+    return d.toLocaleTimeString('ar-EG', {
+      timeZone: 'Africa/Cairo',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
+
+  function formatWorkDate(dateString) {
+    if (!dateString) return '';
+    const parts = normalizeDate(dateString).split('-');
+    if (parts.length !== 3) return dateString;
+    return parts[2] + '-' + parts[1] + '-' + parts[0];
+  }
+
+  function formatDurationHHMM(totalMinutes) {
+    if (!totalMinutes || totalMinutes <= 0) return '00:00';
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+  }
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function buildMapsUrl(lat, lng) {
+    if (!lat || !lng) return '';
+    return 'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lng;
+  }
+
+  function setStatus(type, message) {
+    statusBanner.className = 'status-banner';
+    if (type === 'none') {
+      statusBanner.style.display = 'none';
+      statusBanner.textContent = '';
+      return;
+    }
+    statusBanner.classList.add(type);
+    statusBanner.textContent = message;
+  }
+
+  // توليد قائمة التواريخ بين تاريخين
+  function generateDatesList(fromDateStr, toDateStr) {
+    const list = [];
+    const [sy, sm, sd] = fromDateStr.split('-').map(Number);
+    const [ey, em, ed] = toDateStr.split('-').map(Number);
+
+    const curr = new Date(sy, sm - 1, sd);
+    const end = new Date(ey, em - 1, ed);
+
+    while (curr <= end) {
+      list.push(normalizeDate(curr));
+      curr.setDate(curr.getDate() + 1);
+    }
+    return list;
   }
 
   // ============================================================
@@ -1039,7 +1352,9 @@
 
       showAppContent();
       initSummaryMonths();
+      initExportEmpMonths();
       await loadEmployeeSettingsCache();
+      await fetchAllKnownEmployees();
       loadData(true);
       startAutoRefresh();
     } else {
@@ -1083,7 +1398,9 @@
         loginEmail.value = '';
         loginPassword.value = '';
         initSummaryMonths();
+        initExportEmpMonths();
         await loadEmployeeSettingsCache();
+        await fetchAllKnownEmployees();
         loadData(true);
         startAutoRefresh();
         loginBtn.disabled = false;
@@ -1114,14 +1431,11 @@
   }
 
   // ============================================================
-  // Employee Settings Cache — keyed by name|date (normalized)
+  // Employee Settings Cache & Known Employees
   // ============================================================
   async function loadEmployeeSettingsCache() {
     try {
-      const { data, error } = await supabase
-        .from(SETTINGS_TABLE)
-        .select('*');
-
+      const { data, error } = await supabase.from(SETTINGS_TABLE).select('*');
       if (error) throw error;
 
       employeeSettingsCache = {};
@@ -1129,37 +1443,65 @@
         const normalizedDate = normalizeDate(s.check_date);
         const key = s.name + '|' + (normalizedDate || 'DEFAULT');
         employeeSettingsCache[key] = s;
+        if (s.name) knownEmployeesSet.add(s.name.trim());
       });
-
-      console.log('Settings cache keys:', Object.keys(employeeSettingsCache));
-
     } catch (err) {
       console.warn('Failed to load settings:', err.message);
       employeeSettingsCache = {};
     }
   }
 
-  /**
-   * بيرجع إعدادات الموظف في يوم معين
-   */
+  async function fetchAllKnownEmployees() {
+    try {
+      const { data, error } = await supabase.from(VIEW_NAME).select('name');
+      if (!error && data) {
+        data.forEach(r => {
+          if (r.name) knownEmployeesSet.add(r.name.trim());
+        });
+      }
+      updateEmployeeDatalistsAndDropdowns();
+    } catch (err) {
+      console.warn('Could not fetch employee list:', err);
+    }
+  }
+
+  function updateEmployeeDatalistsAndDropdowns() {
+    const sorted = Array.from(knownEmployeesSet).filter(Boolean).sort((a, b) => a.localeCompare(b, 'ar'));
+
+    // Datalist لإضافة يوم
+    const datalist = document.getElementById('allEmployeesDatalist');
+    if (datalist) {
+      datalist.innerHTML = sorted.map(n => `<option value="${escapeHtml(n)}"></option>`).join('');
+    }
+
+    // Dropdown لحذف يوم
+    const deleteEmpSel = document.getElementById('deleteDayEmpSelect');
+    if (deleteEmpSel) {
+      const currentVal = deleteEmpSel.value;
+      deleteEmpSel.innerHTML = '<option value="">-- اختر موظف --</option>' +
+        sorted.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+      deleteEmpSel.value = currentVal;
+    }
+
+    // Dropdown لتحميل Excel موظف
+    const exportEmpSel = document.getElementById('exportEmpSelect');
+    if (exportEmpSel) {
+      const currentVal = exportEmpSel.value;
+      exportEmpSel.innerHTML = '<option value="">-- اختر موظف --</option>' +
+        sorted.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+      exportEmpSel.value = currentVal;
+    }
+  }
+
   function getEmployeeSettings(name, checkDate) {
     const normalizedDate = normalizeDate(checkDate);
-
-    // 1) إعدادات اليوم المحدد
     if (normalizedDate) {
       const dayKey = name + '|' + normalizedDate;
-      if (employeeSettingsCache[dayKey]) {
-        return employeeSettingsCache[dayKey];
-      }
+      if (employeeSettingsCache[dayKey]) return employeeSettingsCache[dayKey];
     }
-
-    // 2) إعدادات عامة للموظف
     const defaultKey = name + '|DEFAULT';
-    if (employeeSettingsCache[defaultKey]) {
-      return employeeSettingsCache[defaultKey];
-    }
+    if (employeeSettingsCache[defaultKey]) return employeeSettingsCache[defaultKey];
 
-    // 3) القيم الافتراضية
     return {
       work_start_hour: DEFAULT_WORK_START_HOUR,
       work_start_minute: DEFAULT_WORK_START_MINUTE,
@@ -1167,76 +1509,6 @@
       work_end_hour: DEFAULT_WORK_END_HOUR,
       work_end_minute: DEFAULT_WORK_END_MINUTE
     };
-  }
-
-  // ============================================================
-  // Query & Sorting
-  // ============================================================
-  function buildQuery() {
-    const fromDate = dateFromEl.value;
-    const toDate = dateToEl.value;
-    const name = nameFilterEl.value.trim();
-
-    let query = supabase.from(VIEW_NAME).select('*');
-
-    if (fromDate) query = query.gte('check_date', fromDate);
-    if (toDate) query = query.lte('check_date', toDate);
-    if (name) query = query.ilike('name', '%' + name + '%');
-
-    return query;
-  }
-
-  function sortRecords(records) {
-    const nameDir = nameSortEl.value === 'asc' ? 1 : -1;
-    const dateDir = dateSortEl.value === 'asc' ? 1 : -1;
-
-    return records.slice().sort(function (a, b) {
-      const nc = (a.name || '').localeCompare(b.name || '', 'ar');
-      if (nc !== 0) return nc * nameDir;
-      return (a.check_date || '').localeCompare(b.check_date || '') * dateDir;
-    });
-  }
-
-  // ============================================================
-  // Helpers
-  // ============================================================
-  function getCairoTime(isoString) {
-    const d = new Date(isoString);
-    const formatter = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Africa/Cairo',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-    const parts = formatter.formatToParts(d);
-    const hours = parseInt(parts.find(p => p.type === 'hour').value, 10);
-    const minutes = parseInt(parts.find(p => p.type === 'minute').value, 10);
-    return { hours, minutes, totalMinutes: hours * 60 + minutes };
-  }
-
-  function formatInOutTime(isoString) {
-    if (!isoString) return '';
-    const d = new Date(isoString);
-    return d.toLocaleTimeString('ar-EG', {
-      timeZone: 'Africa/Cairo',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  }
-
-  function formatWorkDate(dateString) {
-    if (!dateString) return '';
-    const parts = normalizeDate(dateString).split('-');
-    if (parts.length !== 3) return dateString;
-    return parts[2] + '-' + parts[1] + '-' + parts[0];
-  }
-
-  function formatDurationHHMM(totalMinutes) {
-    if (!totalMinutes || totalMinutes <= 0) return '00:00';
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    return String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
   }
 
   function calculateDelay(name, checkInIso, checkDate) {
@@ -1267,37 +1539,136 @@
     return extra;
   }
 
-  function setStatus(type, message) {
-    statusBanner.className = 'status-banner';
-    if (type === 'none') {
-      statusBanner.style.display = 'none';
-      statusBanner.textContent = '';
-      return;
+  // ============================================================
+  // 1️⃣ & 2️⃣ فترة الفلترة واسترجاع السجلات مع توليد جميع الأيام
+  // ============================================================
+  function getSelectedDateRange() {
+    const period = periodFilterEl.value;
+    const now = new Date();
+    const todayStr = normalizeDate(now);
+
+    if (period === 'today') {
+      return { fromDate: todayStr, toDate: todayStr };
+    } else if (period === 'month') {
+      const y = now.getFullYear();
+      const m = now.getMonth();
+      const firstDay = normalizeDate(new Date(y, m, 1));
+      const lastDay = normalizeDate(new Date(y, m + 1, 0));
+      return { fromDate: firstDay, toDate: lastDay };
+    } else {
+      // custom
+      let fromDate = dateFromEl.value || todayStr;
+      let toDate = dateToEl.value || todayStr;
+      if (fromDate > toDate) {
+        const tmp = fromDate; fromDate = toDate; toDate = tmp;
+      }
+      return { fromDate, toDate };
     }
-    statusBanner.classList.add(type);
-    statusBanner.textContent = message;
   }
 
-  function escapeHtml(str) {
-    if (str === null || str === undefined) return '';
-    return String(str)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
+  async function loadData(showLoadingState) {
+    if (showLoadingState) setStatus('loading', 'جاري التحميل...');
 
-  function buildMapsUrl(lat, lng) {
-    if (!lat || !lng) return '';
-    return 'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lng;
+    try {
+      await loadEmployeeSettingsCache();
+
+      const { fromDate, toDate } = getSelectedDateRange();
+      const nameSearch = nameFilterEl.value.trim();
+
+      // 1. استعلام التسجيلات الموجودة خلال الفترة
+      let query = supabase.from(VIEW_NAME).select('*');
+      if (fromDate) query = query.gte('check_date', fromDate);
+      if (toDate) query = query.lte('check_date', toDate);
+
+      const { data: dbRecords, error } = await query;
+      if (error) throw error;
+
+      // تحديث قائمة الموظفين المعروفين
+      (dbRecords || []).forEach(r => {
+        if (r.name) knownEmployeesSet.add(r.name.trim());
+      });
+      updateEmployeeDatalistsAndDropdowns();
+
+      // 2. تحديد قائمة الموظفين المستهدفين بالعرض
+      let employeesList = Array.from(knownEmployeesSet).filter(Boolean);
+      if (nameSearch) {
+        employeesList = employeesList.filter(name =>
+          name.toLowerCase().includes(nameSearch.toLowerCase())
+        );
+      }
+
+      // ترتيب قائمة الموظفين
+      const nameDir = nameSortEl.value === 'asc' ? 1 : -1;
+      employeesList.sort((a, b) => a.localeCompare(b, 'ar') * nameDir);
+
+      // 3. بناء خريطة للتسجيلات الفعلية (الاسم + التاريخ)
+      const existingMap = new Map();
+      (dbRecords || []).forEach(r => {
+        const key = r.name.trim() + '|' + normalizeDate(r.check_date);
+        existingMap.set(key, r);
+      });
+
+      // 4. توليد جميع الأيام لكل موظف
+      const allDates = generateDatesList(fromDate, toDate);
+      if (dateSortEl.value === 'desc') {
+        allDates.reverse();
+      }
+
+      const generatedRows = [];
+      employeesList.forEach(empName => {
+        allDates.forEach(dateStr => {
+          const key = empName + '|' + dateStr;
+          const found = existingMap.get(key);
+          const dayInfo = getDayInfo(dateStr);
+
+          if (found) {
+            generatedRows.push({
+              ...found,
+              name: empName,
+              check_date: dateStr,
+              dayName: dayInfo.dayName,
+              isWeekend: dayInfo.isWeekend,
+              hasRecord: true
+            });
+          } else {
+            // يوم بدون تسجيل
+            generatedRows.push({
+              name: empName,
+              check_date: dateStr,
+              dayName: dayInfo.dayName,
+              isWeekend: dayInfo.isWeekend,
+              hasRecord: false,
+              check_in_at: null,
+              check_out_at: null,
+              check_in_location: null,
+              check_in_lat: null,
+              check_in_lng: null,
+              destination_in: null,
+              check_out_location: null,
+              check_out_lat: null,
+              check_out_lng: null,
+              destination_out: null
+            });
+          }
+        });
+      });
+
+      renderTable(generatedRows);
+      setStatus('none', '');
+    } catch (err) {
+      console.error('Failed to load attendance data:', err);
+      setStatus('error', 'تعذر تحميل البيانات، حاول تاني');
+    }
   }
 
   // ============================================================
-  // Render Daily Table
+  // 3️⃣ رندرة الجدول بالألوان المناسبة وعمود اليوم
   // ============================================================
-  function renderTable(records) {
+  function renderTable(rows) {
     tableBody.innerHTML = '';
-    currentRecords = records;
+    currentRenderedRows = rows;
 
-    if (!records || records.length === 0) {
+    if (!rows || rows.length === 0) {
       attendanceTable.style.display = 'none';
       emptyState.style.display = 'block';
       counterBadge.textContent = 'عدد الصفوف: 0';
@@ -1309,8 +1680,20 @@
 
     const fragment = document.createDocumentFragment();
 
-    records.forEach(function (r, index) {
+    rows.forEach(function (r, index) {
       const tr = document.createElement('tr');
+
+      // تحديد لون الصف حسب المطلوب في البرومبت:
+      // - الجمعة والسبت بدون تسجيل: أزرق فاتح (.row-holiday)
+      // - باقي أيام الأسبوع بدون تسجيل: أحمر فاتح (.row-absence)
+      // - أيام الحضور (سواء عطلة أو عادي): عادي (.row-present)
+      if (r.hasRecord) {
+        tr.className = 'row-present';
+      } else if (r.isWeekend) {
+        tr.className = 'row-holiday';
+      } else {
+        tr.className = 'row-absence';
+      }
 
       const inTime = r.check_in_at ? formatInOutTime(r.check_in_at) : '';
       const outTime = r.check_out_at ? formatInOutTime(r.check_out_at) : '';
@@ -1318,19 +1701,26 @@
       const destIn = r.destination_in || '';
       const destOut = r.destination_out || '';
 
-      const delayMinutes = calculateDelay(r.name, r.check_in_at, r.check_date);
-      const overtimeMinutes = calculateOvertime(r.name, r.check_in_at, r.check_out_at, r.check_date);
+      const delayMinutes = r.hasRecord ? calculateDelay(r.name, r.check_in_at, r.check_date) : 0;
+      const overtimeMinutes = r.hasRecord ? calculateOvertime(r.name, r.check_in_at, r.check_out_at, r.check_date) : 0;
 
+      // Check In Cell
       const inCell = inTime
         ? '<span class="time-badge time-in">' + inTime + '</span>'
         : '—';
 
-      const outCell = outTime
-        ? '<span class="time-badge time-out">' + outTime + '</span>'
-        : '—';
-
-      const outTdClass = !outTime ? ' class="missing-cell"' : '';
-      const outTdContent = !outTime ? '—' : outCell;
+      // Check Out Cell
+      let outCell = '—';
+      let outTdClass = '';
+      if (r.hasRecord) {
+        if (outTime) {
+          outCell = '<span class="time-badge time-out">' + outTime + '</span>';
+        } else {
+          // لم يسجل انصراف وهو حاضر
+          outTdClass = ' class="missing-cell"';
+          outCell = '—';
+        }
+      }
 
       const inLocTextCell = inLoc
         ? '<span title="' + escapeHtml(inLoc) + '">' + escapeHtml(inLoc) + '</span>'
@@ -1339,62 +1729,497 @@
       let inMapsCell = '—';
       const inMapsUrl = buildMapsUrl(r.check_in_lat, r.check_in_lng);
       if (inMapsUrl) {
-        inMapsCell =
-          '<a class="location-link" href="' + inMapsUrl + '" target="_blank" rel="noopener noreferrer">🗺️ فتح الخريطة</a>';
+        inMapsCell = '<a class="location-link" href="' + inMapsUrl + '" target="_blank" rel="noopener noreferrer">🗺️ خريطة</a>';
       }
 
       let outMapsCell = '—';
       const outMapsUrl = buildMapsUrl(r.check_out_lat, r.check_out_lng);
       if (outMapsUrl) {
-        outMapsCell =
-          '<a class="location-link" href="' + outMapsUrl + '" target="_blank" rel="noopener noreferrer">🗺️ فتح الخريطة</a>';
+        outMapsCell = '<a class="location-link" href="' + outMapsUrl + '" target="_blank" rel="noopener noreferrer">🗺️ خريطة</a>';
       }
 
-      const destInCell = destIn
-        ? '<span title="' + escapeHtml(destIn) + '">' + escapeHtml(destIn) + '</span>'
-        : '—';
+      const destInCell = destIn ? '<span title="' + escapeHtml(destIn) + '">' + escapeHtml(destIn) + '</span>' : '—';
+      const destOutCell = destOut ? '<span title="' + escapeHtml(destOut) + '">' + escapeHtml(destOut) + '</span>' : '—';
 
-      const destOutCell = destOut
-        ? '<span title="' + escapeHtml(destOut) + '">' + escapeHtml(destOut) + '</span>'
-        : '—';
+      const delayCell = r.hasRecord && delayMinutes > 0
+        ? '<span class="delay-badge">' + formatDurationHHMM(delayMinutes) + '</span>'
+        : (r.hasRecord ? '00:00' : '—');
 
-      const delayCell = '<span class="delay-badge">' + formatDurationHHMM(delayMinutes) + '</span>';
-      const overtimeCell = '<span class="extra-badge">' + formatDurationHHMM(overtimeMinutes) + '</span>';
+      const overtimeCell = r.hasRecord && overtimeMinutes > 0
+        ? '<span class="extra-badge">' + formatDurationHHMM(overtimeMinutes) + '</span>'
+        : (r.hasRecord ? '00:00' : '—');
 
-      const editCell = '<button class="btn-edit" onclick="window.__openEdit(' + index + ')">✏️ تعديل</button>';
+      // زر الإجراء: إن كان مسجلاً يتيح تعديل، وإن كان فارغاً يتيح إضافة تسجيل لهذا اليوم
+      let actionCell = '';
+      if (r.hasRecord) {
+        actionCell = '<button class="btn-edit" onclick="window.__openEdit(' + index + ')">✏️ تعديل</button>';
+      } else {
+        actionCell = '<button class="btn-edit" style="background:#16a085;" onclick="window.__openAddForSpecificDay(\'' + escapeHtml(r.name) + '\', \'' + r.check_date + '\')">➕ تسجيل</button>';
+      }
 
       tr.innerHTML =
         '<td data-label="اسم الموظف" class="name-cell">' + escapeHtml(r.name) + '</td>' +
+        '<td data-label="اليوم" class="day-cell">' + escapeHtml(r.dayName) + '</td>' +
         '<td data-label="تاريخ العمل">' + formatWorkDate(r.check_date) + '</td>' +
         '<td data-label="Check In">' + inCell + '</td>' +
         '<td data-label="In Location" class="address-cell">' + inLocTextCell + '</td>' +
         '<td data-label="In Location Google Maps">' + inMapsCell + '</td>' +
         '<td data-label="الوجهة In" class="destination-cell">' + destInCell + '</td>' +
-        '<td data-label="Check Out"' + outTdClass + '>' + outTdContent + '</td>' +
+        '<td data-label="Check Out"' + outTdClass + '>' + outCell + '</td>' +
         '<td data-label="Out Location Google Maps">' + outMapsCell + '</td>' +
         '<td data-label="الوجهة Out" class="destination-cell">' + destOutCell + '</td>' +
         '<td data-label="Late Hours">' + delayCell + '</td>' +
         '<td data-label="Overtime">' + overtimeCell + '</td>' +
-        '<td data-label="تعديل">' + editCell + '</td>';
+        '<td data-label="الإجراء">' + actionCell + '</td>';
 
       fragment.appendChild(tr);
     });
 
     tableBody.appendChild(fragment);
-    counterBadge.textContent = 'عدد الصفوف: ' + records.length;
+    counterBadge.textContent = 'عدد الصفوف: ' + rows.length;
+  }
+
+  // ============================================================
+  // 4️⃣ تحميل ملف Excel لموظف محدد (ورقة واحدة بنفس الألوان)
+  // ============================================================
+  function initExportEmpMonths() {
+    const now = new Date();
+    const options = [];
+    for (let i = 0; i < 24; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const val = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      const label = d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' });
+      options.push({ val, label });
+    }
+    const select = document.getElementById('exportEmpMonth');
+    if (select) {
+      select.innerHTML = options.map(o => `<option value="${o.val}">${o.label}</option>`).join('');
+      select.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    }
+  }
+
+  window.openExportEmployeeModal = function () {
+    updateEmployeeDatalistsAndDropdowns();
+    document.getElementById('exportEmployeeModal').style.display = 'flex';
+  };
+
+  window.closeExportEmployeeModal = function () {
+    document.getElementById('exportEmployeeModal').style.display = 'none';
+  };
+
+  async function handleExportEmployeeExcel() {
+    const empName = document.getElementById('exportEmpSelect').value;
+    const monthVal = document.getElementById('exportEmpMonth').value;
+
+    if (!empName) {
+      alert('❌ يرجى اختيار الموظف أولاً');
+      return;
+    }
+    if (!monthVal) {
+      alert('❌ يرجى اختيار الشهر');
+      return;
+    }
+
+    const confirmBtn = document.getElementById('confirmExportEmpBtn');
+    const originalText = confirmBtn.textContent;
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = '⏳ جاري إنشاء الملف...';
+
+    try {
+      const [year, month] = monthVal.split('-').map(Number);
+      const firstDay = `${year}-${String(month).padStart(2, '0')}-01`;
+      const lastDayDate = new Date(year, month, 0);
+      const lastDay = `${year}-${String(month).padStart(2, '0')}-${String(lastDayDate.getDate()).padStart(2, '0')}`;
+
+      // جلب تسجيلات الموظف لهذا الشهر
+      const { data: dbData, error } = await supabase
+        .from(VIEW_NAME)
+        .select('*')
+        .eq('name', empName)
+        .gte('check_date', firstDay)
+        .lte('check_date', lastDay);
+
+      if (error) throw error;
+
+      await loadEmployeeSettingsCache();
+
+      const recMap = new Map();
+      (dbData || []).forEach(r => {
+        recMap.set(normalizeDate(r.check_date), r);
+      });
+
+      const allDates = generateDatesList(firstDay, lastDay);
+
+      // بناء ملف Excel بواسطة ExcelJS
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = 'Attendance System';
+      workbook.created = new Date();
+
+      const sheetName = (empName + ' - ' + monthVal).substring(0, 31);
+      const ws = workbook.addWorksheet(sheetName, { views: [{ rightToLeft: true }] });
+
+      ws.columns = [
+        { header: 'اسم الموظف', key: 'name', width: 22 },
+        { header: 'اليوم', key: 'day', width: 14 },
+        { header: 'تاريخ العمل', key: 'date', width: 16 },
+        { header: 'Check In', key: 'checkIn', width: 14 },
+        { header: 'In Location', key: 'inLocation', width: 36 },
+        { header: 'In Location Google Maps', key: 'inMaps', width: 24 },
+        { header: 'الوجهة In', key: 'destIn', width: 18 },
+        { header: 'Check Out', key: 'checkOut', width: 14 },
+        { header: 'Out Location Google Maps', key: 'outMaps', width: 24 },
+        { header: 'الوجهة Out', key: 'destOut', width: 18 },
+        { header: 'Late Hours', key: 'late', width: 14 },
+        { header: 'Overtime', key: 'overtime', width: 14 }
+      ];
+
+      // تنسيق صف الهيدر
+      const headerRow = ws.getRow(1);
+      headerRow.height = 30;
+      headerRow.eachCell(cell => {
+        cell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2C3E50' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC5C5F0' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FF8A8AC7' } },
+          bottom: { style: 'thin', color: { argb: 'FF8A8AC7' } },
+          left: { style: 'thin', color: { argb: 'FF8A8AC7' } },
+          right: { style: 'thin', color: { argb: 'FF8A8AC7' } }
+        };
+      });
+
+      allDates.forEach((dateStr, idx) => {
+        const dayInfo = getDayInfo(dateStr);
+        const r = recMap.get(dateStr);
+        const hasRec = !!r;
+
+        const inTime = hasRec && r.check_in_at ? formatInOutTime(r.check_in_at) : '';
+        const outTime = hasRec && r.check_out_at ? formatInOutTime(r.check_out_at) : '';
+        const inLoc = hasRec && r.check_in_location ? r.check_in_location : '';
+        const destIn = hasRec && r.destination_in ? r.destination_in : '';
+        const destOut = hasRec && r.destination_out ? r.destination_out : '';
+
+        const delayMin = hasRec ? calculateDelay(empName, r.check_in_at, dateStr) : 0;
+        const overtimeMin = hasRec ? calculateOvertime(empName, r.check_in_at, r.check_out_at, dateStr) : 0;
+
+        const inMapsUrl = hasRec ? buildMapsUrl(r.check_in_lat, r.check_in_lng) : '';
+        const outMapsUrl = hasRec ? buildMapsUrl(r.check_out_lat, r.check_out_lng) : '';
+
+        const row = ws.addRow({
+          name: empName,
+          day: dayInfo.dayName,
+          date: formatWorkDate(dateStr),
+          checkIn: inTime || '—',
+          inLocation: inLoc || '—',
+          inMaps: inMapsUrl ? 'فتح الخريطة' : '—',
+          destIn: destIn || '—',
+          checkOut: outTime || '—',
+          outMaps: outMapsUrl ? 'فتح الخريطة' : '—',
+          destOut: destOut || '—',
+          late: hasRec ? formatDurationHHMM(delayMin) : '—',
+          overtime: hasRec ? formatDurationHHMM(overtimeMin) : '—'
+        });
+
+        row.height = 24;
+
+        // تطبيق الألوان:
+        // جمعة وسبت بدون تسجيل: أزرق فاتح (FFDBEAFE)
+        // باقي أيام الأسبوع بدون تسجيل: أحمر فاتح (FFFEE2E2)
+        // أيام الحضور: أبيض / عادي
+        let rowBgArgb = 'FFFFFFFF';
+        let borderColorArgb = 'FFB8B8DD';
+
+        if (!hasRec) {
+          if (dayInfo.isWeekend) {
+            rowBgArgb = 'FFDBEAFE'; // أزرق فاتح
+            borderColorArgb = 'FFBFDBFE';
+          } else {
+            rowBgArgb = 'FFFEE2E2'; // أحمر فاتح
+            borderColorArgb = 'FFFECACA';
+          }
+        } else if (idx % 2 === 1) {
+          rowBgArgb = 'FFFAFAFF';
+        }
+
+        row.eachCell({ includeEmpty: true }, cell => {
+          cell.font = { name: 'Cairo', size: 11, color: { argb: 'FF2C3E50' } };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBgArgb } };
+          cell.border = {
+            top: { style: 'thin', color: { argb: borderColorArgb } },
+            bottom: { style: 'thin', color: { argb: borderColorArgb } },
+            left: { style: 'thin', color: { argb: borderColorArgb } },
+            right: { style: 'thin', color: { argb: borderColorArgb } }
+          };
+        });
+
+        if (hasRec) {
+          if (inTime) {
+            const inCell = row.getCell('checkIn');
+            inCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
+            inCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
+          }
+
+          const outCell = row.getCell('checkOut');
+          if (!outTime) {
+            outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE74C3C' } };
+            outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+          } else {
+            outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFE67E22' } };
+            outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF5E7' } };
+          }
+
+          if (delayMin > 0) {
+            const lateCell = row.getCell('late');
+            lateCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFC0392B' } };
+            lateCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
+          }
+
+          if (overtimeMin > 0) {
+            const extraCell = row.getCell('overtime');
+            extraCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
+            extraCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
+          }
+
+          if (inMapsUrl) {
+            const c = row.getCell('inMaps');
+            c.value = { text: 'فتح الخريطة', hyperlink: inMapsUrl };
+            c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
+          }
+
+          if (outMapsUrl) {
+            const c = row.getCell('outMaps');
+            c.value = { text: 'فتح الخريطة', hyperlink: outMapsUrl };
+            c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
+          }
+        }
+      });
+
+      ws.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
+      ws.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 12 } };
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `attendance-${empName}-${monthVal}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+
+      closeExportEmployeeModal();
+    } catch (err) {
+      console.error('Failed to export employee Excel:', err);
+      alert('❌ تعذر إنشاء ملف Excel: ' + (err.message || ''));
+    } finally {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = originalText;
+    }
+  }
+
+  // ============================================================
+  // 5️⃣ زرار "إضافة يوم" (جديد)
+  // ============================================================
+  window.openAddDayModal = function () {
+    updateEmployeeDatalistsAndDropdowns();
+    document.getElementById('addDayName').value = '';
+    document.getElementById('addDayDate').value = normalizeDate(new Date());
+    document.getElementById('addDayCheckIn').value = '10:00';
+    document.getElementById('addDayCheckOut').value = '18:00';
+    document.getElementById('addDayLocationIn').value = '';
+    document.getElementById('addDayLocationOut').value = '';
+    document.getElementById('addDayDestIn').value = '';
+    document.getElementById('addDayDestOut').value = '';
+    document.getElementById('addDayModal').style.display = 'flex';
+  };
+
+  window.__openAddForSpecificDay = function (empName, dateStr) {
+    window.openAddDayModal();
+    document.getElementById('addDayName').value = empName || '';
+    document.getElementById('addDayDate').value = normalizeDate(dateStr) || '';
+  };
+
+  window.closeAddDayModal = function () {
+    document.getElementById('addDayModal').style.display = 'none';
+  };
+
+   async function handleConfirmAddDay() {
+    const name = document.getElementById('addDayName').value.trim();
+    const date = document.getElementById('addDayDate').value;
+    const checkInTime = document.getElementById('addDayCheckIn').value;
+    const checkOutTime = document.getElementById('addDayCheckOut').value;
+    const locIn = document.getElementById('addDayLocationIn').value.trim();
+    const locOut = document.getElementById('addDayLocationOut').value.trim();
+    const destIn = document.getElementById('addDayDestIn').value.trim();
+    const destOut = document.getElementById('addDayDestOut').value.trim();
+
+    if (!name) { alert('❌ اسم الموظف مطلوب'); return; }
+    if (!date) { alert('❌ التاريخ مطلوب'); return; }
+    if (!checkInTime) { alert('❌ وقت الحضور (Check In) مطلوب'); return; }
+    if (!checkOutTime) { alert('❌ وقت الانصراف (Check Out) مطلوب'); return; }
+    if (!locIn) { alert('❌ مكان الحضور (Location In) إجباري'); return; }
+    if (!locOut) { alert('❌ مكان الانصراف (Location Out) إجباري'); return; }
+
+    const saveBtn = document.getElementById('confirmAddDayBtn');
+    const originalText = saveBtn.textContent;
+    saveBtn.disabled = true;
+    saveBtn.textContent = '⏳ جاري الحفظ...';
+
+    try {
+      // 1. التحقق مما إذا كان الموظف مسجلاً بالفعل في هذا اليوم
+      const { data: existingRecords, error: checkErr } = await supabase
+        .from(TABLE_NAME)
+        .select('id')
+        .eq('name', name)
+        .eq('check_date', date);
+
+      if (checkErr) throw checkErr;
+
+      if (existingRecords && existingRecords.length > 0) {
+        const replace = confirm(
+          '⚠️ تنبيه: الموظف مسجل بالفعل في هذا اليوم (' + date + ').\n\n' +
+          'هل تريد استبدال البيانات القديمة بالجديدة؟'
+        );
+        if (!replace) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = originalText;
+          return;
+        }
+
+        // 2. حذف التسجيلات القديمة لنفس اليوم والموظف لو وافق على الاستبدال
+        const { error: delErr } = await supabase
+          .from(TABLE_NAME)
+          .delete()
+          .eq('name', name)
+          .eq('check_date', date);
+
+        if (delErr) throw delErr;
+      }
+
+      // 3. تجهيز توقيتات الحضور والانصراف بتوقيت القاهرة
+      const inIso = date + 'T' + checkInTime + ':00+03:00';
+      const outIso = date + 'T' + checkOutTime + ':00+03:00';
+
+      // 🔍 4. الخطوة الأهم: معرفة اسم عمود العنوان الفعلي في قاعدة البيانات
+      const { data: sampleList } = await supabase.from(TABLE_NAME).select('*').limit(1);
+      let addressColName = 'full_address'; // الافتراضي
+      
+      if (sampleList && sampleList.length > 0) {
+        const s = sampleList[0];
+        if ('full_address' in s) addressColName = 'full_address';
+        else if ('location' in s) addressColName = 'location';
+        else if ('check_in_location' in s) addressColName = 'check_in_location';
+      }
+
+      // 5. تجهيز البيانات للحفظ
+      const recordIn = {
+        name: name,
+        check_date: date,
+        check_type: 'in',
+        created_at: inIso,
+        destination: destIn || null
+      };
+      recordIn[addressColName] = locIn; // استخدام العمود الصحيح
+
+      const recordOut = {
+        name: name,
+        check_date: date,
+        check_type: 'out',
+        created_at: outIso,
+        destination: destOut || null
+      };
+      recordOut[addressColName] = locOut; // استخدام العمود الصحيح
+
+      // 6. حفظ البيانات في الداتابيز
+      const { error: insErr } = await supabase
+        .from(TABLE_NAME)
+        .insert([recordIn, recordOut]);
+
+      if (insErr) throw insErr;
+
+      // إضافة الموظف إلى قائمة الموظفين المعروفين إذا كان جديداً
+      knownEmployeesSet.add(name);
+      updateEmployeeDatalistsAndDropdowns();
+
+      alert('✅ تم حفظ بيانات اليوم بنجاح للموظف ' + name);
+      closeAddDayModal();
+      await loadData(true);
+
+    } catch (err) {
+      console.error('Failed to add day:', err);
+      alert('❌ تعذر الحفظ: ' + (err.message || ''));
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = originalText;
+    }
+  }
+  // ============================================================
+  // 6️⃣ زرار "حذف يوم" (جديد)
+  // ============================================================
+  window.openDeleteDayModal = function () {
+    updateEmployeeDatalistsAndDropdowns();
+    document.getElementById('deleteDayDate').value = normalizeDate(new Date());
+    document.getElementById('deleteDayModal').style.display = 'flex';
+  };
+
+  window.closeDeleteDayModal = function () {
+    document.getElementById('deleteDayModal').style.display = 'none';
+  };
+
+  async function handleConfirmDeleteDay() {
+    const empName = document.getElementById('deleteDayEmpSelect').value;
+    const date = document.getElementById('deleteDayDate').value;
+
+    if (!empName) { alert('❌ اختر الموظف'); return; }
+    if (!date) { alert('❌ اختر التاريخ'); return; }
+
+    const confirmed = confirm(
+      '⚠️ تحذير!\n\n' +
+      'هل أنت متأكد من مسح جميع تسجيلات الموظف:\n"' + empName + '"\nفي يوم: ' + date + '؟\n\n' +
+      'هذا الحذف نهائي ولا يمكن التراجع عنه.'
+    );
+    if (!confirmed) return;
+
+    const delBtn = document.getElementById('confirmDeleteDayBtn');
+    const originalText = delBtn.textContent;
+    delBtn.disabled = true;
+    delBtn.textContent = '⏳ جاري الحذف...';
+
+    try {
+      const { count, error } = await supabase
+        .from(TABLE_NAME)
+        .delete({ count: 'exact' })
+        .eq('name', empName)
+        .eq('check_date', date);
+
+      if (error) throw error;
+
+      alert('✅ تم مسح تسجيلات الموظف ' + empName + ' في يوم ' + date + ' بنجاح');
+      closeDeleteDayModal();
+      await loadData(true);
+
+    } catch (err) {
+      console.error('Failed to delete day:', err);
+      alert('❌ تعذر مسح اليوم: ' + (err.message || ''));
+    } finally {
+      delBtn.disabled = false;
+      delBtn.textContent = originalText;
+    }
   }
 
   // ============================================================
   // Edit Modal
   // ============================================================
   window.__openEdit = function (index) {
-    const record = currentRecords[index];
+    const record = currentRenderedRows[index];
     if (!record) {
       console.error('Record not found at index', index);
       return;
     }
 
-    currentEditIndex = index;
+    currentEditRecord = record;
 
     document.getElementById('editName').value = record.name || '';
     document.getElementById('editDate').value = normalizeDate(record.check_date) || '';
@@ -1408,6 +2233,7 @@
     } else {
       document.getElementById('editCheckInTime').value = '';
     }
+    document.getElementById('editLocationIn').value = record.check_in_location || '';
     document.getElementById('editDestIn').value = record.destination_in || '';
 
     if (record.check_out_at) {
@@ -1419,9 +2245,10 @@
     } else {
       document.getElementById('editCheckOutTime').value = '';
     }
+    document.getElementById('editLocationOut').value = record.check_out_location || '';
     document.getElementById('editDestOut').value = record.destination_out || '';
 
-    // إعدادات الموظف في اليوم ده
+    // إعدادات الموظف في هذا اليوم
     const settings = getEmployeeSettings(record.name, record.check_date);
     const startHH = String(settings.work_start_hour).padStart(2, '0');
     const startMM = String(settings.work_start_minute).padStart(2, '0');
@@ -1437,21 +2264,16 @@
 
   window.closeEditModal = function () {
     document.getElementById('editModal').style.display = 'none';
-    currentEditIndex = null;
+    currentEditRecord = null;
   };
 
   window.saveEdit = async function () {
-    if (currentEditIndex === null) {
+    if (!currentEditRecord) {
       alert('❌ مفيش تسجيل محدد');
       return;
     }
 
-    const record = currentRecords[currentEditIndex];
-    if (!record) {
-      alert('❌ التسجيل مش موجود');
-      return;
-    }
-
+    const record = currentEditRecord;
     const saveBtn = document.getElementById('saveEditBtn');
     const originalText = saveBtn.textContent;
     saveBtn.disabled = true;
@@ -1459,9 +2281,11 @@
 
     try {
       const newName = document.getElementById('editName').value.trim();
-      const newDate = document.getElementById('editDate').value; // YYYY-MM-DD
+      const newDate = document.getElementById('editDate').value;
       const newCheckInTime = document.getElementById('editCheckInTime').value;
       const newCheckOutTime = document.getElementById('editCheckOutTime').value;
+      const newLocIn = document.getElementById('editLocationIn').value.trim();
+      const newLocOut = document.getElementById('editLocationOut').value.trim();
       const newDestIn = document.getElementById('editDestIn').value.trim();
       const newDestOut = document.getElementById('editDestOut').value.trim();
 
@@ -1469,24 +2293,13 @@
       const newGrace = parseInt(document.getElementById('editGraceMinutes').value, 10) || 0;
       const newWorkEnd = document.getElementById('editWorkEnd').value;
 
-      if (!newName) { 
-        alert('❌ الاسم مطلوب'); 
-        saveBtn.disabled = false;
-        saveBtn.textContent = originalText;
-        return; 
-      }
-      if (!newDate) { 
-        alert('❌ التاريخ مطلوب'); 
-        saveBtn.disabled = false;
-        saveBtn.textContent = originalText;
-        return; 
-      }
+      if (!newName) { alert('❌ الاسم مطلوب'); saveBtn.disabled = false; saveBtn.textContent = originalText; return; }
+      if (!newDate) { alert('❌ التاريخ مطلوب'); saveBtn.disabled = false; saveBtn.textContent = originalText; return; }
 
-      // ⚠️ مهم: نستخدم التاريخ الأصلي (normalized) للبحث عن الإعدادات
       const originalName = record.name;
       const originalDate = normalizeDate(record.check_date);
 
-      // ===== 1. تحديث التسجيل في جدول attendance =====
+      // 1. تحديث صف Check In
       if (record.check_in_id) {
         const updateIn = {
           name: newName,
@@ -1496,13 +2309,14 @@
         if (newCheckInTime) {
           updateIn.created_at = newDate + 'T' + newCheckInTime + ':00+03:00';
         }
-        const { error: err1 } = await supabase
-          .from(TABLE_NAME)
-          .update(updateIn)
-          .eq('id', record.check_in_id);
+        if (newLocIn) {
+          updateIn.location = newLocIn;
+        }
+        const { error: err1 } = await supabase.from(TABLE_NAME).update(updateIn).eq('id', record.check_in_id);
         if (err1) throw err1;
       }
 
+      // 2. تحديث صف Check Out
       if (record.check_out_id) {
         const updateOut = {
           name: newName,
@@ -1512,19 +2326,18 @@
         if (newCheckOutTime) {
           updateOut.created_at = newDate + 'T' + newCheckOutTime + ':00+03:00';
         }
-        const { error: err2 } = await supabase
-          .from(TABLE_NAME)
-          .update(updateOut)
-          .eq('id', record.check_out_id);
+        if (newLocOut) {
+          updateOut.location = newLocOut;
+        }
+        const { error: err2 } = await supabase.from(TABLE_NAME).update(updateOut).eq('id', record.check_out_id);
         if (err2) throw err2;
       }
 
-      // ===== 2. تحديث مواعيد العمل (للاسم + اليوم) =====
+      // 3. تحديث إعدادات مواعيد العمل لهذا اليوم
       if (newWorkStart && newWorkEnd && originalDate) {
         const [startH, startM] = newWorkStart.split(':').map(Number);
         const [endH, endM] = newWorkEnd.split(':').map(Number);
 
-        // ندور على سجل بنفس الاسم + نفس التاريخ
         const { data: existing, error: findErr } = await supabase
           .from(SETTINGS_TABLE)
           .select('id')
@@ -1532,15 +2345,14 @@
           .eq('check_date', originalDate)
           .maybeSingle();
 
-        if (findErr) {
-          console.warn('Find settings error:', findErr.message);
-        }
+        if (findErr) console.warn('Find settings error:', findErr.message);
 
         if (existing) {
-          // تحديث
           const { error: err3 } = await supabase
             .from(SETTINGS_TABLE)
             .update({
+              name: newName,
+              check_date: newDate,
               work_start_hour: startH,
               work_start_minute: startM,
               grace_minutes: newGrace,
@@ -1551,12 +2363,11 @@
             .eq('id', existing.id);
           if (err3) throw err3;
         } else {
-          // إدراج جديد
           const { error: err4 } = await supabase
             .from(SETTINGS_TABLE)
             .insert({
-              name: originalName,
-              check_date: originalDate,
+              name: newName,
+              check_date: newDate,
               work_start_hour: startH,
               work_start_minute: startM,
               grace_minutes: newGrace,
@@ -1567,10 +2378,9 @@
         }
       }
 
-      alert('✅ تم حفظ التعديلات');
-      
+      alert('✅ تم حفظ التعديلات بنجاح');
       await loadEmployeeSettingsCache();
-      window.closeEditModal();
+      closeEditModal();
       await loadData(true);
 
     } catch (err) {
@@ -1591,6 +2401,7 @@
       if (error) throw error;
 
       const uniqueNames = Array.from(new Set(data.map(r => r.name)))
+        .filter(Boolean)
         .sort((a, b) => a.localeCompare(b, 'ar'));
 
       const select = document.getElementById('renameOldName');
@@ -1667,9 +2478,13 @@
         .update({ name: newName })
         .eq('name', oldName);
 
+      knownEmployeesSet.delete(oldName);
+      knownEmployeesSet.add(newName);
+      updateEmployeeDatalistsAndDropdowns();
+
       alert('✅ تم توحيد الأسماء بنجاح');
       await loadEmployeeSettingsCache();
-      window.closeRenameModal();
+      closeRenameModal();
       await loadData(true);
 
     } catch (err) {
@@ -1682,7 +2497,7 @@
   };
 
   // ============================================================
-  // Summary
+  // Summary Tab
   // ============================================================
   function initSummaryMonths() {
     const now = new Date();
@@ -1748,27 +2563,6 @@
     });
   }
 
-  // ============================================================
-  // Load
-  // ============================================================
-  async function loadData(showLoadingState) {
-    if (showLoadingState) setStatus('loading', 'جاري التحميل...');
-
-    try {
-      await loadEmployeeSettingsCache();
-
-      const { data, error } = await buildQuery();
-      if (error) throw error;
-
-      const sorted = sortRecords(data || []);
-      renderTable(sorted);
-      setStatus('none', '');
-    } catch (err) {
-      console.error('Failed to load attendance data:', err);
-      setStatus('error', 'تعذر تحميل البيانات، حاول تاني');
-    }
-  }
-
   async function loadSummary() {
     try {
       const monthValue = summaryMonthEl.value;
@@ -1795,17 +2589,8 @@
     }
   }
 
-  function resetFilters() {
-    dateFromEl.value = '';
-    dateToEl.value = '';
-    nameFilterEl.value = '';
-    dateSortEl.value = 'asc';
-    nameSortEl.value = 'asc';
-    loadData(true);
-  }
-
   // ============================================================
-  // Delete old records
+  // Delete Old Records
   // ============================================================
   async function deleteOldRecords() {
     const { data: { session } } = await supabase.auth.getSession();
@@ -1878,7 +2663,7 @@
   }
 
   // ============================================================
-  // Excel Export
+  // Excel Export العام
   // ============================================================
   async function exportExcel() {
     const originalText = exportBtn.textContent;
@@ -1886,12 +2671,7 @@
     exportBtn.textContent = '⏳ جاري التحضير...';
 
     try {
-      const { data, error } = await buildQuery();
-      if (error) throw error;
-
-      const sorted = sortRecords(data || []);
-
-      if (sorted.length === 0) {
+      if (!currentRenderedRows || currentRenderedRows.length === 0) {
         alert('لا توجد بيانات لتصديرها');
         exportBtn.disabled = false;
         exportBtn.textContent = originalText;
@@ -1907,15 +2687,16 @@
       });
 
       ws1.columns = [
-        { header: 'اسم الموظف', key: 'name', width: 24 },
+        { header: 'اسم الموظف', key: 'name', width: 22 },
+        { header: 'اليوم', key: 'day', width: 14 },
         { header: 'تاريخ العمل', key: 'date', width: 16 },
         { header: 'Check In', key: 'checkIn', width: 14 },
-        { header: 'In Location', key: 'inLocation', width: 38 },
-        { header: 'In Location Google Maps', key: 'inMaps', width: 28 },
-        { header: 'الوجهة In', key: 'destIn', width: 20 },
+        { header: 'In Location', key: 'inLocation', width: 36 },
+        { header: 'In Location Google Maps', key: 'inMaps', width: 24 },
+        { header: 'الوجهة In', key: 'destIn', width: 18 },
         { header: 'Check Out', key: 'checkOut', width: 14 },
-        { header: 'Out Location Google Maps', key: 'outMaps', width: 28 },
-        { header: 'الوجهة Out', key: 'destOut', width: 20 },
+        { header: 'Out Location Google Maps', key: 'outMaps', width: 24 },
+        { header: 'الوجهة Out', key: 'destOut', width: 18 },
         { header: 'Late Hours', key: 'late', width: 14 },
         { header: 'Overtime', key: 'overtime', width: 14 }
       ];
@@ -1934,20 +2715,21 @@
         };
       });
 
-      sorted.forEach(function (r, index) {
-        const inTime = r.check_in_at ? formatInOutTime(r.check_in_at) : '';
-        const outTime = r.check_out_at ? formatInOutTime(r.check_out_at) : '';
-        const inLoc = r.check_in_location || '';
-        const destIn = r.destination_in || '';
-        const destOut = r.destination_out || '';
-        const delayMin = calculateDelay(r.name, r.check_in_at, r.check_date);
-        const overtimeMin = calculateOvertime(r.name, r.check_in_at, r.check_out_at, r.check_date);
+      currentRenderedRows.forEach(function (r, index) {
+        const inTime = r.hasRecord && r.check_in_at ? formatInOutTime(r.check_in_at) : '';
+        const outTime = r.hasRecord && r.check_out_at ? formatInOutTime(r.check_out_at) : '';
+        const inLoc = r.hasRecord && r.check_in_location ? r.check_in_location : '';
+        const destIn = r.hasRecord && r.destination_in ? r.destination_in : '';
+        const destOut = r.hasRecord && r.destination_out ? r.destination_out : '';
+        const delayMin = r.hasRecord ? calculateDelay(r.name, r.check_in_at, r.check_date) : 0;
+        const overtimeMin = r.hasRecord ? calculateOvertime(r.name, r.check_in_at, r.check_out_at, r.check_date) : 0;
 
-        const inMapsUrl = buildMapsUrl(r.check_in_lat, r.check_in_lng);
-        const outMapsUrl = buildMapsUrl(r.check_out_lat, r.check_out_lng);
+        const inMapsUrl = r.hasRecord ? buildMapsUrl(r.check_in_lat, r.check_in_lng) : '';
+        const outMapsUrl = r.hasRecord ? buildMapsUrl(r.check_out_lat, r.check_out_lng) : '';
 
         const row = ws1.addRow({
           name: r.name,
+          day: r.dayName,
           date: formatWorkDate(r.check_date),
           checkIn: inTime || '—',
           inLocation: inLoc || '—',
@@ -1956,76 +2738,86 @@
           checkOut: outTime || '—',
           outMaps: outMapsUrl ? 'فتح الخريطة' : '—',
           destOut: destOut || '—',
-          late: formatDurationHHMM(delayMin),
-          overtime: formatDurationHHMM(overtimeMin)
+          late: r.hasRecord ? formatDurationHHMM(delayMin) : '—',
+          overtime: r.hasRecord ? formatDurationHHMM(overtimeMin) : '—'
         });
 
         row.height = 24;
 
+        let rowBg = 'FFFFFFFF';
+        let rowBorder = 'FFB8B8DD';
+        if (!r.hasRecord) {
+          if (r.isWeekend) {
+            rowBg = 'FFDBEAFE'; // أزرق فاتح
+            rowBorder = 'FFBFDBFE';
+          } else {
+            rowBg = 'FFFEE2E2'; // أحمر فاتح
+            rowBorder = 'FFFECACA';
+          }
+        } else if (index % 2 === 1) {
+          rowBg = 'FFFAFAFF';
+        }
+
         row.eachCell({ includeEmpty: true }, function (cell) {
           cell.font = { name: 'Cairo', size: 11, color: { argb: 'FF2C3E50' } };
           cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: rowBg } };
           cell.border = {
-            top: { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            bottom: { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            left: { style: 'thin', color: { argb: 'FFB8B8DD' } },
-            right: { style: 'thin', color: { argb: 'FFB8B8DD' } }
+            top: { style: 'thin', color: { argb: rowBorder } },
+            bottom: { style: 'thin', color: { argb: rowBorder } },
+            left: { style: 'thin', color: { argb: rowBorder } },
+            right: { style: 'thin', color: { argb: rowBorder } }
           };
-          if (index % 2 === 1) {
-            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFF' } };
-          }
         });
 
-        const inCell = row.getCell('checkIn');
-        if (inTime) {
-          inCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
-          inCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
-        }
+        if (r.hasRecord) {
+          if (inTime) {
+            const inCell = row.getCell('checkIn');
+            inCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
+            inCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
+          }
 
-        const outCell = row.getCell('checkOut');
-        if (!outTime) {
-          outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE74C3C' } };
-          outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
-        } else {
-          outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFE67E22' } };
-          outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF5E7' } };
-        }
+          const outCell = row.getCell('checkOut');
+          if (!outTime) {
+            outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE74C3C' } };
+            outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+          } else {
+            outCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFE67E22' } };
+            outCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFEF5E7' } };
+          }
 
-        if (inMapsUrl) {
-          const c = row.getCell('inMaps');
-          c.value = { text: 'فتح الخريطة', hyperlink: inMapsUrl };
-          c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
-        }
+          if (delayMin > 0) {
+            const lateCell = row.getCell('late');
+            lateCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFC0392B' } };
+            lateCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
+          }
 
-        if (outMapsUrl) {
-          const c = row.getCell('outMaps');
-          c.value = { text: 'فتح الخريطة', hyperlink: outMapsUrl };
-          c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
-        }
+          if (overtimeMin > 0) {
+            const extraCell = row.getCell('overtime');
+            extraCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
+            extraCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
+          }
 
-        const lateCell = row.getCell('late');
-        if (delayMin > 0) {
-          lateCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FFC0392B' } };
-          lateCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
-        }
+          if (inMapsUrl) {
+            const c = row.getCell('inMaps');
+            c.value = { text: 'فتح الخريطة', hyperlink: inMapsUrl };
+            c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
+          }
 
-        const overtimeCell = row.getCell('overtime');
-        if (overtimeMin > 0) {
-          overtimeCell.font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF1E8449' } };
-          overtimeCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
+          if (outMapsUrl) {
+            const c = row.getCell('outMaps');
+            c.value = { text: 'فتح الخريطة', hyperlink: outMapsUrl };
+            c.font = { name: 'Cairo', size: 11, color: { argb: 'FF2980B9' }, underline: true };
+          }
         }
-
-        row.getCell('name').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2C3E50' } };
-        row.getCell('inLocation').font = { name: 'Cairo', size: 10, color: { argb: 'FF555555' } };
-        row.getCell('inLocation').alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
-        row.getCell('destIn').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2980B9' } };
-        row.getCell('destOut').font = { name: 'Cairo', size: 11, bold: true, color: { argb: 'FF2980B9' } };
       });
 
       ws1.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
-      ws1.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 11 } };
+      ws1.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 12 } };
 
-      const summary = buildSummary(sorted);
+      // شيت الملخص
+      const activeRecordsOnly = currentRenderedRows.filter(r => r.hasRecord);
+      const summary = buildSummary(activeRecordsOnly);
 
       const ws2 = workbook.addWorksheet('Summary', {
         views: [{ rightToLeft: true }]
@@ -2075,42 +2867,16 @@
             cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFAFAFF' } };
           }
         });
-
-        const nameCell = row.getCell('name');
-        nameCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2C3E50' } };
-        nameCell.alignment = { horizontal: 'right', vertical: 'middle' };
-
-        const daysCell = row.getCell('days');
-        daysCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF2980B9' } };
-
-        const delayCell = row.getCell('delay');
-        if (s.totalDelay > 0) {
-          delayCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FFC0392B' } };
-          delayCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFDECEA' } };
-        }
-
-        const overtimeCell = row.getCell('overtime');
-        if (s.totalOvertime > 0) {
-          overtimeCell.font = { name: 'Cairo', size: 12, bold: true, color: { argb: 'FF1E8449' } };
-          overtimeCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F8F0' } };
-        }
       });
 
       ws2.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
       ws2.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 4 } };
 
       const buffer = await workbook.xlsx.writeBuffer();
-      const blob = new Blob([buffer], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      });
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-      const fromDate = dateFromEl.value;
-      const toDate = dateToEl.value;
-      let fileName;
-      if (fromDate && toDate) fileName = 'attendance-' + fromDate + '-to-' + toDate + '.xlsx';
-      else if (fromDate) fileName = 'attendance-from-' + fromDate + '.xlsx';
-      else if (toDate) fileName = 'attendance-until-' + toDate + '.xlsx';
-      else fileName = 'attendance-all-' + new Date().toISOString().slice(0, 10) + '.xlsx';
+      const { fromDate, toDate } = getSelectedDateRange();
+      const fileName = `attendance-${fromDate}-to-${toDate}.xlsx`;
 
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -2120,22 +2886,17 @@
       document.body.removeChild(link);
       URL.revokeObjectURL(link.href);
 
-      exportBtn.disabled = false;
-      exportBtn.textContent = originalText;
     } catch (err) {
       console.error('Failed to export Excel file:', err);
       alert('تعذر إنشاء ملف Excel');
+    } finally {
       exportBtn.disabled = false;
       exportBtn.textContent = originalText;
     }
   }
 
-  async function exportSummaryExcel() {
-    return exportExcel();
-  }
-
   // ============================================================
-  // Auto refresh
+  // Auto Refresh & Period Selector
   // ============================================================
   function startAutoRefresh() {
     if (autoRefreshTimer) clearInterval(autoRefreshTimer);
@@ -2146,13 +2907,39 @@
     }, AUTO_REFRESH_INTERVAL_MS);
   }
 
+  function handlePeriodChange() {
+    const val = periodFilterEl.value;
+    if (val === 'custom') {
+      customFromGroup.style.display = 'flex';
+      customToGroup.style.display = 'flex';
+      const todayStr = normalizeDate(new Date());
+      if (!dateFromEl.value) dateFromEl.value = todayStr;
+      if (!dateToEl.value) dateToEl.value = todayStr;
+    } else {
+      customFromGroup.style.display = 'none';
+      customToGroup.style.display = 'none';
+      loadData(true);
+    }
+  }
+
+  function resetFilters() {
+    periodFilterEl.value = 'today';
+    customFromGroup.style.display = 'none';
+    customToGroup.style.display = 'none';
+    dateFromEl.value = '';
+    dateToEl.value = '';
+    nameFilterEl.value = '';
+    dateSortEl.value = 'asc';
+    nameSortEl.value = 'asc';
+    loadData(true);
+  }
+
   // ============================================================
-  // Tabs
+  // Tabs Navigation
   // ============================================================
   document.querySelectorAll('.tab-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
       const tab = btn.getAttribute('data-tab');
-
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
@@ -2169,7 +2956,7 @@
   });
 
   // ============================================================
-  // Events
+  // Event Listeners
   // ============================================================
   loginForm.addEventListener('submit', handleLogin);
   logoutBtn.addEventListener('click', handleLogout);
@@ -2180,23 +2967,36 @@
     }
   });
 
+  periodFilterEl.addEventListener('change', handlePeriodChange);
   applyBtn.addEventListener('click', function () { loadData(true); });
   resetBtn.addEventListener('click', resetFilters);
   exportBtn.addEventListener('click', exportExcel);
   renameBtn.addEventListener('click', openRenameModal);
   deleteOldBtn.addEventListener('click', deleteOldRecords);
 
+  exportEmployeeBtn.addEventListener('click', openExportEmployeeModal);
+  document.getElementById('confirmExportEmpBtn').addEventListener('click', handleExportEmployeeExcel);
+
+  addDayBtn.addEventListener('click', openAddDayModal);
+  document.getElementById('confirmAddDayBtn').addEventListener('click', handleConfirmAddDay);
+
+  deleteDayBtn.addEventListener('click', openDeleteDayModal);
+  document.getElementById('confirmDeleteDayBtn').addEventListener('click', handleConfirmDeleteDay);
+
   dateSortEl.addEventListener('change', function () { loadData(false); });
   nameSortEl.addEventListener('change', function () { loadData(false); });
 
+  // تصفية فورية بالاسم عند الكتابة
+  nameFilterEl.addEventListener('input', function () { loadData(false); });
+
   summaryRefreshBtn.addEventListener('click', loadSummary);
-  summaryExportBtn.addEventListener('click', exportSummaryExcel);
+  summaryExportBtn.addEventListener('click', exportExcel);
   summaryMonthEl.addEventListener('change', loadSummary);
 
   document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
 
   // ============================================================
-  // Init
+  // App Start
   // ============================================================
   checkSession();
 })();
