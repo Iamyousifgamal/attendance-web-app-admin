@@ -1145,7 +1145,7 @@
 
   const DEFAULT_WORK_START_HOUR = 10;
   const DEFAULT_WORK_START_MINUTE = 0;
-  const DEFAULT_GRACE_MINUTES = 10;
+  const DEFAULT_GRACE_MINUTES = 0;
   const DEFAULT_WORK_END_HOUR = 18;
   const DEFAULT_WORK_END_MINUTE = 0;
 
@@ -2260,7 +2260,7 @@
     const endMM = String(settings.work_end_minute).padStart(2, '0');
 
     document.getElementById('editWorkStart').value = startHH + ':' + startMM;
-    document.getElementById('editGraceMinutes').value = settings.grace_minutes;
+    document.getElementById('editGraceMinutes').value = settings.grace_minutes || 0;
     document.getElementById('editWorkEnd').value = endHH + ':' + endMM;
 
     document.getElementById('editModal').style.display = 'flex';
