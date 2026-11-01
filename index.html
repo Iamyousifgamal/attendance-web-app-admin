@@ -1566,7 +1566,7 @@
     }
   }
 
-  async function loadData(showLoadingState) {
+    async function loadData(showLoadingState) {
     if (showLoadingState) setStatus('loading', 'جاري التحميل...');
 
     try {
@@ -1575,47 +1575,52 @@
       const { fromDate, toDate } = getSelectedDateRange();
       const nameSearch = nameFilterEl.value.trim();
 
-      // 1. استعلام التسجيلات الموجودة خلال الفترة
-      let query = supabase.from(VIEW_NAME).select('*');
-      if (fromDate) query = query.gte('check_date', fromDate);
-      if (toDate) query = query.lte('check_date', toDate);
-
-      const { data: dbRecords, error } = await query;
-      if (error) throw error;
-
-      // تحديث قائمة الموظفين المعروفين
-      (dbRecords || []).forEach(r => {
-        if (r.name) knownEmployeesSet.add(r.name.trim());
-      });
+      // 1. جلب كل الموظفين اللي ليهم سجل واحد على الأقل في الداتابيز (بغض النظر عن التاريخ)
+      const { data: allEmployeesData, error: empError } = await supabase
+        .from(VIEW_NAME)
+        .select('name');
+      
+      if (empError) throw empError;
+      
+      // استخراج الأسماء الفريدة
+      let allEmployees = Array.from(new Set((allEmployeesData || []).map(r => r.name.trim()))).filter(Boolean);
+      allEmployees.forEach(name => knownEmployeesSet.add(name));
       updateEmployeeDatalistsAndDropdowns();
 
-      // 2. تحديد قائمة الموظفين المستهدفين بالعرض
-      let employeesList = Array.from(knownEmployeesSet).filter(Boolean);
+      // 2. فلترة الأسماء لو في بحث
       if (nameSearch) {
-        employeesList = employeesList.filter(name =>
+        allEmployees = allEmployees.filter(name =>
           name.toLowerCase().includes(nameSearch.toLowerCase())
         );
       }
 
       // ترتيب قائمة الموظفين
       const nameDir = nameSortEl.value === 'asc' ? 1 : -1;
-      employeesList.sort((a, b) => a.localeCompare(b, 'ar') * nameDir);
+      allEmployees.sort((a, b) => a.localeCompare(b, 'ar') * nameDir);
 
-      // 3. بناء خريطة للتسجيلات الفعلية (الاسم + التاريخ)
+      // 3. جلب التسجيلات اللي في الفترة المختارة بس
+      let query = supabase.from(VIEW_NAME).select('*');
+      if (fromDate) query = query.gte('check_date', fromDate);
+      if (toDate) query = query.lte('check_date', toDate);
+
+      const { data: periodRecords, error } = await query;
+      if (error) throw error;
+
+      // 4. بناء خريطة للتسجيلات الفعلية (الاسم + التاريخ)
       const existingMap = new Map();
-      (dbRecords || []).forEach(r => {
+      (periodRecords || []).forEach(r => {
         const key = r.name.trim() + '|' + normalizeDate(r.check_date);
         existingMap.set(key, r);
       });
 
-      // 4. توليد جميع الأيام لكل موظف
+      // 5. توليد جميع الأيام لكل موظف (بناءً على قائمة كل الموظفين)
       const allDates = generateDatesList(fromDate, toDate);
       if (dateSortEl.value === 'desc') {
         allDates.reverse();
       }
 
       const generatedRows = [];
-      employeesList.forEach(empName => {
+      allEmployees.forEach(empName => {
         allDates.forEach(dateStr => {
           const key = empName + '|' + dateStr;
           const found = existingMap.get(key);
@@ -1660,7 +1665,6 @@
       setStatus('error', 'تعذر تحميل البيانات، حاول تاني');
     }
   }
-
   // ============================================================
   // 3️⃣ رندرة الجدول بالألوان المناسبة وعمود اليوم
   // ============================================================
