@@ -2309,8 +2309,17 @@
         if (newCheckInTime) {
           updateIn.created_at = newDate + 'T' + newCheckInTime + ':00+03:00';
         }
-        if (newLocIn) {
-          updateIn.location = newLocIn;
+          if (newLocIn) {
+          // فحص اسم عمود العنوان الفعلي في قاعدة البيانات
+          const { data: sampleList } = await supabase.from(TABLE_NAME).select('*').limit(1);
+          let addressColName = 'full_address';
+          if (sampleList && sampleList.length > 0) {
+            const s = sampleList[0];
+            if ('full_address' in s) addressColName = 'full_address';
+            else if ('location' in s) addressColName = 'location';
+            else if ('check_in_location' in s) addressColName = 'check_in_location';
+          }
+          updateIn[addressColName] = newLocIn;
         }
         const { error: err1 } = await supabase.from(TABLE_NAME).update(updateIn).eq('id', record.check_in_id);
         if (err1) throw err1;
@@ -2327,7 +2336,16 @@
           updateOut.created_at = newDate + 'T' + newCheckOutTime + ':00+03:00';
         }
         if (newLocOut) {
-          updateOut.location = newLocOut;
+          // فحص اسم عمود العنوان الفعلي في قاعدة البيانات
+          const { data: sampleList } = await supabase.from(TABLE_NAME).select('*').limit(1);
+          let addressColName = 'full_address';
+          if (sampleList && sampleList.length > 0) {
+            const s = sampleList[0];
+            if ('full_address' in s) addressColName = 'full_address';
+            else if ('location' in s) addressColName = 'location';
+            else if ('check_in_location' in s) addressColName = 'check_in_location';
+          }
+          updateOut[addressColName] = newLocOut;
         }
         const { error: err2 } = await supabase.from(TABLE_NAME).update(updateOut).eq('id', record.check_out_id);
         if (err2) throw err2;
