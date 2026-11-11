@@ -3,49 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة الإدارة الذكية - تسجيلات الحضور والانصراف</title>
+<title>لوحة الأدمن - تسجيلات الحضور والانصراف</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f8fafc;
+    --bg: #ecf0f1;
     --card-bg: #ffffff;
-    --header-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    --header-border: #334155;
-    
-    --primary: #0f172a;
-    --primary-light: #1e293b;
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
-    --accent-soft: #eff6ff;
-    
-    --success: #059669;
-    --success-bg: #ecfdf5;
-    --success-border: #a7f3d0;
-    
-    --danger: #dc2626;
-    --danger-bg: #fef2f2;
-    --danger-border: #fecaca;
-    
-    --warning: #d97706;
-    --warning-bg: #fffbeb;
-    --warning-border: #fde68a;
-    
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
-    --border-light: #f1f5f9;
-    --row-alt: #f8fafc;
-    --row-hover: #f1f5f9;
-    
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-    --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-    --radius: 12px;
-    --radius-lg: 16px;
+    --header-bg: #34495e;
+    --header-text: #ffffff;
+    --primary: #2c3e50;
+    --accent: #2980b9;
+    --success: #27ae60;
+    --success-dark: #1e8449;
+    --danger: #c0392b;
+    --warning: #e67e22;
+    --warning-bg: #fef5e7;
+    --danger-bg: #fdecea;
+    --gray-btn: #95a5a6;
+    --gray-btn-dark: #7f8c8d;
+    --excel-btn: #27ae60;
+    --excel-btn-dark: #1e8449;
+    --text-main: #2c3e50;
+    --text-muted: #7f8c8d;
+    --border: #dfe4e6;
+    --row-alt: #fafaff;
+    --row-hover: #eef3f6;
+    --shadow: 0 2px 10px rgba(0,0,0,0.08);
+    --radius: 10px;
 
-    /* ألوان الغياب والعطلة الأصلية */
+    /* ألوان الغياب والعطلة */
     --holiday-bg: #dbeafe;
     --holiday-border: #bfdbfe;
     --absence-bg: #fee2e2;
@@ -60,140 +48,108 @@
     background: var(--bg);
     color: var(--text-main);
     min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
   }
 
-  /* Header */
   header.app-header {
     background: var(--header-bg);
-    color: #ffffff;
-    padding: 16px 28px;
+    color: var(--header-text);
+    padding: 16px 20px;
     display: flex;
     align-items: center;
-    gap: 16px;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
-    border-bottom: 1px solid var(--header-border);
+    gap: 12px;
+    box-shadow: var(--shadow);
   }
 
   header.app-header .logo-mark {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 900;
-    font-size: 20px;
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    font-weight: 800;
+    font-size: 18px;
     flex-shrink: 0;
   }
 
-  .header-info h1 {
-    font-size: 19px;
+  header.app-header h1 {
+    font-size: 18px;
     margin: 0;
-    font-weight: 800;
-    letter-spacing: -0.3px;
-  }
-
-  .header-info .system-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: #94a3b8;
-    font-weight: 600;
-    margin-top: 2px;
-  }
-
-  .system-badge .status-dot {
-    width: 7px;
-    height: 7px;
-    background: #10b981;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #10b981;
+    font-weight: 700;
   }
 
   .logout-btn {
-    background: rgba(239, 68, 68, 0.15);
-    color: #fca5a5;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    padding: 9px 18px;
-    border-radius: 10px;
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
     font-family: inherit;
     font-weight: 700;
     font-size: 13px;
     cursor: pointer;
     margin-inline-start: auto;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    transition: background 0.15s;
   }
-  .logout-btn:hover {
-    background: #ef4444;
-    color: #fff;
-    border-color: #ef4444;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
-  }
+  .logout-btn:hover { background: #c0392b; }
 
-  /* Navigation Tabs */
   .tabs {
     display: flex;
-    gap: 8px;
-    background: #ffffff;
-    border-bottom: 1px solid var(--border);
-    padding: 6px 24px 0;
-    box-shadow: var(--shadow-sm);
+    gap: 0;
+    background: #fff;
+    border-bottom: 2px solid var(--border);
+    padding: 0 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
   }
 
   .tab-btn {
     background: transparent;
     border: none;
-    padding: 14px 22px;
+    padding: 14px 20px;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--text-muted);
     cursor: pointer;
     border-bottom: 3px solid transparent;
-    border-radius: 8px 8px 0 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    margin-bottom: -2px;
     transition: all 0.2s ease;
   }
 
   .tab-btn:hover {
     color: var(--accent);
-    background: #f1f5f9;
+    background: #f8fafc;
   }
 
   .tab-btn.active {
     color: var(--accent);
-    background: var(--accent-soft);
-    border-bottom: 3px solid var(--accent);
+    border-bottom-color: var(--accent);
   }
 
-  /* Toolbars */
   .toolbar, .summary-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
     background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: 16px 20px;
-    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
+  }
+
+  .summary-toolbar {
+    position: static;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
   }
 
   .toolbar-group {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .toolbar-group label {
@@ -205,130 +161,95 @@
 
   .toolbar input[type="date"],
   .toolbar input[type="text"],
-  .toolbar select,
-  .summary-toolbar select {
-    padding: 10px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 9px;
+  .toolbar select {
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
     font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    background: #ffffff;
+    font-size: 14px;
+    background: #fff;
     color: var(--text-main);
-    min-width: 140px;
-    transition: all 0.2s ease;
+    min-width: 130px;
   }
 
   .toolbar input:focus,
-  .toolbar select:focus,
-  .summary-toolbar select:focus {
+  .toolbar select:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
 
-  /* Buttons */
   .btn {
     border: none;
-    padding: 10px 18px;
-    border-radius: 9px;
+    padding: 9px 15px;
+    border-radius: 8px;
     font-family: inherit;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .btn:active { transform: translateY(1px); }
-  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-
-  .btn-primary {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
-  }
-  .btn-primary:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35); filter: brightness(1.05); }
-
-  .btn-add {
-    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
-  }
-  .btn-add:hover:not(:disabled) { filter: brightness(1.05); box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35); }
-
-  .btn-gray {
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid var(--border);
-  }
-  .btn-gray:hover:not(:disabled) { background: #e2e8f0; color: #1e293b; }
-
-  .btn-excel {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
-  }
-  .btn-excel:hover:not(:disabled) { filter: brightness(1.05); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35); }
-
-  .btn-danger {
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
-  }
-  .btn-danger:hover:not(:disabled) { background: #fee2e2; border-color: #fca5a5; }
-
-  .btn-warning {
-    background: #fffbeb;
-    color: #b45309;
-    border: 1px solid #fde68a;
-  }
-  .btn-warning:hover:not(:disabled) { background: #fef3c7; }
-
-  .btn-edit {
-    background: #f0fdf4;
-    color: #15803d;
-    border: 1px solid #bbf7d0;
-    padding: 6px 12px;
-    border-radius: 7px;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    white-space: nowrap;
-  }
-  .btn-edit:hover { background: #dcfce7; border-color: #86efac; }
-
-  .counter-badge {
-    margin-inline-start: auto;
-    background: #f8fafc;
-    color: var(--primary);
-    border: 1px solid var(--border);
-    padding: 8px 16px;
-    border-radius: 30px;
-    font-size: 13px;
-    font-weight: 800;
+    transition: filter 0.15s ease, transform 0.05s ease;
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
     gap: 6px;
   }
 
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover:not(:disabled) { filter: brightness(0.92); }
+
+  .btn-add { background: #16a085; color: #fff; }
+  .btn-add:hover:not(:disabled) { background: #117a65; }
+
+  .btn-gray { background: var(--gray-btn); color: #fff; }
+  .btn-gray:hover:not(:disabled) { background: var(--gray-btn-dark); }
+
+  .btn-excel { background: var(--excel-btn); color: #fff; }
+  .btn-excel:hover:not(:disabled) { background: var(--excel-btn-dark); }
+
+  .btn-danger { background: #e74c3c; color: #fff; }
+  .btn-danger:hover:not(:disabled) { background: #c0392b; }
+
+  .btn-warning { background: #e67e22; color: #fff; }
+  .btn-warning:hover:not(:disabled) { background: #d35400; }
+
+  .btn-edit {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-edit:hover { background: #2980b9; }
+
+  .counter-badge {
+    margin-inline-start: auto;
+    background: var(--primary);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
   main {
-    padding: 24px;
-    max-width: 1850px;
+    padding: 16px;
+    max-width: 1800px;
     margin: 0 auto;
   }
 
   .status-banner {
-    padding: 14px 18px;
+    padding: 12px 16px;
     border-radius: var(--radius);
-    margin-bottom: 16px;
-    font-weight: 700;
+    margin-bottom: 14px;
+    font-weight: 600;
     font-size: 14px;
     display: none;
   }
@@ -336,79 +257,79 @@
   .status-banner.error {
     background: var(--danger-bg);
     color: var(--danger);
-    border: 1px solid var(--danger-border);
+    border: 1px solid #f5c6cb;
     display: block;
   }
 
   .status-banner.loading {
-    background: var(--accent-soft);
+    background: #eaf2fa;
     color: var(--accent);
-    border: 1px solid #bfdbfe;
+    border: 1px solid #cfe2f3;
     display: block;
   }
 
   .card {
     background: var(--card-bg);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     overflow: hidden;
   }
 
-  /* Tables */
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13.5px;
+    font-size: 14px;
   }
 
   thead th {
-    background: #f8fafc;
-    color: #475569;
-    padding: 14px 12px;
+    background: #c5c5f0;
+    color: #2c3e50;
+    padding: 12px 10px;
     text-align: right;
     font-weight: 800;
-    border-bottom: 2px solid var(--border);
+    border: 1px solid #8a8ac7;
     position: sticky;
     top: 0;
     white-space: nowrap;
-    letter-spacing: -0.2px;
   }
 
   tbody td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border-light);
+    padding: 9px 10px;
+    border: 1px solid #b8b8dd;
     vertical-align: middle;
   }
 
-  tbody tr.row-present { background: #ffffff; }
-  tbody tr.row-present:nth-child(even) { background: #fafcff; }
-  tbody tr.row-present:hover { background: #f1f5f9; }
+  /* تصميم صفوف الحضور العادية */
+  tbody tr.row-present { background: var(--card-bg); }
+  tbody tr.row-present:nth-child(even) { background: var(--row-alt); }
+  tbody tr.row-present:hover { background: var(--row-hover); }
 
+  /* تصميم صفوف العطلة (الجمعة والسبت بدون تسجيل) */
   tbody tr.row-holiday {
     background-color: var(--holiday-bg) !important;
   }
   tbody tr.row-holiday td {
     background-color: var(--holiday-bg) !important;
-    border-bottom-color: var(--holiday-border) !important;
+    border-color: var(--holiday-border) !important;
   }
   tbody tr.row-holiday:hover td {
     background-color: #cfe2fe !important;
   }
 
+  /* تصميم صفوف الغياب (الأحد - الخميس بدون تسجيل) */
   tbody tr.row-absence {
     background-color: var(--absence-bg) !important;
   }
   tbody tr.row-absence td {
     background-color: var(--absence-bg) !important;
-    border-bottom-color: var(--absence-border) !important;
+    border-color: var(--absence-border) !important;
   }
   tbody tr.row-absence:hover td {
     background-color: #fcd0d0 !important;
   }
 
-  td.name-cell { font-weight: 800; color: var(--primary); }
-  td.day-cell { font-weight: 700; color: #334155; white-space: nowrap; }
+  td.name-cell { font-weight: 700; color: var(--primary); }
+  td.day-cell { font-weight: 700; color: #34495e; white-space: nowrap; }
 
   td.address-cell {
     max-width: 240px;
@@ -416,7 +337,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     cursor: help;
-    color: #475569;
   }
 
   td.destination-cell {
@@ -425,81 +345,77 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     cursor: help;
-    font-weight: 700;
-    color: #2563eb;
+    font-weight: 600;
+    color: #2980b9;
   }
 
   td.missing-cell {
-    background: #ef4444 !important;
-    color: #ffffff !important;
-    font-weight: 800;
+    background: #e74c3c !important;
+    color: #fff !important;
+    font-weight: 700;
     text-align: center;
   }
 
   .time-badge {
     display: inline-block;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 13px;
     font-family: 'Cairo', monospace;
   }
 
-  .time-in { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
-  .time-out { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+  .time-in { background: #e8f8f0; color: var(--success-dark); }
+  .time-out { background: var(--warning-bg); color: var(--warning); }
 
   .delay-badge {
     display: inline-block;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
-    background: #fef2f2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
-    font-weight: 800;
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-weight: 700;
     font-size: 13px;
     font-family: 'Cairo', monospace;
   }
 
   .extra-badge {
     display: inline-block;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
-    background: #ecfdf5;
-    color: #047857;
-    border: 1px solid #a7f3d0;
-    font-weight: 800;
+    background: #e8f8f0;
+    color: var(--success-dark);
+    font-weight: 700;
     font-size: 13px;
     font-family: 'Cairo', monospace;
   }
 
   a.location-link {
-    color: #2563eb;
+    color: var(--accent);
     text-decoration: none;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    transition: all 0.15s ease;
+    background: #eaf2fa;
+    transition: background-color 0.15s ease, color 0.15s ease;
     font-size: 12px;
     white-space: nowrap;
   }
 
   a.location-link:hover {
-    background: #2563eb;
-    color: #ffffff;
-    border-color: #2563eb;
+    background: #2980b9;
+    color: #fff;
   }
 
   .empty-state {
     text-align: center;
-    padding: 70px 20px;
+    padding: 60px 20px;
     color: var(--text-muted);
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   #summaryTable th:nth-child(2),
@@ -513,92 +429,11 @@
     text-align: center;
   }
 
-  /* Settings Tab */
-  .settings-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-    gap: 20px;
-  }
-
-  .settings-card {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: 24px;
-  }
-
-  .settings-card h3 {
-    margin: 0 0 8px;
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .settings-card p.subtitle {
-    margin: 0 0 20px;
-    font-size: 13px;
-    color: var(--text-muted);
-  }
-
-  .columns-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .custom-checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    padding: 10px 14px;
-    border-radius: 9px;
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.15s ease;
-  }
-
-  .custom-checkbox-item:hover {
-    background: #f1f5f9;
-    border-color: #cbd5e1;
-  }
-
-  .custom-checkbox-item input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--accent);
-    cursor: pointer;
-  }
-
-  .custom-checkbox-item span {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-main);
-  }
-
-  .settings-actions-bar {
-    grid-column: 1 / -1;
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 16px 24px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    box-shadow: var(--shadow-sm);
-    margin-top: 10px;
-  }
-
   /* Login */
   .login-screen {
     position: fixed;
     inset: 0;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -607,90 +442,82 @@
   }
 
   .login-card {
-    background: #ffffff;
-    border-radius: 24px;
-    padding: 44px 36px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 30px;
     width: 100%;
-    max-width: 420px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+    max-width: 400px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     text-align: center;
   }
 
   .login-logo {
-    width: 76px;
-    height: 76px;
+    width: 70px;
+    height: 70px;
     margin: 0 auto 20px;
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    border-radius: 18px;
+    background: linear-gradient(135deg, #2980b9, #34495e);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 34px;
-    color: #fff;
-    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
+    font-size: 32px;
   }
 
-  .login-card h1 { margin: 0 0 6px; font-size: 24px; color: var(--primary); font-weight: 800; }
-  .login-subtitle { margin: 0 0 28px; color: var(--text-muted); font-size: 14px; font-weight: 500; }
+  .login-card h1 { margin: 0 0 6px; font-size: 24px; color: #2c3e50; font-weight: 800; }
+  .login-subtitle { margin: 0 0 30px; color: #7f8c8d; font-size: 14px; }
 
   .login-label {
     display: block;
     text-align: right;
     font-size: 13px;
     font-weight: 700;
-    color: #334155;
+    color: #2c3e50;
     margin-bottom: 6px;
     margin-top: 16px;
   }
 
   .login-input {
     width: 100%;
-    padding: 12px 16px;
+    padding: 12px 14px;
     font-family: inherit;
-    font-size: 14px;
-    border: 1.5px solid var(--border);
+    font-size: 15px;
+    border: 2px solid #dfe4e6;
     border-radius: 10px;
     outline: none;
-    transition: all 0.2s;
-    background: #f8fafc;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
   }
 
-  .login-input:focus {
-    border-color: var(--accent);
-    background: #fff;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-  }
+  .login-input:focus { border-color: #2980b9; box-shadow: 0 0 0 4px rgba(41,128,185,0.12); }
 
   .login-btn {
     width: 100%;
-    margin-top: 26px;
+    margin-top: 24px;
     padding: 14px;
     font-family: inherit;
-    font-size: 15px;
-    font-weight: 800;
+    font-size: 16px;
+    font-weight: 700;
     color: #fff;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: #2980b9;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
-    transition: all 0.2s;
   }
 
-  .login-btn:hover:not(:disabled) { filter: brightness(1.08); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4); }
+  .login-btn:hover:not(:disabled) { background: #1f6391; }
   .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   .login-error {
     margin-top: 16px;
     padding: 10px 14px;
-    background: var(--danger-bg);
-    color: var(--danger);
-    border: 1px solid var(--danger-border);
+    background: #fdecea;
+    color: #c0392b;
     border-radius: 8px;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
     display: none;
   }
+
   .login-error.visible { display: block; }
 
   /* Modal */
@@ -707,77 +534,70 @@
   .modal-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(0,0,0,0.5);
   }
 
   .modal-content {
     position: relative;
-    background: #ffffff;
-    border-radius: 20px;
-    max-width: 600px;
+    background: #fff;
+    border-radius: 16px;
+    max-width: 580px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   }
 
   .modal-header {
-    padding: 20px 24px;
+    padding: 18px 20px;
     border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .modal-header h2 { margin: 0; font-size: 18px; color: var(--primary); font-weight: 800; }
+  .modal-header h2 { margin: 0; font-size: 18px; color: var(--primary); }
 
   .modal-close {
-    background: #f1f5f9;
+    background: transparent;
     border: none;
-    font-size: 18px;
+    font-size: 22px;
     cursor: pointer;
     color: var(--text-muted);
+    padding: 0;
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
   }
-  .modal-close:hover { background: #e2e8f0; color: #000; }
+  .modal-close:hover { background: #f0f0f0; }
 
-  .modal-body { padding: 24px; }
+  .modal-body { padding: 20px; }
+
   .form-group { margin-bottom: 16px; }
 
   .form-group label {
     display: block;
     font-size: 13px;
     font-weight: 700;
-    color: #334155;
+    color: var(--text-main);
     margin-bottom: 6px;
   }
 
   .form-group input,
   .form-group select {
     width: 100%;
-    padding: 10px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 9px;
+    padding: 10px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
     font-family: inherit;
     font-size: 14px;
     outline: none;
-    transition: all 0.2s;
+    transition: border-color 0.2s;
     background: #fff;
   }
 
   .form-group input:focus,
-  .form-group select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-  }
+  .form-group select:focus { border-color: var(--accent); }
 
   .form-row {
     display: grid;
@@ -791,45 +611,61 @@
     color: var(--accent);
     margin: 20px 0 12px;
     padding-bottom: 6px;
-    border-bottom: 2px solid var(--accent-soft);
+    border-bottom: 2px solid #eaf2fa;
+  }
+
+  .form-section-title.work-time {
+    color: var(--warning);
+    border-bottom-color: #fef5e7;
   }
 
   .modal-footer {
-    padding: 18px 24px;
+    padding: 16px 20px;
     border-top: 1px solid var(--border);
     display: flex;
     gap: 10px;
     justify-content: flex-end;
-    background: #f8fafc;
-    border-radius: 0 0 20px 20px;
   }
 
   .rename-info {
-    background: var(--accent-soft);
-    padding: 14px 18px;
-    border-radius: 10px;
+    background: #eaf2fa;
+    padding: 12px 16px;
+    border-radius: 8px;
     margin: 16px 0;
     font-size: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #bfdbfe;
   }
 
-  .rename-info span { font-weight: 800; color: var(--accent); font-size: 20px; }
+  .rename-info span { font-weight: 800; color: var(--accent); font-size: 18px; }
 
   .rename-warning {
-    background: var(--warning-bg);
-    color: var(--warning);
-    border: 1px solid var(--warning-border);
+    background: #fef5e7;
+    color: #e67e22;
     padding: 12px 16px;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
     margin-top: 12px;
   }
 
-  /* Responsive Design */
+  .work-time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .work-time-hint {
+    background: #fef5e7;
+    color: #e67e22;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
   @media (max-width: 1400px) {
     .toolbar, .summary-toolbar { flex-direction: column; align-items: stretch; }
     .toolbar-group { flex-direction: column; align-items: stretch; }
@@ -840,12 +676,11 @@
     thead { display: none; }
 
     tbody tr {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 12px 16px;
+      padding: 8px 12px;
       background: var(--card-bg);
-      box-shadow: var(--shadow-sm);
     }
 
     tbody tr.row-holiday {
@@ -870,9 +705,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid var(--border-light);
-      padding: 9px 0;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      padding: 8px 0;
       text-align: left;
     }
 
@@ -883,7 +718,6 @@
       font-weight: 700;
       color: var(--text-muted);
       flex-shrink: 0;
-      font-size: 13px;
     }
 
     td.address-cell, td.destination-cell {
@@ -891,9 +725,6 @@
       white-space: normal;
       text-align: right;
     }
-    
-    .settings-container { grid-template-columns: 1fr; }
-    .columns-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -903,8 +734,8 @@
 <div id="loginScreen" class="login-screen">
   <div class="login-card">
     <div class="login-logo">🔒</div>
-    <h1>لوحة الإدارة الذكية</h1>
-    <p class="login-subtitle">سجل دخولك للمتابعة وإدارة السجلات</p>
+    <h1>لوحة الأدمن</h1>
+    <p class="login-subtitle">سجل دخولك للمتابعة</p>
 
     <form id="loginForm">
       <label for="loginEmail" class="login-label">البريد الإلكتروني</label>
@@ -928,73 +759,69 @@
 <div id="appContent" style="display:none;">
 
   <header class="app-header">
-    <div class="logo-mark">⚡</div>
-    <div class="header-info">
-      <h1>منظومة تسجيلات الحضور الذكية</h1>
-      <div class="system-badge"><span class="status-dot"></span> مباشر وقيد المزامنة</div>
-    </div>
+    <div class="logo-mark">AT</div>
+    <h1>لوحة الأدمن - تسجيلات الحضور</h1>
     <button id="logoutBtn" class="logout-btn">🚪 خروج</button>
   </header>
 
   <div class="tabs">
     <button class="tab-btn active" data-tab="daily">📋 التسجيلات اليومية</button>
     <button class="tab-btn" data-tab="summary">📊 ملخص الموظفين</button>
-    <button class="tab-btn" data-tab="settings">⚙️ الإعدادات العامة</button>
   </div>
 
   <!-- Daily Tab -->
   <div id="dailyTab">
-    <main>
-      <div class="toolbar">
-        <div class="toolbar-group">
-          <label>الفترة:</label>
-          <select id="periodFilter">
-            <option value="today" selected>النهاردة</option>
-            <option value="month">الشهر كله</option>
-            <option value="custom">فترة مخصصة</option>
-          </select>
-        </div>
-
-        <div class="toolbar-group custom-date-group" id="customFromGroup" style="display:none;">
-          <label>من تاريخ:</label>
-          <input type="date" id="dateFrom">
-        </div>
-        <div class="toolbar-group custom-date-group" id="customToGroup" style="display:none;">
-          <label>إلى تاريخ:</label>
-          <input type="date" id="dateTo">
-        </div>
-
-        <div class="toolbar-group">
-          <label>الموظف:</label>
-          <input type="text" id="nameFilter" placeholder="ابحث بالاسم">
-        </div>
-        <div class="toolbar-group">
-          <label>ترتيب الأيام:</label>
-          <select id="dateSort">
-            <option value="asc">تصاعدي</option>
-            <option value="desc">تنازلي</option>
-          </select>
-        </div>
-        <div class="toolbar-group">
-          <label>ترتيب الأسماء:</label>
-          <select id="nameSort">
-            <option value="asc">تصاعدي (أ - ي)</option>
-            <option value="desc">تنازلي (ي - أ)</option>
-          </select>
-        </div>
-
-        <button class="btn btn-primary" id="applyBtn">🔍 عرض</button>
-        <button class="btn btn-gray" id="resetBtn">🔄 إعادة ضبط</button>
-        <button class="btn btn-excel" id="exportBtn">📊 تحميل Excel عام</button>
-        <button class="btn btn-excel" id="exportEmployeeBtn">📥 تحميل Excel لموظف</button>
-        <button class="btn btn-add" id="addDayBtn">➕ إضافة يوم</button>
-        <button class="btn btn-danger" id="deleteDayBtn">🗑️ حذف يوم</button>
-        <button class="btn btn-warning" id="renameBtn">🔄 توحيد الأسماء</button>
-        <button class="btn btn-danger" id="deleteOldBtn">🗑️ حذف بيانات قديمة</button>
-        
-        <span class="counter-badge" id="counterBadge">عدد الصفوف: 0</span>
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <label>الفترة:</label>
+        <select id="periodFilter">
+          <option value="today" selected>النهاردة</option>
+          <option value="month">الشهر كله</option>
+          <option value="custom">فترة مخصصة</option>
+        </select>
       </div>
 
+      <div class="toolbar-group custom-date-group" id="customFromGroup" style="display:none;">
+        <label>من تاريخ:</label>
+        <input type="date" id="dateFrom">
+      </div>
+      <div class="toolbar-group custom-date-group" id="customToGroup" style="display:none;">
+        <label>إلى تاريخ:</label>
+        <input type="date" id="dateTo">
+      </div>
+
+      <div class="toolbar-group">
+        <label>الموظف:</label>
+        <input type="text" id="nameFilter" placeholder="ابحث بالاسم">
+      </div>
+      <div class="toolbar-group">
+        <label>ترتيب الأيام:</label>
+        <select id="dateSort">
+          <option value="asc">تصاعدي</option>
+          <option value="desc">تنازلي</option>
+        </select>
+      </div>
+      <div class="toolbar-group">
+        <label>ترتيب الأسماء:</label>
+        <select id="nameSort">
+          <option value="asc">تصاعدي (أ - ي)</option>
+          <option value="desc">تنازلي (ي - أ)</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" id="applyBtn">🔍 عرض</button>
+      <button class="btn btn-gray" id="resetBtn">🔄 إعادة ضبط</button>
+      <button class="btn btn-excel" id="exportBtn">📊 تحميل Excel عام</button>
+      <button class="btn btn-excel" id="exportEmployeeBtn">📥 تحميل Excel لموظف</button>
+      <button class="btn btn-add" id="addDayBtn">➕ إضافة يوم</button>
+      <button class="btn btn-danger" id="deleteDayBtn">🗑️ حذف يوم</button>
+      <button class="btn btn-warning" id="renameBtn">🔄 توحيد الأسماء</button>
+      <button class="btn btn-danger" id="deleteOldBtn">🗑️ حذف بيانات قديمة</button>
+      
+      <span class="counter-badge" id="counterBadge">عدد الصفوف: 0</span>
+    </div>
+
+    <main>
       <div class="status-banner" id="statusBanner"></div>
 
       <div class="card">
@@ -1002,19 +829,19 @@
           <table id="attendanceTable">
             <thead>
               <tr>
-                <th data-col="col_name">اسم الموظف</th>
-                <th data-col="col_day">اليوم</th>
-                <th data-col="col_date">تاريخ العمل</th>
-                <th data-col="col_in">Check In</th>
-                <th data-col="col_in_loc">In Location</th>
-                <th data-col="col_in_map">In Location Google Maps</th>
-                <th data-col="col_in_dest">الوجهة In</th>
-                <th data-col="col_out">Check Out</th>
-                <th data-col="col_out_map">Out Location Google Maps</th>
-                <th data-col="col_out_dest">الوجهة Out</th>
-                <th data-col="col_late">Late Hours</th>
-                <th data-col="col_overtime">Overtime</th>
-                <th data-col="col_actions">الإجراء</th>
+                <th>اسم الموظف</th>
+                <th>اليوم</th>
+                <th>تاريخ العمل</th>
+                <th>Check In</th>
+                <th>In Location</th>
+                <th>In Location Google Maps</th>
+                <th>الوجهة In</th>
+                <th>Check Out</th>
+                <th>Out Location Google Maps</th>
+                <th>الوجهة Out</th>
+                <th>Late Hours</th>
+                <th>Overtime</th>
+                <th>الإجراء</th>
               </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -1054,162 +881,6 @@
           </table>
         </div>
         <div class="empty-state" id="summaryEmptyState" style="display:none;">لا توجد بيانات</div>
-      </div>
-    </main>
-  </div>
-
-  <!-- ⚙️ Settings Tab -->
-  <div id="settingsTab" style="display:none;">
-    <main>
-      <div class="settings-container">
-        
-        <!-- 1. إدارة الإجازات الرسمية (الميزة الجديدة المحددة بالتاريخ فقط) -->
-        <div class="settings-card" style="grid-column: 1 / -1; border-color: #bfdbfe; background: linear-gradient(to bottom, #ffffff, #fafcff);">
-          <h3>🏖️ إدارة الإجازات الرسمية (محددة بتاريخ معين فقط)</h3>
-          <p class="subtitle">حدد يوماً معيناً في تاريخ محدد ليكون إجازة رسمية (تطبق على هذا التاريخ فقط ولا تتكرر سنوياً تلقائياً، ولا تُحسب غياباً على الموظفين في الملخص):</p>
-          
-          <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:16px;">
-            <div class="form-group" style="margin-bottom:0; flex:1; min-width:180px;">
-              <label>التاريخ:</label>
-              <input type="date" id="newHolidayDate">
-            </div>
-            <div class="form-group" style="margin-bottom:0; flex:2; min-width:220px;">
-              <label>اسم أو مناسبة الإجازة (اختياري):</label>
-              <input type="text" id="newHolidayName" placeholder="مثلاً: عيد العمال، ذكرى 6 أكتوبر...">
-            </div>
-            <button class="btn btn-add" id="addHolidayBtn" type="button" style="height:42px;">➕ إضافة كإجازة رسمية</button>
-          </div>
-
-          <div id="holidaysListContainer" style="display:flex; flex-wrap:wrap; gap:10px; min-height:40px; padding:12px; background:#f8fafc; border:1px dashed var(--border); border-radius:10px;">
-            <!-- الإجازات تظهر هنا ديناميكياً -->
-          </div>
-        </div>
-
-        <!-- 2. إظهار وإخفاء الأعمدة -->
-        <div class="settings-card" style="grid-column: 1 / -1;">
-          <h3>👁️ تخصيص إظهار وإخفاء أعمدة جدول التسجيلات</h3>
-          <p class="subtitle">اختر الأعمدة التي ترغب بإظهارها أو إخفائها لتناسب شاشتك وطبيعة عملك (تُحفظ تلقائياً):</p>
-          <div class="columns-grid">
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_name" data-target="col_name" checked>
-              <span>اسم الموظف</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_day" data-target="col_day" checked>
-              <span>اليوم</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_date" data-target="col_date" checked>
-              <span>تاريخ العمل</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_in" data-target="col_in" checked>
-              <span>وقت الحضور (Check In)</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_in_loc" data-target="col_in_loc" checked>
-              <span>عنوان الحضور (In Location)</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_in_map" data-target="col_in_map" checked>
-              <span>خريطة الحضور (Maps)</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_in_dest" data-target="col_in_dest" checked>
-              <span>الوجهة In</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_out" data-target="col_out" checked>
-              <span>وقت الانصراف (Check Out)</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_out_map" data-target="col_out_map" checked>
-              <span>خريطة الانصراف (Maps)</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_out_dest" data-target="col_out_dest" checked>
-              <span>الوجهة Out</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_late" data-target="col_late" checked>
-              <span>ساعات التأخير (Late Hours)</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_overtime" data-target="col_overtime" checked>
-              <span>الساعات الإضافية (Overtime)</span>
-            </label>
-            <label class="custom-checkbox-item">
-              <input type="checkbox" id="set_col_actions" data-target="col_actions" checked>
-              <span>أزرار الإجراءات (تعديل / تسجيل)</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- 3. مواعيد العمل الافتراضية -->
-        <div class="settings-card">
-          <h3>⏰ مواعيد العمل وساعات الدوام الافتراضية</h3>
-          <p class="subtitle">المواعيد العامة المعتمدة في حال عدم تخصيص مواعيد معينة للموظف:</p>
-          <div class="form-row">
-            <div class="form-group">
-              <label>وقت الحضور المتوقع:</label>
-              <input type="time" id="settingWorkStart" value="10:00">
-            </div>
-            <div class="form-group">
-              <label>فترة السماح (دقائق):</label>
-              <input type="number" id="settingGraceMinutes" value="10" min="0" max="60">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>وقت الانصراف المتوقع:</label>
-            <input type="time" id="settingWorkEnd" value="18:00">
-          </div>
-        </div>
-
-        <!-- 4. طريقة احتساب الغياب وأيام العطلة الأسبوعية -->
-        <div class="settings-card">
-          <h3>📅 حساب الغياب والعطلات الأسبوعية</h3>
-          <p class="subtitle">التحكم في طريقة حساب الغياب وأيام العطلة الأسبوعية:</p>
-          <div class="form-group">
-            <label>طريقة احتساب أيام الغياب في الملخص:</label>
-            <select id="settingAbsenceMode">
-              <option value="smart">احتساب ذكي (حتى تاريخ اليوم للشهر الحالي، وكامل الشهر للشهور السابقة) [موصى به]</option>
-              <option value="fullMonth">احتساب كامل أيام الشهر دائماً</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>أيام العطلة الأسبوعية (لا تُحتسب غياباً):</label>
-            <div style="display:flex; gap:16px; margin-top:8px; flex-wrap:wrap;">
-              <label style="display:flex; align-items:center; gap:6px; font-weight:700;">
-                <input type="checkbox" id="weekendFri" checked> الجمعة
-              </label>
-              <label style="display:flex; align-items:center; gap:6px; font-weight:700;">
-                <input type="checkbox" id="weekendSat" checked> السبت
-              </label>
-              <label style="display:flex; align-items:center; gap:6px; font-weight:700;">
-                <input type="checkbox" id="weekendSun"> الأحد
-              </label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>التحديث التلقائي للبيانات:</label>
-            <div style="display:flex; gap:10px; align-items:center; margin-top:6px;">
-              <input type="checkbox" id="settingAutoRefresh" checked style="width:18px; height:18px;">
-              <span style="font-size:13px; font-weight:700;">تفعيل التحديث التلقائي كل:</span>
-              <select id="settingAutoRefreshSec" style="width:120px;">
-                <option value="15">15 ثانية</option>
-                <option value="30" selected>30 ثانية</option>
-                <option value="60">دقيقة</option>
-                <option value="120">دقيقتين</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- زر الحفظ -->
-        <div class="settings-actions-bar">
-          <button class="btn btn-gray" id="resetSettingsBtn">🔄 استعادة الإعدادات الافتراضية</button>
-          <button class="btn btn-primary" id="saveSettingsBtn">💾 حفظ وتطبيق الإعدادات</button>
-        </div>
       </div>
     </main>
   </div>
@@ -1381,12 +1052,12 @@
         <input type="text" id="editDestOut">
       </div>
 
-      <div class="form-section-title" style="color: var(--warning);">⏰ مواعيد العمل لهذا اليوم فقط</div>
-      <div class="rename-warning" style="margin-bottom:12px;">
+      <div class="form-section-title work-time">⏰ مواعيد العمل لهذا اليوم فقط</div>
+      <div class="work-time-hint">
         ℹ️ القيم الافتراضية: بداية 10:00، سماح 10 دقائق، نهاية 18:00.
         التعديل هنا يطبق على هذا اليوم فقط لهذا الموظف.
       </div>
-      <div class="form-row">
+      <div class="work-time-grid">
         <div class="form-group">
           <label>وقت الحضور المتوقع:</label>
           <input type="time" id="editWorkStart">
@@ -1428,11 +1099,11 @@
         <input type="text" id="renameNewName" placeholder="اكتب الاسم الصحيح">
       </div>
       <div class="rename-info">
-        <strong>عدد التسجيلات التي سيتم تعديلها:</strong>
+        <strong>عدد التسجيلات اللي هتتعدل:</strong>
         <span id="renameCount">0</span>
       </div>
       <div class="rename-warning">
-        ⚠️ ملاحظة: سيتم تعديل جميع التسجيلات التي تحتوي على الاسم القديم للاسم الجديد في كل الأيام.
+        ⚠️ ملاحظة: هيتم تعديل كل التسجيلات اللي فيها الاسم القديم للاسم الجديد (في كل الأيام).
       </div>
     </div>
     <div class="modal-footer">
@@ -1458,63 +1129,18 @@
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // ============================================================
-  // Constants & Storage
+  // Constants
   // ============================================================
   const VIEW_NAME = 'attendance_daily';
   const TABLE_NAME = 'attendance';
   const SETTINGS_TABLE = 'employee_settings';
-  const SETTINGS_STORAGE_KEY = 'attendance_smart_app_settings_v3';
+  const AUTO_REFRESH_INTERVAL_MS = 30000;
 
-  const DEFAULT_SETTINGS = {
-    workStart: '10:00',
-    graceMinutes: 10,
-    workEnd: '18:00',
-    absenceMode: 'smart',
-    weekendDays: [5, 6],
-    customHolidays: [], // قائمة الإجازات الرسمية المحددة بالتاريخ [{ date: '2026-10-06', name: 'ذكرى حرب أكتوبر' }]
-    autoRefresh: true,
-    autoRefreshSec: 30,
-    columns: {
-      col_name: true,
-      col_day: true,
-      col_date: true,
-      col_in: true,
-      col_in_loc: true,
-      col_in_map: true,
-      col_in_dest: true,
-      col_out: true,
-      col_out_map: true,
-      col_out_dest: true,
-      col_late: true,
-      col_overtime: true,
-      col_actions: true
-    }
-  };
-
-  let appSettings = loadSettings();
-
-  function loadSettings() {
-    try {
-      const s = localStorage.getItem(SETTINGS_STORAGE_KEY);
-      if (s) {
-        const parsed = JSON.parse(s);
-        return Object.assign({}, DEFAULT_SETTINGS, parsed, {
-          columns: Object.assign({}, DEFAULT_SETTINGS.columns, parsed.columns || {}),
-          customHolidays: Array.isArray(parsed.customHolidays) ? parsed.customHolidays : []
-        });
-      }
-    } catch (e) {
-      console.warn('Could not load local settings:', e);
-    }
-    return JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-  }
-
-  function saveSettings(newSettings) {
-    appSettings = newSettings;
-    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(appSettings));
-    applyColumnVisibility();
-    restartAutoRefresh();
-  }
+  const DEFAULT_WORK_START_HOUR = 10;
+  const DEFAULT_WORK_START_MINUTE = 0;
+  const DEFAULT_GRACE_MINUTES = 0;
+  const DEFAULT_WORK_END_HOUR = 18;
+  const DEFAULT_WORK_END_MINUTE = 0;
 
   // ============================================================
   // DOM Elements
@@ -1531,7 +1157,6 @@
 
   const dailyTab = document.getElementById('dailyTab');
   const summaryTab = document.getElementById('summaryTab');
-  const settingsTab = document.getElementById('settingsTab');
 
   const periodFilterEl = document.getElementById('periodFilter');
   const customFromGroup = document.getElementById('customFromGroup');
@@ -1571,26 +1196,6 @@
   let knownEmployeesSet = new Set();
 
   // ============================================================
-  // إخفاء وإظهار الأعمدة
-  // ============================================================
-  function applyColumnVisibility() {
-    let css = '';
-    const cols = appSettings.columns || {};
-    for (const [key, isVisible] of Object.entries(cols)) {
-      if (!isVisible) {
-        css += `[data-col="${key}"] { display: none !important; }\n`;
-      }
-    }
-    let el = document.getElementById('dynamicColumnVisibilityStyles');
-    if (!el) {
-      el = document.createElement('style');
-      el.id = 'dynamicColumnVisibilityStyles';
-      document.head.appendChild(el);
-    }
-    el.textContent = css;
-  }
-
-  // ============================================================
   // Helpers
   // ============================================================
   function normalizeDate(d) {
@@ -1606,30 +1211,17 @@
     return s;
   }
 
-  // فحص ما إذا كان التاريخ عطلة أسبوعية أو إجازة رسمية محددة
   function getDayInfo(dateString) {
-    if (!dateString) return { dayName: '', isWeekend: false, isHoliday: false, holidayName: '', isOffDay: false };
-    const normalized = normalizeDate(dateString);
-    const parts = normalized.split('-');
-    if (parts.length !== 3) return { dayName: '', isWeekend: false, isHoliday: false, holidayName: '', isOffDay: false };
+    if (!dateString) return { dayName: '', isWeekend: false };
+    const parts = normalizeDate(dateString).split('-');
+    if (parts.length !== 3) return { dayName: '', isWeekend: false };
     const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
     const dayIndex = d.getDay();
     const dayNames = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    const weekends = appSettings.weekendDays || [5, 6];
-    const isWeekend = weekends.includes(dayIndex);
-
-    // فحص الإجازات الرسمية المحددة بالتاريخ
-    const holidays = appSettings.customHolidays || [];
-    const holidayMatch = holidays.find(h => (typeof h === 'string' ? h === normalized : h.date === normalized));
-    const isHoliday = !!holidayMatch;
-    const holidayName = isHoliday ? (typeof holidayMatch === 'object' && holidayMatch.name ? holidayMatch.name : 'إجازة رسمية') : '';
-
+    const isWeekend = (dayIndex === 5 || dayIndex === 6);
     return {
       dayName: dayNames[dayIndex] || '',
-      isWeekend: isWeekend,
-      isHoliday: isHoliday,
-      holidayName: holidayName,
-      isOffDay: isWeekend || isHoliday
+      isWeekend: isWeekend
     };
   }
 
@@ -1750,14 +1342,12 @@
       }
 
       showAppContent();
-      applyColumnVisibility();
-      initSettingsUI();
       initSummaryMonths();
       initExportEmpMonths();
       await loadEmployeeSettingsCache();
       await fetchAllKnownEmployees();
       loadData(true);
-      restartAutoRefresh();
+      startAutoRefresh();
     } else {
       showLoginScreen();
     }
@@ -1798,14 +1388,12 @@
         showAppContent();
         loginEmail.value = '';
         loginPassword.value = '';
-        applyColumnVisibility();
-        initSettingsUI();
         initSummaryMonths();
         initExportEmpMonths();
         await loadEmployeeSettingsCache();
         await fetchAllKnownEmployees();
         loadData(true);
-        restartAutoRefresh();
+        startAutoRefresh();
         loginBtn.disabled = false;
         loginBtnText.textContent = 'تسجيل الدخول';
       }, 500);
@@ -1902,15 +1490,12 @@
     const defaultKey = name + '|DEFAULT';
     if (employeeSettingsCache[defaultKey]) return employeeSettingsCache[defaultKey];
 
-    const [wh, wm] = (appSettings.workStart || '10:00').split(':').map(Number);
-    const [eh, em] = (appSettings.workEnd || '18:00').split(':').map(Number);
-
     return {
-      work_start_hour: wh !== undefined ? wh : 10,
-      work_start_minute: wm !== undefined ? wm : 0,
-      grace_minutes: Number(appSettings.graceMinutes) || 0,
-      work_end_hour: eh !== undefined ? eh : 18,
-      work_end_minute: em !== undefined ? em : 0
+      work_start_hour: DEFAULT_WORK_START_HOUR,
+      work_start_minute: DEFAULT_WORK_START_MINUTE,
+      grace_minutes: DEFAULT_GRACE_MINUTES,
+      work_end_hour: DEFAULT_WORK_END_HOUR,
+      work_end_minute: DEFAULT_WORK_END_MINUTE
     };
   }
 
@@ -1943,7 +1528,7 @@
   }
 
   // ============================================================
-  // استرجاع السجلات وتوليد الأيام
+  // Period & Data Loading
   // ============================================================
   function getSelectedDateRange() {
     const period = periodFilterEl.value;
@@ -2028,9 +1613,6 @@
               check_date: dateStr,
               dayName: dayInfo.dayName,
               isWeekend: dayInfo.isWeekend,
-              isHoliday: dayInfo.isHoliday,
-              holidayName: dayInfo.holidayName,
-              isOffDay: dayInfo.isOffDay,
               hasRecord: true
             });
           } else {
@@ -2039,9 +1621,6 @@
               check_date: dateStr,
               dayName: dayInfo.dayName,
               isWeekend: dayInfo.isWeekend,
-              isHoliday: dayInfo.isHoliday,
-              holidayName: dayInfo.holidayName,
-              isOffDay: dayInfo.isOffDay,
               hasRecord: false,
               check_in_at: null,
               check_out_at: null,
@@ -2067,7 +1646,7 @@
   }
 
   // ============================================================
-  // رندرة الجدول الأساسي
+  // Render Table
   // ============================================================
   function renderTable(rows) {
     tableBody.innerHTML = '';
@@ -2088,10 +1667,9 @@
     rows.forEach(function (r, index) {
       const tr = document.createElement('tr');
 
-      // تحديد فئة الصف: حضور، عطلة (أسبوعية أو إجازة رسمية)، أو غياب
       if (r.hasRecord) {
         tr.className = 'row-present';
-      } else if (r.isWeekend || r.isHoliday) {
+      } else if (r.isWeekend) {
         tr.className = 'row-holiday';
       } else {
         tr.className = 'row-absence';
@@ -2152,29 +1730,23 @@
       if (r.hasRecord) {
         actionCell = '<button class="btn-edit" onclick="window.__openEdit(' + index + ')">✏️ تعديل</button>';
       } else {
-        actionCell = '<button class="btn-edit" style="background:#0f766e; color:#fff; border-color:#0f766e;" onclick="window.__openAddForSpecificDay(\'' + escapeHtml(r.name) + '\', \'' + r.check_date + '\')">➕ تسجيل</button>';
-      }
-
-      // إضافة إشارة توضيحية للإجازة الرسمية في خانة اليوم
-      let dayDisplay = escapeHtml(r.dayName);
-      if (r.isHoliday) {
-        dayDisplay += ' <span style="font-size:11px; background:#bfdbfe; color:#1e40af; padding:2px 6px; border-radius:5px; font-weight:800;" title="' + escapeHtml(r.holidayName) + '">🏖️ ' + escapeHtml(r.holidayName || 'إجازة') + '</span>';
+        actionCell = '<button class="btn-edit" style="background:#16a085;" onclick="window.__openAddForSpecificDay(\'' + escapeHtml(r.name) + '\', \'' + r.check_date + '\')">➕ تسجيل</button>';
       }
 
       tr.innerHTML =
-        '<td data-col="col_name" data-label="اسم الموظف" class="name-cell">' + escapeHtml(r.name) + '</td>' +
-        '<td data-col="col_day" data-label="اليوم" class="day-cell">' + dayDisplay + '</td>' +
-        '<td data-col="col_date" data-label="تاريخ العمل">' + formatWorkDate(r.check_date) + '</td>' +
-        '<td data-col="col_in" data-label="Check In">' + inCell + '</td>' +
-        '<td data-col="col_in_loc" data-label="In Location" class="address-cell">' + inLocTextCell + '</td>' +
-        '<td data-col="col_in_map" data-label="In Location Google Maps">' + inMapsCell + '</td>' +
-        '<td data-col="col_in_dest" data-label="الوجهة In" class="destination-cell">' + destInCell + '</td>' +
-        '<td data-col="col_out" data-label="Check Out"' + outTdClass + '>' + outCell + '</td>' +
-        '<td data-col="col_out_map" data-label="Out Location Google Maps">' + outMapsCell + '</td>' +
-        '<td data-col="col_out_dest" data-label="الوجهة Out" class="destination-cell">' + destOutCell + '</td>' +
-        '<td data-col="col_late" data-label="Late Hours">' + delayCell + '</td>' +
-        '<td data-col="col_overtime" data-label="Overtime">' + overtimeCell + '</td>' +
-        '<td data-col="col_actions" data-label="الإجراء">' + actionCell + '</td>';
+        '<td data-label="اسم الموظف" class="name-cell">' + escapeHtml(r.name) + '</td>' +
+        '<td data-label="اليوم" class="day-cell">' + escapeHtml(r.dayName) + '</td>' +
+        '<td data-label="تاريخ العمل">' + formatWorkDate(r.check_date) + '</td>' +
+        '<td data-label="Check In">' + inCell + '</td>' +
+        '<td data-label="In Location" class="address-cell">' + inLocTextCell + '</td>' +
+        '<td data-label="In Location Google Maps">' + inMapsCell + '</td>' +
+        '<td data-label="الوجهة In" class="destination-cell">' + destInCell + '</td>' +
+        '<td data-label="Check Out"' + outTdClass + '>' + outCell + '</td>' +
+        '<td data-label="Out Location Google Maps">' + outMapsCell + '</td>' +
+        '<td data-label="الوجهة Out" class="destination-cell">' + destOutCell + '</td>' +
+        '<td data-label="Late Hours">' + delayCell + '</td>' +
+        '<td data-label="Overtime">' + overtimeCell + '</td>' +
+        '<td data-label="الإجراء">' + actionCell + '</td>';
 
       fragment.appendChild(tr);
     });
@@ -2184,7 +1756,7 @@
   }
 
   // ============================================================
-  // تحميل ملف Excel لموظف محدد (بدون أي تعديل على الشكل الأصلي)
+  // Export Employee Excel
   // ============================================================
   function initExportEmpMonths() {
     const now = new Date();
@@ -2327,7 +1899,7 @@
         let borderColorArgb = 'FFB8B8DD';
 
         if (!hasRec) {
-          if (dayInfo.isWeekend || dayInfo.isHoliday) {
+          if (dayInfo.isWeekend) {
             rowBgArgb = 'FFDBEAFE';
             borderColorArgb = 'FFBFDBFE';
           } else {
@@ -2417,7 +1989,7 @@
   }
 
   // ============================================================
-  // إضافة يوم
+  // Add Day
   // ============================================================
   window.openAddDayModal = function () {
     updateEmployeeDatalistsAndDropdowns();
@@ -2546,7 +2118,7 @@
   }
 
   // ============================================================
-  // حذف يوم
+  // Delete Day
   // ============================================================
   window.openDeleteDayModal = function () {
     updateEmployeeDatalistsAndDropdowns();
@@ -2604,7 +2176,10 @@
   // ============================================================
   window.__openEdit = function (index) {
     const record = currentRenderedRows[index];
-    if (!record) return;
+    if (!record) {
+      console.error('Record not found at index', index);
+      return;
+    }
 
     currentEditRecord = record;
 
@@ -2896,7 +2471,7 @@
   };
 
   // ============================================================
-  // Summary Tab (الحساب الذكي مع استثناء الإجازات الرسمية)
+  // Summary Tab (الحساب الذكي للغياب)
   // ============================================================
   function initSummaryMonths() {
     const now = new Date();
@@ -2935,7 +2510,7 @@
       tr.innerHTML =
         '<td data-label="اسم الموظف" class="name-cell">' + escapeHtml(s.name) + '</td>' +
         '<td data-label="أيام الحضور">' + s.daysCount + '</td>' +
-        '<td data-label="أيام الغياب"><span style="color: #dc2626; font-weight: 800; font-size: 14px;">' + s.absenceCount + '</span></td>' +
+        '<td data-label="أيام الغياب"><span style="color: #e74c3c; font-weight: bold;">' + s.absenceCount + '</span></td>' +
         '<td data-label="إجمالي التأخير"><span class="delay-badge">' + formatDurationHHMM(s.totalDelay) + '</span></td>' +
         '<td data-label="إجمالي الإضافي"><span class="extra-badge">' + formatDurationHHMM(s.totalOvertime) + '</span></td>';
       fragment.appendChild(tr);
@@ -2948,7 +2523,8 @@
   function buildSummary(records, monthValue) {
     const map = {};
     const now = new Date();
-    
+
+    // تحديد السنة والشهر المطلوب حساب الغياب عليه
     let targetYear = now.getFullYear();
     let targetMonth = now.getMonth();
 
@@ -2964,31 +2540,27 @@
     const isCurrentMonth = (now.getFullYear() === targetYear && now.getMonth() === targetMonth);
     const isPastMonth = (targetYear < now.getFullYear() || (targetYear === now.getFullYear() && targetMonth < now.getMonth()));
 
+    // 🔑 الحساب الذكي: للشهر الحالي نحسب لغاية تاريخ اليوم فقط،
+    // للشهور السابقة نحسب الشهر كامل، وللشهور المستقبلية لا نحسب غياب
     let maxDayToCheck = daysInMonth;
-    if (appSettings.absenceMode === 'smart') {
-      if (isCurrentMonth) {
-        maxDayToCheck = Math.min(daysInMonth, now.getDate());
-      } else if (!isPastMonth) {
-        maxDayToCheck = 0;
-      }
+    if (isCurrentMonth) {
+      maxDayToCheck = Math.min(daysInMonth, now.getDate());
+    } else if (!isPastMonth) {
+      maxDayToCheck = 0;
     }
 
-    // حساب أيام العمل الفعلية واستثناء الإجازات الرسمية والعطلات الأسبوعية
+    // حساب أيام العمل الفعلية لغاية التاريخ المحدد (استثناء الجمعة والسبت)
     let workingDaysSoFar = 0;
     for (let i = 1; i <= maxDayToCheck; i++) {
       const d = new Date(targetYear, targetMonth, i);
-      const dateStr = normalizeDate(d);
-      const dayInfo = getDayInfo(dateStr);
-
-      // إذا لم يكن عطلة أسبوعية ولم يكن إجازة رسمية محددة
-      if (!dayInfo.isOffDay) {
+      const day = d.getDay();
+      if (day !== 5 && day !== 6) {
         workingDaysSoFar++;
       }
     }
 
     records.forEach(function (r) {
       const name = r.name;
-      if (!name) return;
       if (!map[name]) {
         map[name] = { name: name, daysCount: 0, totalDelay: 0, totalOvertime: 0 };
       }
@@ -2997,6 +2569,7 @@
       map[name].totalOvertime += calculateOvertime(name, r.check_in_at, r.check_out_at, r.check_date);
     });
 
+    // الغياب = أيام العمل حتى تاريخ اليوم - أيام الحضور
     Object.values(map).forEach(s => {
       s.absenceCount = Math.max(0, workingDaysSoFar - s.daysCount);
     });
@@ -3106,7 +2679,7 @@
   }
 
   // ============================================================
-  // Excel Export العام (شكل وتنسيق أصلي بالكامل)
+  // Excel Export العام
   // ============================================================
   async function exportExcel() {
     const originalText = exportBtn.textContent;
@@ -3190,7 +2763,7 @@
         let rowBg = 'FFFFFFFF';
         let rowBorder = 'FFB8B8DD';
         if (!r.hasRecord) {
-          if (r.isWeekend || r.isHoliday) {
+          if (r.isWeekend) {
             rowBg = 'FFDBEAFE';
             rowBorder = 'FFBFDBFE';
           } else {
@@ -3258,6 +2831,7 @@
       ws1.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
       ws1.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 12 } };
 
+      // شيت الملخص - مع تمرير الشهر للحساب الذكي
       const activeRecordsOnly = currentRenderedRows.filter(r => r.hasRecord);
       const { fromDate } = getSelectedDateRange();
       const currentMonthVal = fromDate ? fromDate.substring(0, 7) : summaryMonthEl.value;
@@ -3344,16 +2918,13 @@
   // ============================================================
   // Auto Refresh & Period Selector
   // ============================================================
-  function restartAutoRefresh() {
+  function startAutoRefresh() {
     if (autoRefreshTimer) clearInterval(autoRefreshTimer);
-    if (!appSettings.autoRefresh) return;
-
-    const intervalMs = (Number(appSettings.autoRefreshSec) || 30) * 1000;
     autoRefreshTimer = setInterval(function () {
       if (dailyTab.style.display !== 'none') {
         loadData(false);
       }
-    }, intervalMs);
+    }, AUTO_REFRESH_INTERVAL_MS);
   }
 
   function handlePeriodChange() {
@@ -3384,99 +2955,6 @@
   }
 
   // ============================================================
-  // Settings Tab Logic
-  // ============================================================
-  function renderHolidaysList() {
-    const container = document.getElementById('holidaysListContainer');
-    if (!container) return;
-    const list = appSettings.customHolidays || [];
-    if (list.length === 0) {
-      container.innerHTML = '<span style="color:var(--text-muted); font-size:13px; font-weight:600;">لا توجد إجازات رسمية مضافة حالياً.</span>';
-      return;
-    }
-    container.innerHTML = list.map((h, idx) => {
-      const dateStr = typeof h === 'string' ? h : h.date;
-      const nameStr = (typeof h === 'object' && h.name) ? h.name : 'إجازة رسمية';
-      return `
-        <div style="display:inline-flex; align-items:center; gap:8px; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; padding:6px 12px; border-radius:8px; font-size:13px; font-weight:700;">
-          <span>🏖️ ${formatWorkDate(dateStr)} (${escapeHtml(nameStr)})</span>
-          <button type="button" onclick="window.__removeHoliday(${idx})" style="background:none; border:none; color:#dc2626; font-size:16px; cursor:pointer; padding:0 2px; font-weight:900;" title="حذف الإجازة">✕</button>
-        </div>
-      `;
-    }).join('');
-  }
-
-  window.__removeHoliday = function (idx) {
-    if (!appSettings.customHolidays) return;
-    appSettings.customHolidays.splice(idx, 1);
-    saveSettings(appSettings);
-    renderHolidaysList();
-    loadData(false);
-    if (summaryTab.style.display !== 'none') loadSummary();
-  };
-
-  function initSettingsUI() {
-    document.getElementById('settingWorkStart').value = appSettings.workStart || '10:00';
-    document.getElementById('settingGraceMinutes').value = appSettings.graceMinutes !== undefined ? appSettings.graceMinutes : 10;
-    document.getElementById('settingWorkEnd').value = appSettings.workEnd || '18:00';
-    document.getElementById('settingAbsenceMode').value = appSettings.absenceMode || 'smart';
-
-    const weekends = appSettings.weekendDays || [5, 6];
-    document.getElementById('weekendFri').checked = weekends.includes(5);
-    document.getElementById('weekendSat').checked = weekends.includes(6);
-    document.getElementById('weekendSun').checked = weekends.includes(0);
-
-    document.getElementById('settingAutoRefresh').checked = appSettings.autoRefresh !== false;
-    document.getElementById('settingAutoRefreshSec').value = String(appSettings.autoRefreshSec || 30);
-
-    const cols = appSettings.columns || {};
-    document.querySelectorAll('.columns-grid input[type="checkbox"]').forEach(cb => {
-      const target = cb.getAttribute('data-target');
-      cb.checked = cols[target] !== false;
-    });
-
-    renderHolidaysList();
-  }
-
-  function saveCurrentSettingsFromUI() {
-    const newSettings = {
-      workStart: document.getElementById('settingWorkStart').value || '10:00',
-      graceMinutes: parseInt(document.getElementById('settingGraceMinutes').value, 10) || 0,
-      workEnd: document.getElementById('settingWorkEnd').value || '18:00',
-      absenceMode: document.getElementById('settingAbsenceMode').value,
-      weekendDays: [],
-      customHolidays: appSettings.customHolidays || [],
-      autoRefresh: document.getElementById('settingAutoRefresh').checked,
-      autoRefreshSec: parseInt(document.getElementById('settingAutoRefreshSec').value, 10) || 30,
-      columns: {}
-    };
-
-    if (document.getElementById('weekendFri').checked) newSettings.weekendDays.push(5);
-    if (document.getElementById('weekendSat').checked) newSettings.weekendDays.push(6);
-    if (document.getElementById('weekendSun').checked) newSettings.weekendDays.push(0);
-
-    document.querySelectorAll('.columns-grid input[type="checkbox"]').forEach(cb => {
-      const target = cb.getAttribute('data-target');
-      newSettings.columns[target] = cb.checked;
-    });
-
-    saveSettings(newSettings);
-    alert('✅ تم حفظ الإعدادات وتطبيقها بنجاح!');
-    loadData(true);
-    if (summaryTab.style.display !== 'none') {
-      loadSummary();
-    }
-  }
-
-  function resetSettingsToDefaults() {
-    if (!confirm('هل تريد فعلاً استعادة جميع الإعدادات الافتراضية؟')) return;
-    saveSettings(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)));
-    initSettingsUI();
-    alert('✅ تم استعادة الإعدادات الافتراضية.');
-    loadData(true);
-  }
-
-  // ============================================================
   // Tabs Navigation
   // ============================================================
   document.querySelectorAll('.tab-btn').forEach(function (btn) {
@@ -3485,19 +2963,14 @@
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      dailyTab.style.display = 'none';
-      summaryTab.style.display = 'none';
-      settingsTab.style.display = 'none';
-
       if (tab === 'daily') {
         dailyTab.style.display = 'block';
+        summaryTab.style.display = 'none';
         loadData(true);
-      } else if (tab === 'summary') {
+      } else {
+        dailyTab.style.display = 'none';
         summaryTab.style.display = 'block';
         loadSummary();
-      } else if (tab === 'settings') {
-        settingsTab.style.display = 'block';
-        initSettingsUI();
       }
     });
   });
@@ -3539,51 +3012,6 @@
   summaryMonthEl.addEventListener('change', loadSummary);
 
   document.getElementById('saveEditBtn').addEventListener('click', saveEdit);
-
-  document.getElementById('saveSettingsBtn').addEventListener('click', saveCurrentSettingsFromUI);
-  document.getElementById('resetSettingsBtn').addEventListener('click', resetSettingsToDefaults);
-
-  // زر إضافة الإجازة الرسمية
-  document.getElementById('addHolidayBtn').addEventListener('click', function () {
-    const dateVal = document.getElementById('newHolidayDate').value;
-    const nameVal = document.getElementById('newHolidayName').value.trim();
-
-    if (!dateVal) {
-      alert('❌ يرجى تحديد التاريخ أولاً');
-      return;
-    }
-
-    if (!appSettings.customHolidays) appSettings.customHolidays = [];
-
-    const exists = appSettings.customHolidays.some(h => (typeof h === 'string' ? h === dateVal : h.date === dateVal));
-    if (exists) {
-      alert('⚠️ هذا اليوم مسجل بالفعل كإجازة رسمية!');
-      return;
-    }
-
-    appSettings.customHolidays.push({
-      date: dateVal,
-      name: nameVal || 'إجازة رسمية'
-    });
-
-    appSettings.customHolidays.sort((a, b) => (a.date || a).localeCompare(b.date || b));
-
-    saveSettings(appSettings);
-    document.getElementById('newHolidayDate').value = '';
-    document.getElementById('newHolidayName').value = '';
-    renderHolidaysList();
-    loadData(false);
-    if (summaryTab.style.display !== 'none') loadSummary();
-  });
-
-  // تحديث فوري للأعمدة
-  document.querySelectorAll('.columns-grid input[type="checkbox"]').forEach(cb => {
-    cb.addEventListener('change', function () {
-      const target = this.getAttribute('data-target');
-      appSettings.columns[target] = this.checked;
-      applyColumnVisibility();
-    });
-  });
 
   // ============================================================
   // App Start
