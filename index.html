@@ -33,7 +33,6 @@
     --shadow: 0 2px 10px rgba(0,0,0,0.08);
     --radius: 10px;
 
-    /* ألوان الغياب والعطلة */
     --holiday-bg: #dbeafe;
     --holiday-border: #bfdbfe;
     --absence-bg: #fee2e2;
@@ -299,12 +298,10 @@
     vertical-align: middle;
   }
 
-  /* تصميم صفوف الحضور العادية */
   tbody tr.row-present { background: var(--card-bg); }
   tbody tr.row-present:nth-child(even) { background: var(--row-alt); }
   tbody tr.row-present:hover { background: var(--row-hover); }
 
-  /* تصميم صفوف العطلة (الجمعة والسبت بدون تسجيل) */
   tbody tr.row-holiday {
     background-color: var(--holiday-bg) !important;
   }
@@ -316,7 +313,6 @@
     background-color: #cfe2fe !important;
   }
 
-  /* تصميم صفوف الغياب (الأحد - الخميس بدون تسجيل) */
   tbody tr.row-absence {
     background-color: var(--absence-bg) !important;
   }
@@ -429,7 +425,6 @@
     text-align: center;
   }
 
-  /* Login */
   .login-screen {
     position: fixed;
     inset: 0;
@@ -520,7 +515,6 @@
 
   .login-error.visible { display: block; }
 
-  /* Modal */
   .modal {
     position: fixed;
     inset: 0;
@@ -1054,7 +1048,7 @@
 
       <div class="form-section-title work-time">⏰ مواعيد العمل لهذا اليوم فقط</div>
       <div class="work-time-hint">
-        ℹ️ القيم الافتراضية: بداية 10:00، سماح 10 دقائق، نهاية 18:00.
+        ℹ️ القيم الافتراضية: بداية 10:00، سماح 0 دقائق، نهاية 18:00.
         التعديل هنا يطبق على هذا اليوم فقط لهذا الموظف.
       </div>
       <div class="work-time-grid">
@@ -1141,6 +1135,53 @@
   const DEFAULT_GRACE_MINUTES = 0;
   const DEFAULT_WORK_END_HOUR = 18;
   const DEFAULT_WORK_END_MINUTE = 0;
+
+  // ============================================================
+  // Timezone helpers (Cairo aware, works summer & winter)
+  // ============================================================
+  function getCairoOffsetHours() {
+    // نحسب الفارق الحالي بين القاهرة وUTC (بيتغير صيف/شتا أوتوماتيك)
+    const now = new Date();
+    const dtf = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Africa/Cairo',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: false
+    });
+    const parts = dtf.formatToParts(now);
+    const get = t => parseInt(parts.find(p => p.type === t).value, 10);
+    const cairoAsUTC = Date.UTC(get('year'), get('month') - 1, get('day'), get('hour'), get('minute'), get('second'));
+    const diffMs = cairoAsUTC - now.getTime();
+    return Math.round(diffMs / (60 * 60 * 1000));
+  }
+
+  // ياخد تاريخ (YYYY-MM-DD) ووقت (HH:mm) ويعتبرهم بتوقيت القاهرة
+  // ويرجع ISO string UTC صح يخزن في الداتابيز
+  function getCairoISO(dateStr, timeStr) {
+    if (!dateStr || !timeStr) return null;
+    const offset = getCairoOffsetHours(); // +2 شتا، +3 صيف
+    // الوقت المحلي في القاهرة = UTC + offset → عشان نجيب UTC نطرح offset
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const [hh, mm] = timeStr.split(':').map(Number);
+    const utcMs = Date.UTC(y, m - 1, d, hh, mm, 0) - offset * 60 * 60 * 1000;
+    return new Date(utcMs).toISOString();
+  }
+
+  // ياخد ISO string ويطلع الوقت بتوقيت القاهرة (HH:mm) للعرض في input
+  function getCairoTimeHHMM(isoString) {
+    if (!isoString) return '';
+    const d = new Date(isoString);
+    const formatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Africa/Cairo',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    const parts = formatter.formatToParts(d);
+    const hh = parts.find(p => p.type === 'hour').value;
+    const mm = parts.find(p => p.type === 'minute').value;
+    return hh + ':' + mm;
+  }
 
   // ============================================================
   // DOM Elements
@@ -2065,8 +2106,9 @@
         if (delErr) throw delErr;
       }
 
-      const inIso = date + 'T' + checkInTime + ':00+03:00';
-      const outIso = date + 'T' + checkOutTime + ':00+03:00';
+      // تحويل الوقت من توقيت القاهرة إلى UTC بشكل صحيح (صيف/شتا)
+      const inIso = getCairoISO(date, checkInTime);
+      const outIso = getCairoISO(date, checkOutTime);
 
       const { data: sampleList } = await supabase.from(TABLE_NAME).select('*').limit(1);
       let addressColName = 'full_address';
@@ -2186,27 +2228,12 @@
     document.getElementById('editName').value = record.name || '';
     document.getElementById('editDate').value = normalizeDate(record.check_date) || '';
 
-    if (record.check_in_at) {
-      const d = new Date(record.check_in_at);
-      const cairoTime = new Date(d.toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
-      const hh = String(cairoTime.getHours()).padStart(2, '0');
-      const mm = String(cairoTime.getMinutes()).padStart(2, '0');
-      document.getElementById('editCheckInTime').value = hh + ':' + mm;
-    } else {
-      document.getElementById('editCheckInTime').value = '';
-    }
+    // عرض الأوقات بتوقيت القاهرة (نفس اللي المستخدم كتبه)
+    document.getElementById('editCheckInTime').value = record.check_in_at ? getCairoTimeHHMM(record.check_in_at) : '';
     document.getElementById('editLocationIn').value = record.check_in_location || '';
     document.getElementById('editDestIn').value = record.destination_in || '';
 
-    if (record.check_out_at) {
-      const d = new Date(record.check_out_at);
-      const cairoTime = new Date(d.toLocaleString('en-US', { timeZone: 'Africa/Cairo' }));
-      const hh = String(cairoTime.getHours()).padStart(2, '0');
-      const mm = String(cairoTime.getMinutes()).padStart(2, '0');
-      document.getElementById('editCheckOutTime').value = hh + ':' + mm;
-    } else {
-      document.getElementById('editCheckOutTime').value = '';
-    }
+    document.getElementById('editCheckOutTime').value = record.check_out_at ? getCairoTimeHHMM(record.check_out_at) : '';
     document.getElementById('editLocationOut').value = record.check_out_location || '';
     document.getElementById('editDestOut').value = record.destination_out || '';
 
@@ -2267,7 +2294,8 @@
           destination: newDestIn || null
         };
         if (newCheckInTime) {
-          updateIn.created_at = newDate + 'T' + newCheckInTime + ':00+03:00';
+          // تحويل صحيح من توقيت القاهرة إلى UTC
+          updateIn.created_at = getCairoISO(newDate, newCheckInTime);
         }
         if (newLocIn) {
           const { data: sampleList } = await supabase.from(TABLE_NAME).select('*').limit(1);
@@ -2291,7 +2319,7 @@
           destination: newDestOut || null
         };
         if (newCheckOutTime) {
-          updateOut.created_at = newDate + 'T' + newCheckOutTime + ':00+03:00';
+          updateOut.created_at = getCairoISO(newDate, newCheckOutTime);
         }
         if (newLocOut) {
           const { data: sampleList } = await supabase.from(TABLE_NAME).select('*').limit(1);
@@ -2471,7 +2499,7 @@
   };
 
   // ============================================================
-  // Summary Tab (الحساب الذكي للغياب)
+  // Summary Tab
   // ============================================================
   function initSummaryMonths() {
     const now = new Date();
@@ -2524,7 +2552,6 @@
     const map = {};
     const now = new Date();
 
-    // تحديد السنة والشهر المطلوب حساب الغياب عليه
     let targetYear = now.getFullYear();
     let targetMonth = now.getMonth();
 
@@ -2540,8 +2567,6 @@
     const isCurrentMonth = (now.getFullYear() === targetYear && now.getMonth() === targetMonth);
     const isPastMonth = (targetYear < now.getFullYear() || (targetYear === now.getFullYear() && targetMonth < now.getMonth()));
 
-    // 🔑 الحساب الذكي: للشهر الحالي نحسب لغاية تاريخ اليوم فقط،
-    // للشهور السابقة نحسب الشهر كامل، وللشهور المستقبلية لا نحسب غياب
     let maxDayToCheck = daysInMonth;
     if (isCurrentMonth) {
       maxDayToCheck = Math.min(daysInMonth, now.getDate());
@@ -2549,7 +2574,6 @@
       maxDayToCheck = 0;
     }
 
-    // حساب أيام العمل الفعلية لغاية التاريخ المحدد (استثناء الجمعة والسبت)
     let workingDaysSoFar = 0;
     for (let i = 1; i <= maxDayToCheck; i++) {
       const d = new Date(targetYear, targetMonth, i);
@@ -2569,7 +2593,6 @@
       map[name].totalOvertime += calculateOvertime(name, r.check_in_at, r.check_out_at, r.check_date);
     });
 
-    // الغياب = أيام العمل حتى تاريخ اليوم - أيام الحضور
     Object.values(map).forEach(s => {
       s.absenceCount = Math.max(0, workingDaysSoFar - s.daysCount);
     });
@@ -2831,7 +2854,6 @@
       ws1.views = [{ state: 'frozen', ySplit: 1, rightToLeft: true }];
       ws1.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 12 } };
 
-      // شيت الملخص - مع تمرير الشهر للحساب الذكي
       const activeRecordsOnly = currentRenderedRows.filter(r => r.hasRecord);
       const { fromDate } = getSelectedDateRange();
       const currentMonthVal = fromDate ? fromDate.substring(0, 7) : summaryMonthEl.value;
