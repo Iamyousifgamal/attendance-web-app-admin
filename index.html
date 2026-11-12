@@ -1140,7 +1140,6 @@
   // Timezone helpers (Cairo aware, works summer & winter)
   // ============================================================
   function getCairoOffsetHours() {
-    // نحسب الفارق الحالي بين القاهرة وUTC (بيتغير صيف/شتا أوتوماتيك)
     const now = new Date();
     const dtf = new Intl.DateTimeFormat('en-US', {
       timeZone: 'Africa/Cairo',
@@ -1155,19 +1154,15 @@
     return Math.round(diffMs / (60 * 60 * 1000));
   }
 
-  // ياخد تاريخ (YYYY-MM-DD) ووقت (HH:mm) ويعتبرهم بتوقيت القاهرة
-  // ويرجع ISO string UTC صح يخزن في الداتابيز
   function getCairoISO(dateStr, timeStr) {
     if (!dateStr || !timeStr) return null;
-    const offset = getCairoOffsetHours(); // +2 شتا، +3 صيف
-    // الوقت المحلي في القاهرة = UTC + offset → عشان نجيب UTC نطرح offset
+    const offset = getCairoOffsetHours();
     const [y, m, d] = dateStr.split('-').map(Number);
     const [hh, mm] = timeStr.split(':').map(Number);
     const utcMs = Date.UTC(y, m - 1, d, hh, mm, 0) - offset * 60 * 60 * 1000;
     return new Date(utcMs).toISOString();
   }
 
-  // ياخد ISO string ويطلع الوقت بتوقيت القاهرة (HH:mm) للعرض في input
   function getCairoTimeHHMM(isoString) {
     if (!isoString) return '';
     const d = new Date(isoString);
@@ -2106,7 +2101,6 @@
         if (delErr) throw delErr;
       }
 
-      // تحويل الوقت من توقيت القاهرة إلى UTC بشكل صحيح (صيف/شتا)
       const inIso = getCairoISO(date, checkInTime);
       const outIso = getCairoISO(date, checkOutTime);
 
@@ -2228,7 +2222,6 @@
     document.getElementById('editName').value = record.name || '';
     document.getElementById('editDate').value = normalizeDate(record.check_date) || '';
 
-    // عرض الأوقات بتوقيت القاهرة (نفس اللي المستخدم كتبه)
     document.getElementById('editCheckInTime').value = record.check_in_at ? getCairoTimeHHMM(record.check_in_at) : '';
     document.getElementById('editLocationIn').value = record.check_in_location || '';
     document.getElementById('editDestIn').value = record.destination_in || '';
@@ -2294,7 +2287,6 @@
           destination: newDestIn || null
         };
         if (newCheckInTime) {
-          // تحويل صحيح من توقيت القاهرة إلى UTC
           updateIn.created_at = getCairoISO(newDate, newCheckInTime);
         }
         if (newLocIn) {
@@ -2313,6 +2305,7 @@
       }
 
       if (record.check_out_id) {
+        // الحالة العادية: سجل انصراف موجود بالفعل → نعمل UPDATE
         const updateOut = {
           name: newName,
           check_date: newDate,
@@ -2334,6 +2327,37 @@
         }
         const { error: err2 } = await supabase.from(TABLE_NAME).update(updateOut).eq('id', record.check_out_id);
         if (err2) throw err2;
+
+      } else if (newCheckOutTime || newLocOut || newDestOut) {
+        // الحالة الجديدة: مفيش سجل انصراف، والمستخدم دخل بيانات انصراف → نعمل INSERT
+        const { data: sampleList } = await supabase.from(TABLE_NAME).select('*').limit(1);
+        let addressColName = 'full_address';
+        if (sampleList && sampleList.length > 0) {
+          const s = sampleList[0];
+          if ('full_address' in s) addressColName = 'full_address';
+          else if ('location' in s) addressColName = 'location';
+          else if ('check_in_location' in s) addressColName = 'check_in_location';
+        }
+
+        const insertOut = {
+          name: newName,
+          check_date: newDate,
+          check_type: 'out',
+          destination: newDestOut || null
+        };
+
+        if (newCheckOutTime) {
+          insertOut.created_at = getCairoISO(newDate, newCheckOutTime);
+        } else {
+          insertOut.created_at = new Date().toISOString();
+        }
+
+        if (newLocOut) {
+          insertOut[addressColName] = newLocOut;
+        }
+
+        const { error: errInsertOut } = await supabase.from(TABLE_NAME).insert(insertOut);
+        if (errInsertOut) throw errInsertOut;
       }
 
       if (newWorkStart && newWorkEnd && originalDate) {
